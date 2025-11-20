@@ -10,6 +10,9 @@ export interface Product {
   category: string;
   image: string;
   description: string;
+  sellerName: string;
+  sellerPhone: string;
+  sellerTelegram: string; // username without @
 }
 
 export const products: Product[] = [
@@ -19,7 +22,10 @@ export const products: Product[] = [
     price: 299,
     category: "Electronics",
     image: watchImg,
-    description: "Monitor your health and stay connected with the Apex Smart Watch. Features an always-on Retina display, ECG app, and fall detection."
+    description: "Monitor your health and stay connected with the Apex Smart Watch. Features an always-on Retina display, ECG app, and fall detection.",
+    sellerName: "Tech Haven",
+    sellerPhone: "+998 90 123 45 67",
+    sellerTelegram: "tech_haven_admin"
   },
   {
     id: 2,
@@ -27,7 +33,10 @@ export const products: Product[] = [
     price: 199,
     category: "Audio",
     image: headphonesImg,
-    description: "Immerse yourself in pure sound with Sonic Pro. Active noise cancellation, 30-hour battery life, and premium comfort for long listening sessions."
+    description: "Immerse yourself in pure sound with Sonic Pro. Active noise cancellation, 30-hour battery life, and premium comfort for long listening sessions.",
+    sellerName: "Audio World",
+    sellerPhone: "+998 93 987 65 43",
+    sellerTelegram: "audio_world_support"
   },
   {
     id: 3,
@@ -35,7 +44,10 @@ export const products: Product[] = [
     price: 120,
     category: "Footwear",
     image: shoesImg,
-    description: "Built for speed and comfort. The Velocity Runner features responsive cushioning and a breathable mesh upper for your best run yet."
+    description: "Built for speed and comfort. The Velocity Runner features responsive cushioning and a breathable mesh upper for your best run yet.",
+    sellerName: "Sport Style",
+    sellerPhone: "+998 99 111 22 33",
+    sellerTelegram: "sport_style_shop"
   },
   {
     id: 4,
@@ -43,7 +55,10 @@ export const products: Product[] = [
     price: 85,
     category: "Accessories",
     image: backpackImg,
-    description: "Sleek, durable, and water-resistant. The Urban Commuter Pack has a dedicated laptop sleeve and plenty of space for your daily essentials."
+    description: "Sleek, durable, and water-resistant. The Urban Commuter Pack has a dedicated laptop sleeve and plenty of space for your daily essentials.",
+    sellerName: "Urban Gear",
+    sellerPhone: "+998 97 555 44 22",
+    sellerTelegram: "urban_gear_manager"
   }
 ];
 

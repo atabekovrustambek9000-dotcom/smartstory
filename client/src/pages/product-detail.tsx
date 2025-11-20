@@ -1,9 +1,8 @@
 import { useRoute, Link } from "wouter";
-import { ArrowLeft, ShoppingBag, Star, Share2 } from "lucide-react";
+import { ArrowLeft, ShoppingBag, Star, Share2, MessageCircle, Phone } from "lucide-react";
 import { products } from "@/lib/data";
 import { useCart } from "@/lib/cart-store";
 import { useToast } from "@/hooks/use-toast";
-import { motion } from "framer-motion";
 
 export default function ProductDetail() {
   const [, params] = useRoute("/product/:id");
@@ -22,8 +21,13 @@ export default function ProductDetail() {
     });
   };
 
+  const handleTelegramMessage = () => {
+    const message = encodeURIComponent(`Hello! I'm interested in buying "${product.name}" for $${product.price}. Is it available?`);
+    window.open(`https://t.me/${product.sellerTelegram}?text=${message}`, '_blank');
+  };
+
   return (
-    <div className="min-h-screen bg-background pb-24 relative">
+    <div className="min-h-screen bg-background pb-32 relative">
       {/* Header Image */}
       <div className="relative h-[45vh] bg-gray-100">
         <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
@@ -63,7 +67,33 @@ export default function ProductDetail() {
           <span className="text-sm text-muted-foreground">(4.0)</span>
         </div>
 
-        <div className="space-y-4">
+        {/* Seller Info */}
+        <div className="bg-secondary/30 p-4 rounded-2xl mb-6 border border-border/50">
+          <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">Sold By</h3>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">
+                {product.sellerName.substring(0, 2).toUpperCase()}
+              </div>
+              <div>
+                <div className="font-bold text-sm">{product.sellerName}</div>
+                <div className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Phone size={10} />
+                  {product.sellerPhone}
+                </div>
+              </div>
+            </div>
+            <button 
+              onClick={handleTelegramMessage}
+              className="bg-[#0088cc] text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all"
+            >
+              <MessageCircle size={14} />
+              Chat
+            </button>
+          </div>
+        </div>
+
+        <div className="space-y-4 mb-8">
           <h3 className="font-semibold">Description</h3>
           <p className="text-muted-foreground leading-relaxed">
             {product.description}
@@ -71,14 +101,23 @@ export default function ProductDetail() {
         </div>
         
         {/* Action Bar */}
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-lg border-t border-border max-w-md mx-auto">
-          <button 
-            onClick={handleAddToCart}
-            className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold shadow-lg shadow-primary/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-          >
-            <ShoppingBag size={20} />
-            Add to Cart - ${product.price}
-          </button>
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-lg border-t border-border max-w-md mx-auto z-20">
+          <div className="flex gap-3">
+            <button 
+              onClick={handleTelegramMessage}
+              className="flex-1 bg-[#0088cc] text-white py-4 rounded-xl font-bold shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+            >
+              <MessageCircle size={20} />
+              Telegram
+            </button>
+            <button 
+              onClick={handleAddToCart}
+              className="flex-1 bg-primary text-primary-foreground py-4 rounded-xl font-bold shadow-lg shadow-primary/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+            >
+              <ShoppingBag size={20} />
+              Add to Cart
+            </button>
+          </div>
         </div>
       </div>
     </div>
