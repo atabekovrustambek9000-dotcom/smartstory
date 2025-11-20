@@ -4,13 +4,16 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
+import Home from "@/pages/home";
+import Cart from "@/pages/cart";
+import ProductDetail from "@/pages/product-detail";
 
 function Router() {
   return (
     <Switch>
-      {/* Add pages below */}
-      {/* <Route path="/" component={Home}/> */}
-      {/* Fallback to 404 */}
+      <Route path="/" component={Home} />
+      <Route path="/cart" component={Cart} />
+      <Route path="/product/:id" component={ProductDetail} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -21,7 +24,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <Router />
+        <div className="min-h-screen bg-background max-w-md mx-auto border-x border-border/40 shadow-2xl relative overflow-hidden">
+          <Router />
+        </div>
       </TooltipProvider>
     </QueryClientProvider>
   );
