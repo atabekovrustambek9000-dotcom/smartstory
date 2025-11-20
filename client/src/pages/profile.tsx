@@ -1,10 +1,29 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { User, Settings, Package, Plus, CreditCard, LogOut, ChevronRight, Store } from "lucide-react";
+import { User, Settings, Package, Plus, CreditCard, LogOut, ChevronRight, Store, Crown, AlertCircle } from "lucide-react";
 import BottomNav from "@/components/bottom-nav";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Profile() {
   const [isSeller, setIsSeller] = useState(false);
+  const [listingsUsed, setListingsUsed] = useState(3);
+  const [isEditing, setIsEditing] = useState(false);
+  const { toast } = useToast();
+
+  // Mock Seller Data
+  const [sellerInfo, setSellerInfo] = useState({
+    shopName: "Tech Haven",
+    description: "Best gadgets in town!",
+    phone: "+998 90 123 45 67"
+  });
+
+  const handleSaveProfile = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsEditing(false);
+    toast({
+      description: "Seller profile updated!",
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -43,29 +62,127 @@ export default function Profile() {
         </div>
 
         {isSeller && (
-          <div className="bg-card p-4 rounded-2xl border border-border/50 shadow-sm space-y-3 animate-in slide-in-from-top-4 fade-in duration-300">
-            <h3 className="font-semibold text-sm text-muted-foreground mb-2 uppercase tracking-wider">Seller Dashboard</h3>
+          <div className="space-y-4 animate-in slide-in-from-top-4 fade-in duration-300">
             
-            <Link href="/add-product">
+            {/* Subscription Status Card */}
+            <div className="bg-gradient-to-br from-gray-900 to-gray-800 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-10">
+                <Crown size={100} />
+              </div>
+              <div className="relative z-10">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="font-bold text-lg">Free Plan</h3>
+                    <p className="text-gray-400 text-xs">Basic seller account</p>
+                  </div>
+                  <span className="bg-white/20 px-2 py-1 rounded text-xs font-medium">Active</span>
+                </div>
+                
+                <div className="space-y-2 mb-4">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-300">Listings Used</span>
+                    <span className="font-bold">{listingsUsed} / 10</span>
+                  </div>
+                  <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-primary transition-all duration-500" 
+                      style={{ width: `${(listingsUsed / 10) * 100}%` }} 
+                    />
+                  </div>
+                  <p className="text-[10px] text-gray-400">You have {10 - listingsUsed} free listings remaining.</p>
+                </div>
+
+                <button className="w-full bg-white text-black py-2.5 rounded-xl font-bold text-sm hover:bg-gray-100 transition-colors flex items-center justify-center gap-2">
+                  <Crown size={16} />
+                  Upgrade to Premium
+                </button>
+              </div>
+            </div>
+
+            {/* Seller Details */}
+            <div className="bg-card p-4 rounded-2xl border border-border/50 shadow-sm">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Shop Info</h3>
+                <button 
+                  onClick={() => setIsEditing(!isEditing)}
+                  className="text-xs text-primary font-medium"
+                >
+                  {isEditing ? "Cancel" : "Edit"}
+                </button>
+              </div>
+
+              {isEditing ? (
+                <form onSubmit={handleSaveProfile} className="space-y-3">
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium">Shop Name</label>
+                    <input 
+                      value={sellerInfo.shopName}
+                      onChange={(e) => setSellerInfo({...sellerInfo, shopName: e.target.value})}
+                      className="w-full px-3 py-2 rounded-lg bg-secondary/50 border border-transparent focus:border-primary outline-none text-sm"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium">Description</label>
+                    <textarea 
+                      value={sellerInfo.description}
+                      onChange={(e) => setSellerInfo({...sellerInfo, description: e.target.value})}
+                      rows={2}
+                      className="w-full px-3 py-2 rounded-lg bg-secondary/50 border border-transparent focus:border-primary outline-none text-sm resize-none"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium">Phone Number</label>
+                    <input 
+                      value={sellerInfo.phone}
+                      onChange={(e) => setSellerInfo({...sellerInfo, phone: e.target.value})}
+                      className="w-full px-3 py-2 rounded-lg bg-secondary/50 border border-transparent focus:border-primary outline-none text-sm"
+                    />
+                  </div>
+                  <button type="submit" className="w-full bg-primary text-primary-foreground py-2 rounded-lg text-sm font-medium mt-2">
+                    Save Changes
+                  </button>
+                </form>
+              ) : (
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-xs text-muted-foreground">Shop Name</p>
+                    <p className="font-medium">{sellerInfo.shopName}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Description</p>
+                    <p className="text-sm">{sellerInfo.description}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Contact</p>
+                    <p className="font-medium">{sellerInfo.phone}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Seller Actions */}
+            <div className="bg-card p-4 rounded-2xl border border-border/50 shadow-sm space-y-1">
+              <Link href="/add-product">
+                <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                      <Plus size={16} />
+                    </div>
+                    <span className="font-medium">Add New Product</span>
+                  </div>
+                  <ChevronRight size={16} className="text-muted-foreground" />
+                </div>
+              </Link>
+
               <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
-                    <Plus size={16} />
+                  <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center">
+                    <Package size={16} />
                   </div>
-                  <span className="font-medium">Add New Product</span>
+                  <span className="font-medium">My Products</span>
                 </div>
-                <ChevronRight size={16} className="text-muted-foreground" />
+                <span className="text-xs font-bold bg-secondary px-2 py-1 rounded-md">{listingsUsed}</span>
               </div>
-            </Link>
-
-            <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center">
-                  <Package size={16} />
-                </div>
-                <span className="font-medium">My Products</span>
-              </div>
-              <span className="text-xs font-bold bg-secondary px-2 py-1 rounded-md">12</span>
             </div>
           </div>
         )}
@@ -77,14 +194,6 @@ export default function Profile() {
             <div className="flex items-center gap-3">
               <Settings size={18} className="text-muted-foreground" />
               <span className="font-medium">General Settings</span>
-            </div>
-            <ChevronRight size={16} className="text-muted-foreground" />
-          </div>
-          
-          <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">
-            <div className="flex items-center gap-3">
-              <CreditCard size={18} className="text-muted-foreground" />
-              <span className="font-medium">Payment Methods</span>
             </div>
             <ChevronRight size={16} className="text-muted-foreground" />
           </div>

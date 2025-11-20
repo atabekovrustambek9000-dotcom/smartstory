@@ -1,16 +1,21 @@
-import { ArrowLeft, Upload, DollarSign } from "lucide-react";
+import { ArrowLeft, Upload, DollarSign, AlertCircle } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 
 export default function AddProduct() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  
+  // Mock limit check
+  const listingsUsed = 3;
+  const listingsLimit = 10;
+  const remaining = listingsLimit - listingsUsed;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     toast({
       title: "Product Added!",
-      description: "Your product is now under review.",
+      description: `You have ${remaining - 1} free listings remaining.`,
       duration: 2000,
     });
     setTimeout(() => setLocation("/profile"), 1000);
@@ -28,6 +33,17 @@ export default function AddProduct() {
       </header>
 
       <form onSubmit={handleSubmit} className="p-4 space-y-6">
+        {/* Limit Warning */}
+        <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 flex items-start gap-3">
+          <AlertCircle size={18} className="text-blue-600 mt-0.5 flex-shrink-0" />
+          <div>
+            <h4 className="text-sm font-semibold text-blue-900">Free Listing Limit</h4>
+            <p className="text-xs text-blue-700 mt-0.5">
+              You are using 1 of your {remaining} remaining free listings.
+            </p>
+          </div>
+        </div>
+
         {/* Image Upload */}
         <div className="space-y-2">
           <label className="text-sm font-medium">Product Image</label>
