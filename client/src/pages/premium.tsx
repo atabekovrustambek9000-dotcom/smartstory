@@ -31,8 +31,8 @@ export default function Premium() {
       setIsProcessing(false);
       setIsPaymentModalOpen(false);
       toast({
-        title: "Payment Successful!",
-        description: "Your premium subscription has been activated.",
+        title: "Muvaffaqiyatli to'landi!",
+        description: "Pul 'Yangiyer Smart Store' hisobiga o'tkazildi.",
         duration: 3000,
       });
       // Reset form
