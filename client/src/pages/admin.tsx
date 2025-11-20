@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { ArrowLeft, Check, X, Clock, Shield, Search, Filter } from "lucide-react";
+import { ArrowLeft, Check, X, Clock, Shield, Search, Filter, CreditCard } from "lucide-react";
 import { useAdminStore } from "@/lib/admin-store";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -117,6 +117,17 @@ export default function AdminDashboard() {
                         <Clock size={10} />
                         {new Date(req.date).toLocaleDateString()}
                       </span>
+                    </div>
+                  </div>
+
+                  {/* Sender Info */}
+                  <div className="bg-secondary/30 p-2 rounded-lg mb-3 border border-border/50 flex items-center gap-2">
+                    <div className="bg-background p-1.5 rounded-md shadow-sm text-muted-foreground">
+                      <CreditCard size={14} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">To'lov qiluvchi</p>
+                      <p className="text-xs font-bold">{req.senderName || "Noma'lum"}</p>
                     </div>
                   </div>
 

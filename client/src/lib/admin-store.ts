@@ -5,6 +5,7 @@ export interface PremiumRequest {
   id: string;
   userId: string;
   userName: string;
+  senderName: string; // New field for the name on the card that sent money
   plan: 'monthly' | 'yearly';
   amount: string;
   date: string;

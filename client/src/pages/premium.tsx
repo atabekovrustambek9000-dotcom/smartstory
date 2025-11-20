@@ -1,4 +1,4 @@
-import { ArrowLeft, Check, Crown, Star, Zap, CreditCard, Copy, X, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Check, Crown, Star, Zap, CreditCard, Copy, X, ShieldCheck, User } from "lucide-react";
 import { Link } from "wouter";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -8,6 +8,7 @@ import { useAdminStore } from "@/lib/admin-store";
 export default function Premium() {
   const [selectedPlan, setSelectedPlan] = useState<"monthly" | "yearly">("monthly");
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [senderName, setSenderName] = useState("");
   const { toast } = useToast();
   const addRequest = useAdminStore(state => state.addRequest);
 
@@ -31,15 +32,25 @@ export default function Premium() {
   };
 
   const handleConfirmPayment = () => {
+    if (!senderName.trim()) {
+      toast({
+        variant: "destructive",
+        description: "Iltimos, to'lov qilgan karta egasining ismini kiriting",
+      });
+      return;
+    }
+
     // Add request to admin store
     addRequest({
       userId: '7823',
-      userName: 'John Doe',
+      userName: 'John Doe', // Bu yerda profil egasining ismi bo'ladi
+      senderName: senderName, // Yangi maydon: pul o'tkazgan odamning ismi
       plan: selectedPlan,
       amount: selectedPlan === "monthly" ? "$1.50" : "$13.00"
     });
 
     setIsPaymentModalOpen(false);
+    setSenderName("");
     toast({
       title: "So'rov yuborildi!",
       description: "Admin tasdiqlashini kuting. To'lovingiz tekshirilmoqda.",
@@ -165,7 +176,7 @@ export default function Premium() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="fixed inset-x-4 top-[10%] md:top-[15%] bg-background rounded-3xl z-50 shadow-2xl border border-border max-w-md mx-auto overflow-hidden"
+              className="fixed inset-x-4 top-[5%] md:top-[10%] bg-background rounded-3xl z-50 shadow-2xl border border-border max-w-md mx-auto overflow-hidden max-h-[90vh] overflow-y-auto"
             >
               <div className="bg-primary/5 p-6 border-b border-border flex justify-between items-center">
                  <div className="flex items-center gap-2">
@@ -218,6 +229,22 @@ export default function Premium() {
                   <div className="text-xs text-center text-muted-foreground bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-300 p-3 rounded-lg">
                     Izohda <strong>Shop ID: #7823</strong> ni yozib qoldiring.
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium ml-1">To'lov qiluvchi (Sizning ismingiz)</label>
+                  <div className="relative">
+                    <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                    <input 
+                      value={senderName}
+                      onChange={(e) => setSenderName(e.target.value)}
+                      placeholder="Karta egasining ismi..."
+                      className="w-full pl-10 pr-4 py-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none"
+                    />
+                  </div>
+                  <p className="text-[10px] text-muted-foreground ml-1">
+                    Admin to'lovni aniqlashi uchun karta egasining ismini yozing.
+                  </p>
                 </div>
 
                 <button 
