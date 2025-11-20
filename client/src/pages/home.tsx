@@ -43,9 +43,9 @@ export default function Home() {
   };
 
   return (
-    <div className="pb-20 min-h-screen">
+    <div className="pb-20 min-h-screen bg-transparent">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border px-4 py-3">
+      <header className="sticky top-0 z-10 bg-background/70 backdrop-blur-lg border-b border-border/50 px-4 py-3">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             {/* Store Icon */}
@@ -66,7 +66,7 @@ export default function Home() {
 
           <div className="flex items-center gap-3">
             <Link href="/notifications">
-              <button className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center relative hover:bg-secondary/80 transition-colors">
+              <button className="w-9 h-9 rounded-full bg-secondary/80 flex items-center justify-center relative hover:bg-secondary transition-colors backdrop-blur-sm">
                 <Bell size={18} className="text-foreground" />
                 <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-background"></span>
               </button>
@@ -88,7 +88,7 @@ export default function Home() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t("search_placeholder")} 
-            className="w-full pl-9 pr-4 py-2.5 bg-secondary/50 border border-transparent focus:bg-background focus:border-primary/30 rounded-xl text-sm outline-none transition-all shadow-sm"
+            className="w-full pl-9 pr-4 py-2.5 bg-secondary/50 border border-transparent focus:bg-background/80 focus:border-primary/30 rounded-xl text-sm outline-none transition-all shadow-sm backdrop-blur-sm"
           />
         </div>
       </header>
@@ -103,10 +103,10 @@ export default function Home() {
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${
+              className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap backdrop-blur-sm ${
                 activeCategory === cat 
                   ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25" 
-                  : "bg-card border border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                  : "bg-card/80 border border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"
               }`}
             >
               {t(`categories.${cat}`)}
@@ -124,9 +124,9 @@ export default function Home() {
               <Link key={product.id} href={`/product/${product.id}`}>
                 <motion.div 
                   whileTap={{ scale: 0.98 }}
-                  className="bg-card rounded-2xl overflow-hidden shadow-sm border border-border group cursor-pointer hover:shadow-md hover:border-primary/20 transition-all relative"
+                  className="bg-card/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-sm border border-border group cursor-pointer hover:shadow-md hover:border-primary/20 transition-all relative"
                 >
-                  <div className="aspect-square relative bg-gray-50 overflow-hidden">
+                  <div className="aspect-square relative bg-gray-50/50 overflow-hidden">
                     <img 
                       src={product.image} 
                       alt={product.name} 
@@ -155,7 +155,7 @@ export default function Home() {
                     <h3 className="font-bold text-sm leading-tight mb-1.5 line-clamp-2 h-9">{product.name}</h3>
                     <div className="flex items-center justify-between">
                       <div className="text-foreground font-extrabold text-lg">${product.price}</div>
-                      <div className="flex items-center gap-1 text-[10px] text-muted-foreground bg-secondary px-1.5 py-0.5 rounded">
+                      <div className="flex items-center gap-1 text-[10px] text-muted-foreground bg-secondary/50 px-1.5 py-0.5 rounded">
                          <Store size={10} />
                          {product.sellerName.split(' ')[0]}
                       </div>

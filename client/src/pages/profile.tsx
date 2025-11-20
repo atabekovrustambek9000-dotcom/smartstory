@@ -61,10 +61,10 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20 transition-colors duration-300">
-      <div className="bg-primary/5 pb-8 pt-12 px-6 rounded-b-[2rem]">
+    <div className="min-h-screen bg-transparent pb-20 transition-colors duration-300">
+      <div className="bg-primary/5 backdrop-blur-sm pb-8 pt-12 px-6 rounded-b-[2rem]">
         <div className="flex flex-col items-center">
-          <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mb-4 text-2xl font-bold text-primary relative">
+          <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mb-4 text-2xl font-bold text-primary relative backdrop-blur-md">
             JD
             <div className="absolute bottom-0 right-0 w-8 h-8 bg-green-500 border-4 border-background rounded-full"></div>
           </div>
@@ -77,7 +77,7 @@ export default function Profile() {
         
         {/* Admin Link (Only for Admin) */}
         <Link href="/admin">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-4 rounded-2xl shadow-lg mb-4 flex items-center justify-between cursor-pointer text-white">
+          <div className="bg-gradient-to-r from-blue-600/90 to-blue-800/90 backdrop-blur-md p-4 rounded-2xl shadow-lg mb-4 flex items-center justify-between cursor-pointer text-white">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
                 <Shield size={20} />
@@ -98,8 +98,8 @@ export default function Profile() {
         {/* Settings Grid */}
         <div className="grid grid-cols-2 gap-4">
            {/* Language Switcher */}
-          <div className="bg-card p-4 rounded-2xl border border-border shadow-sm flex flex-col justify-between gap-3 cursor-pointer" onClick={toggleLanguage}>
-            <div className="p-2 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 rounded-lg w-fit">
+          <div className="bg-card/80 backdrop-blur-sm p-4 rounded-2xl border border-border shadow-sm flex flex-col justify-between gap-3 cursor-pointer" onClick={toggleLanguage}>
+            <div className="p-2 bg-blue-100/50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 rounded-lg w-fit">
               <Globe size={20} />
             </div>
             <div>
@@ -113,7 +113,7 @@ export default function Profile() {
           </div>
 
           {/* Theme Switcher */}
-          <div className="bg-card p-4 rounded-2xl border border-border shadow-sm flex flex-col justify-between gap-3 cursor-pointer" onClick={toggleTheme}>
+          <div className="bg-card/80 backdrop-blur-sm p-4 rounded-2xl border border-border shadow-sm flex flex-col justify-between gap-3 cursor-pointer" onClick={toggleTheme}>
             <div className={`p-2 rounded-lg w-fit transition-colors ${isDarkMode ? 'bg-purple-900 text-purple-300' : 'bg-yellow-100 text-yellow-600'}`}>
               {isDarkMode ? <Moon size={20} /> : <Sun size={20} />}
             </div>
@@ -125,7 +125,7 @@ export default function Profile() {
         </div>
 
         {/* User Actions - Always Visible */}
-        <div className="bg-card p-4 rounded-2xl border border-border shadow-sm space-y-1">
+        <div className="bg-card/80 backdrop-blur-sm p-4 rounded-2xl border border-border shadow-sm space-y-1">
           <Link href="/orders">
             <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">
               <div className="flex items-center gap-3">
@@ -158,7 +158,7 @@ export default function Profile() {
         </div>
 
         {/* Mode Switcher */}
-        <div className="bg-card p-4 rounded-2xl border border-border shadow-sm flex items-center justify-between">
+        <div className="bg-card/80 backdrop-blur-sm p-4 rounded-2xl border border-border shadow-sm flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-primary/10 rounded-lg text-primary">
               <Store size={20} />
@@ -183,7 +183,7 @@ export default function Profile() {
           <div className="space-y-4 animate-in slide-in-from-top-4 fade-in duration-300">
             
             {/* Subscription Status Card */}
-            <div className={`p-5 rounded-2xl shadow-lg relative overflow-hidden border ${isPremium ? 'bg-gradient-to-br from-yellow-600 to-orange-700 border-yellow-500' : 'bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700'} text-white`}>
+            <div className={`p-5 rounded-2xl shadow-lg relative overflow-hidden border backdrop-blur-md ${isPremium ? 'bg-gradient-to-br from-yellow-600/90 to-orange-700/90 border-yellow-500' : 'bg-gradient-to-br from-gray-900/90 to-gray-800/90 border-gray-700'} text-white`}>
               <div className="absolute top-0 right-0 p-4 opacity-10">
                 <Crown size={100} />
               </div>
@@ -226,7 +226,7 @@ export default function Profile() {
             </div>
 
             {/* Seller Details */}
-            <div className="bg-card p-4 rounded-2xl border border-border shadow-sm">
+            <div className="bg-card/80 backdrop-blur-sm p-4 rounded-2xl border border-border shadow-sm">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Shop Info</h3>
                 <button 
@@ -294,7 +294,7 @@ export default function Profile() {
             </div>
 
             {/* Seller Actions */}
-            <div className="bg-card p-4 rounded-2xl border border-border shadow-sm space-y-1">
+            <div className="bg-card/80 backdrop-blur-sm p-4 rounded-2xl border border-border shadow-sm space-y-1">
               <Link href="/add-product">
                 <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">
                   <div className="flex items-center gap-3">
@@ -322,7 +322,7 @@ export default function Profile() {
           </div>
         )}
 
-        <div className="bg-card p-4 rounded-2xl border border-border shadow-sm space-y-1">
+        <div className="bg-card/80 backdrop-blur-sm p-4 rounded-2xl border border-border shadow-sm space-y-1">
           <h3 className="font-semibold text-sm text-muted-foreground mb-2 uppercase tracking-wider px-2">{t('settings')}</h3>
           
           <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">

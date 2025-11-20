@@ -72,7 +72,7 @@ export default function AdminDashboard() {
   // If not authenticated, show Lock Screen
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-6">
+      <div className="min-h-screen bg-gray-900/90 backdrop-blur-md flex flex-col items-center justify-center p-6">
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
             <div className="w-20 h-20 bg-blue-500/20 text-blue-400 rounded-3xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border border-blue-500/30">
@@ -122,9 +122,9 @@ export default function AdminDashboard() {
 
   // Main Admin Dashboard Content
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-transparent pb-20">
       {/* Header */}
-      <div className="bg-gray-900 text-white pt-6 pb-8 px-6 rounded-b-[2rem] shadow-xl relative">
+      <div className="bg-gray-900/90 backdrop-blur-md text-white pt-6 pb-8 px-6 rounded-b-[2rem] shadow-xl relative">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
             <Link href="/profile">
@@ -242,10 +242,10 @@ export default function AdminDashboard() {
             <button
               key={f}
               onClick={() => setFilter(f as any)}
-              className={`px-4 py-2 rounded-full text-xs font-bold capitalize whitespace-nowrap transition-colors ${
+              className={`px-4 py-2 rounded-full text-xs font-bold capitalize whitespace-nowrap transition-colors backdrop-blur-sm ${
                 filter === f 
                   ? "bg-gray-900 text-white" 
-                  : "bg-secondary text-muted-foreground hover:bg-secondary/80"
+                  : "bg-secondary/80 text-muted-foreground hover:bg-secondary"
               }`}
             >
               {f === 'all' ? 'Barchasi' : f === 'pending' ? 'Kutilmoqda' : f === 'approved' ? 'Tasdiqlangan' : 'Rad etilgan'}
@@ -269,7 +269,7 @@ export default function AdminDashboard() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, x: -100 }}
-                className="bg-card border border-border p-4 rounded-2xl shadow-sm relative overflow-hidden"
+                className="bg-card/80 backdrop-blur-sm border border-border p-4 rounded-2xl shadow-sm relative overflow-hidden"
               >
                 {/* Status Indicator Strip */}
                 <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${
