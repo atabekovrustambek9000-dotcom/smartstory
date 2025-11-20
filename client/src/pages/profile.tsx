@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { User, Settings, Package, Plus, CreditCard, LogOut, ChevronRight, Store, Crown, AlertCircle, Heart, Bell, ClipboardList, Globe, Clock, CheckCircle2, XCircle, Moon, Sun } from "lucide-react";
+import { User, Settings, Package, Plus, CreditCard, LogOut, ChevronRight, Store, Crown, AlertCircle, Heart, Bell, ClipboardList, Globe, Clock, CheckCircle2, XCircle, Moon, Sun, Wallet, Eye, EyeOff } from "lucide-react";
 import BottomNav from "@/components/bottom-nav";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-store";
@@ -12,6 +12,15 @@ export default function Profile() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const { toast } = useToast();
   const { language, setLanguage, t } = useLanguage();
+  
+  // Payment Settings State
+  const [showPaymentSettings, setShowPaymentSettings] = useState(false);
+  const [paymentInfo, setPaymentInfo] = useState({
+    cardNumber: "8600 1234 5678 9012",
+    cardHolder: "JOHN DOE",
+    cardType: "Uzcard"
+  });
+  const [showCardNumber, setShowCardNumber] = useState(false);
 
   // Mock Seller Data
   const [sellerInfo, setSellerInfo] = useState({
@@ -32,6 +41,14 @@ export default function Profile() {
     setIsEditing(false);
     toast({
       description: "Seller profile updated!",
+    });
+  };
+
+  const handleSavePayment = (e: React.FormEvent) => {
+    e.preventDefault();
+    setShowPaymentSettings(false);
+    toast({
+      description: "Payment details saved securely!",
     });
   };
 
@@ -252,6 +269,72 @@ export default function Profile() {
                     <p className="text-xs text-muted-foreground">Contact</p>
                     <p className="font-medium">{sellerInfo.phone}</p>
                   </div>
+                </div>
+              )}
+            </div>
+
+             {/* Payment Receiving Settings (New Feature) */}
+            <div className="bg-card p-4 rounded-2xl border border-border shadow-sm">
+              <div className="flex justify-between items-center mb-4">
+                 <div className="flex items-center gap-2">
+                    <Wallet size={18} className="text-primary" />
+                    <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Receiving Wallet</h3>
+                 </div>
+                <button 
+                  onClick={() => setShowPaymentSettings(!showPaymentSettings)}
+                  className="text-xs text-primary font-medium"
+                >
+                  {showPaymentSettings ? "Cancel" : "Edit"}
+                </button>
+              </div>
+
+              {showPaymentSettings ? (
+                <form onSubmit={handleSavePayment} className="space-y-3">
+                   <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg mb-2">
+                      <p className="text-xs text-blue-600 dark:text-blue-400 flex items-start gap-2">
+                        <AlertCircle size={14} className="mt-0.5 shrink-0" />
+                        This card number will be used to receive payments. It is hidden from buyers.
+                      </p>
+                   </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium">Card Number (Uzcard/Humo)</label>
+                    <input 
+                      value={paymentInfo.cardNumber}
+                      onChange={(e) => setPaymentInfo({...paymentInfo, cardNumber: e.target.value})}
+                      placeholder="0000 0000 0000 0000"
+                      className="w-full px-3 py-2 rounded-lg bg-secondary/50 border border-transparent focus:border-primary outline-none text-sm font-mono"
+                    />
+                  </div>
+                   <div className="space-y-1">
+                    <label className="text-xs font-medium">Card Holder Name</label>
+                    <input 
+                      value={paymentInfo.cardHolder}
+                      onChange={(e) => setPaymentInfo({...paymentInfo, cardHolder: e.target.value})}
+                      placeholder="FULL NAME"
+                      className="w-full px-3 py-2 rounded-lg bg-secondary/50 border border-transparent focus:border-primary outline-none text-sm uppercase"
+                    />
+                  </div>
+                  <button type="submit" className="w-full bg-primary text-primary-foreground py-2 rounded-lg text-sm font-medium mt-2">
+                    Save Securely
+                  </button>
+                </form>
+              ) : (
+                <div className="flex items-center justify-between p-3 bg-secondary/30 rounded-xl border border-border/50">
+                  <div className="flex flex-col">
+                    <span className="text-xs text-muted-foreground mb-1">Active Card for Payments</span>
+                    <div className="flex items-center gap-2">
+                      <CreditCard size={16} className="text-primary" />
+                      <span className="font-mono font-medium text-sm">
+                        {showCardNumber ? paymentInfo.cardNumber : `•••• •••• •••• ${paymentInfo.cardNumber.slice(-4)}`}
+                      </span>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => setShowCardNumber(!showCardNumber)}
+                    className="p-2 hover:bg-secondary rounded-full transition-colors text-muted-foreground"
+                  >
+                    {showCardNumber ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
                 </div>
               )}
             </div>
