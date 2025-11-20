@@ -1,4 +1,4 @@
-import { ArrowLeft, Check, Crown, Star, Zap, CreditCard, Copy, X, ShieldCheck, User } from "lucide-react";
+import { ArrowLeft, Check, Crown, Star, Zap, CreditCard, Copy, X, ShieldCheck, Store } from "lucide-react";
 import { Link } from "wouter";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -35,7 +35,7 @@ export default function Premium() {
     if (!senderName.trim()) {
       toast({
         variant: "destructive",
-        description: "Iltimos, to'lov qilgan karta egasining ismini kiriting",
+        description: "Iltimos, do'koningiz nomini kiriting",
       });
       return;
     }
@@ -44,7 +44,7 @@ export default function Premium() {
     addRequest({
       userId: '7823',
       userName: 'John Doe', // Bu yerda profil egasining ismi bo'ladi
-      senderName: senderName, // Yangi maydon: pul o'tkazgan odamning ismi
+      senderName: senderName, // Endi bu maydonda do'kon nomi saqlanadi
       plan: selectedPlan,
       amount: selectedPlan === "monthly" ? "$1.50" : "$13.00"
     });
@@ -232,18 +232,18 @@ export default function Premium() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium ml-1">To'lov qiluvchi (Sizning ismingiz)</label>
+                  <label className="text-sm font-medium ml-1">Do'koningiz nomi</label>
                   <div className="relative">
-                    <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                    <Store size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                     <input 
                       value={senderName}
                       onChange={(e) => setSenderName(e.target.value)}
-                      placeholder="Karta egasining ismi..."
+                      placeholder="Masalan: Tech Store..."
                       className="w-full pl-10 pr-4 py-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none"
                     />
                   </div>
                   <p className="text-[10px] text-muted-foreground ml-1">
-                    Admin to'lovni aniqlashi uchun karta egasining ismini yozing.
+                    To'lovni tasdiqlashimiz uchun do'koningiz nomini kiriting.
                   </p>
                 </div>
 
