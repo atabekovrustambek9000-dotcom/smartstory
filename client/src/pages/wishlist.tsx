@@ -14,7 +14,7 @@ export default function Wishlist() {
     addToCart(product);
     toggleWishlist(product); // Remove from wishlist
     toast({
-      description: "Moved to cart",
+      description: "Savatchaga o'tkazildi",
     });
   };
 
@@ -76,7 +76,7 @@ export default function Wishlist() {
                     className="w-full bg-secondary hover:bg-secondary/80 text-secondary-foreground py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition-colors"
                   >
                     <ShoppingBag size={14} />
-                    Add to Cart
+                    Savatchaga qo'shish
                   </button>
                 </div>
               </motion.div>

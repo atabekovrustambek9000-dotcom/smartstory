@@ -28,7 +28,7 @@ export default function Home() {
     e.stopPropagation();
     addToCart(product);
     toast({
-      description: "Added to cart",
+      description: "Savatchaga qo'shildi",
       duration: 1500,
     });
   };

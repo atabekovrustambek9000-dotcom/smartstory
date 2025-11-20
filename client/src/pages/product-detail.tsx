@@ -16,7 +16,7 @@ export default function ProductDetail() {
   const handleAddToCart = () => {
     addToCart(product);
     toast({
-      description: "Added to cart",
+      description: "Savatchaga qo'shildi",
       duration: 1500,
     });
   };
@@ -115,7 +115,7 @@ export default function ProductDetail() {
               className="flex-1 bg-primary text-primary-foreground py-4 rounded-xl font-bold shadow-lg shadow-primary/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
               <ShoppingBag size={20} />
-              Add to Cart
+              Savatchaga qo'shish
             </button>
           </div>
         </div>
