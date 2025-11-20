@@ -1,4 +1,4 @@
-import { ArrowLeft, Minus, Plus, Trash2, X, Send, CreditCard, Store, MessageCircle, Banknote } from "lucide-react";
+import { ArrowLeft, Minus, Plus, Trash2, X, Send, CreditCard, Store, MessageCircle, Banknote, Phone } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useCart } from "@/lib/cart-store";
 import BottomNav from "@/components/bottom-nav";
@@ -22,8 +22,7 @@ export default function Cart() {
   const [formData, setFormData] = useState({
     name: "John Doe",
     phone: "+998 90 123 45 67",
-    address: "",
-    paymentMethod: "cash" as "cash"
+    address: ""
   });
 
   // Group items by seller
@@ -56,7 +55,7 @@ export default function Cart() {
     const sellerData = itemsBySeller[selectedSeller];
     const orderItems = sellerData.items.map(i => `- ${i.name} x${i.quantity} ($${i.price * i.quantity})`).join('\n');
     
-    const message = `📦 *Yangi Buyurtma (${selectedSeller})*\n\n👤 Mijoz: ${formData.name}\n📞 Tel: ${formData.phone}\n📍 Manzil: ${formData.address || "Kiritilmagan"}\n💳 To'lov: NAQD\n\n🛒 *Mahsulotlar:*\n${orderItems}\n\n💰 *Jami: $${sellerData.total}*`;
+    const message = `📦 *Yangi Buyurtma (${selectedSeller})*\n\n👤 Mijoz: ${formData.name}\n📞 Tel: ${formData.phone}\n📍 Manzil: ${formData.address || "Kiritilmagan"}\n\n💳 *To'lov: Kelishilgan holda*\n(Telegram yoki telefon orqali)\n\n🛒 *Mahsulotlar:*\n${orderItems}\n\n💰 *Jami: $${sellerData.total}*`;
     
     const encodedMessage = encodeURIComponent(message);
     const target = sellerData.telegram;
@@ -240,14 +239,17 @@ export default function Cart() {
                   </div>
 
                   <div className="space-y-3 pt-2">
-                    <label className="text-sm font-medium">To'lov turi</label>
-                    <div className="w-full">
-                      <button 
-                        className="w-full p-3 rounded-xl border border-primary bg-primary/5 text-primary text-center text-sm font-medium transition-all flex items-center justify-center gap-2"
-                      >
-                        <Banknote size={20} />
-                        Naqd pul orqali (Yoki kelishilgan holda)
-                      </button>
+                    <label className="text-sm font-medium">To'lov</label>
+                    <div className="w-full bg-secondary/30 p-4 rounded-xl border border-border">
+                      <div className="flex items-center gap-3 text-primary mb-2">
+                        <div className="p-2 bg-primary/10 rounded-full">
+                           <Phone size={20} />
+                        </div>
+                        <div className="font-bold text-sm">Sotuvchi bilan kelishiladi</div>
+                      </div>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        To'lov turi (Click, Payme yoki Naqd) va yetkazib berish shartlarini sotuvchi bilan Telegram yoki telefon orqali gaplashib olasiz.
+                      </p>
                     </div>
                   </div>
 
