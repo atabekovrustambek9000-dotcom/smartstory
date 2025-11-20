@@ -54,11 +54,11 @@ export default function Home() {
             </div>
             
             {/* Store Name */}
-            <div className="flex flex-col">
+            <div className="flex items-center gap-2">
                <h1 className="text-xl font-extrabold tracking-tight text-foreground leading-none" style={{ fontFamily: "'Outfit', sans-serif" }}>
                 Yangiyer
               </h1>
-              <span className="text-[10px] font-bold text-primary tracking-[0.15em] uppercase bg-primary/10 px-1.5 py-0.5 rounded-md self-start mt-0.5" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              <span className="text-[10px] font-bold text-primary tracking-[0.15em] uppercase bg-primary/10 px-1.5 py-0.5 rounded-md mt-0.5" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 Smart Store
               </span>
             </div>
