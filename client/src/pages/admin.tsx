@@ -348,25 +348,25 @@ export default function AdminDashboard() {
                         Buyurtmalar shu botga yo'naltiriladi.
                       </p>
                     </div>
-                    <div className="space-y-2 opacity-50 pointer-events-none">
+                    <div className="space-y-2">
                       <label className="text-xs font-medium text-muted-foreground uppercase flex items-center gap-1">
-                        Bot Token <span className="text-[9px] bg-secondary px-1 rounded">Tez kunda</span>
+                        Bot Token
                       </label>
                       <input 
                         value={botForm.token}
-                        disabled
-                        className="w-full p-3 rounded-xl bg-secondary/30 border border-transparent outline-none font-mono text-xs"
+                        onChange={(e) => setBotForm({...botForm, token: e.target.value})}
+                        className="w-full p-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none font-mono text-xs"
                         placeholder="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
                       />
                     </div>
-                    <div className="space-y-2 opacity-50 pointer-events-none">
+                    <div className="space-y-2">
                       <label className="text-xs font-medium text-muted-foreground uppercase flex items-center gap-1">
-                        Channel ID <span className="text-[9px] bg-secondary px-1 rounded">Tez kunda</span>
+                        Channel ID
                       </label>
                       <input 
                         value={botForm.chatId}
-                        disabled
-                        className="w-full p-3 rounded-xl bg-secondary/30 border border-transparent outline-none font-mono text-xs"
+                        onChange={(e) => setBotForm({...botForm, chatId: e.target.value})}
+                        className="w-full p-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none font-mono text-xs"
                         placeholder="-1001234567890"
                       />
                     </div>
