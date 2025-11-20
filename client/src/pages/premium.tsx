@@ -123,7 +123,7 @@ export default function Premium() {
         <div className="pt-4">
           <div className="flex flex-col items-center mb-6">
             <div className="text-3xl font-bold text-foreground">
-              {selectedPlan === "monthly" ? "$1.50" : "$15.00"}
+              {selectedPlan === "monthly" ? "$1.50" : "$13.00"}
               <span className="text-sm text-muted-foreground font-normal">
                 /{selectedPlan === "monthly" ? "oy" : "yil"}
               </span>
@@ -173,7 +173,7 @@ export default function Premium() {
               <div className="p-6 space-y-6">
                 <div className="text-center">
                   <p className="text-muted-foreground text-sm mb-1">Jami summa</p>
-                  <h2 className="text-4xl font-bold text-foreground">{selectedPlan === "monthly" ? "$1.50" : "$15.00"}</h2>
+                  <h2 className="text-4xl font-bold text-foreground">{selectedPlan === "monthly" ? "$1.50" : "$13.00"}</h2>
                 </div>
 
                 <div className="bg-secondary/30 p-4 rounded-2xl border border-border/50 space-y-4">
