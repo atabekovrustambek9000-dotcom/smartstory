@@ -1,17 +1,38 @@
-import { ArrowLeft, Check, Crown, Star, Zap } from "lucide-react";
+import { ArrowLeft, Check, Crown, Star, Zap, CreditCard, Copy, X, ShieldCheck } from "lucide-react";
 import { Link } from "wouter";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Premium() {
   const [selectedPlan, setSelectedPlan] = useState<"monthly" | "yearly">("monthly");
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const { toast } = useToast();
 
+  const adminCard = {
+    number: "8600 1234 5678 9999",
+    holder: "YANGIYER ADMIN",
+    bank: "Ipak Yuli Bank"
+  };
+
   const handleSubscribe = () => {
+    setIsPaymentModalOpen(true);
+  };
+
+  const handleCopyCard = () => {
+    navigator.clipboard.writeText(adminCard.number.replace(/\s/g, ''));
     toast({
-      title: "Payment Initiated",
-      description: "This would open the payment provider (Click, Payme, Telegram Stars).",
+      description: "Card number copied to clipboard!",
+      duration: 1500,
+    });
+  };
+
+  const handleConfirmPayment = () => {
+    setIsPaymentModalOpen(false);
+    toast({
+      title: "Payment Submitted!",
+      description: "We will activate your premium once we verify the transfer.",
+      duration: 3000,
     });
   };
 
@@ -117,6 +138,88 @@ export default function Premium() {
           </button>
         </div>
       </div>
+
+      {/* Payment Modal */}
+      <AnimatePresence>
+        {isPaymentModalOpen && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsPaymentModalOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="fixed inset-x-4 top-[10%] md:top-[15%] bg-background rounded-3xl z-50 shadow-2xl border border-border max-w-md mx-auto overflow-hidden"
+            >
+              <div className="bg-primary/5 p-6 border-b border-border flex justify-between items-center">
+                 <div className="flex items-center gap-2">
+                    <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                      <ShieldCheck size={20} />
+                    </div>
+                    <span className="font-bold text-lg">Secure Payment</span>
+                 </div>
+                 <button onClick={() => setIsPaymentModalOpen(false)} className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-muted-foreground">
+                    <X size={18} />
+                 </button>
+              </div>
+
+              <div className="p-6 space-y-6">
+                <div className="text-center">
+                  <p className="text-muted-foreground text-sm mb-1">Total Amount</p>
+                  <h2 className="text-4xl font-bold text-foreground">{selectedPlan === "monthly" ? "$9.99" : "$99.99"}</h2>
+                </div>
+
+                <div className="bg-secondary/30 p-4 rounded-2xl border border-border/50 space-y-4">
+                  <p className="text-sm font-medium text-center text-muted-foreground">Transfer to this card:</p>
+                  
+                  <div className="bg-background p-4 rounded-xl border border-border shadow-sm relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-2 opacity-10">
+                      <CreditCard size={64} />
+                    </div>
+                    <div className="relative z-10">
+                      <p className="text-xs text-muted-foreground mb-1">Card Number</p>
+                      <div className="flex items-center justify-between gap-2">
+                        <code className="text-lg font-mono font-bold text-foreground tracking-wider">
+                          {adminCard.number}
+                        </code>
+                        <button 
+                          onClick={handleCopyCard}
+                          className="p-2 hover:bg-secondary rounded-lg text-primary transition-colors active:scale-90"
+                        >
+                          <Copy size={18} />
+                        </button>
+                      </div>
+                      <div className="mt-3 flex justify-between items-end">
+                         <div>
+                           <p className="text-[10px] text-muted-foreground">Holder Name</p>
+                           <p className="text-sm font-bold">{adminCard.holder}</p>
+                         </div>
+                         <p className="text-[10px] font-medium bg-secondary px-2 py-1 rounded">{adminCard.bank}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-xs text-center text-muted-foreground bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-300 p-3 rounded-lg">
+                    Please include your <strong>Shop ID: #7823</strong> in the payment comments.
+                  </div>
+                </div>
+
+                <button 
+                  onClick={handleConfirmPayment}
+                  className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold shadow-lg shadow-primary/20 active:scale-[0.98] transition-all"
+                >
+                  I have transferred the money
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
