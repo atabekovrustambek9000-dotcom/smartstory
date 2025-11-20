@@ -7,6 +7,7 @@ import BottomNav from "@/components/bottom-nav";
 import { useCart } from "@/lib/cart-store";
 import { useWishlist } from "@/lib/wishlist-store";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/lib/language-store";
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -14,9 +15,11 @@ export default function Home() {
   const addToCart = useCart((state) => state.addToCart);
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { toast } = useToast();
+  const { t, language } = useLanguage();
 
   // Filtering Logic
   const filteredProducts = products.filter(p => {
+    // Note: activeCategory is stored in English (keys) to match product data
     const matchesCategory = activeCategory === "All" || p.category === activeCategory;
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           p.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -28,7 +31,7 @@ export default function Home() {
     e.stopPropagation();
     addToCart(product);
     toast({
-      description: "Savatchaga qo'shildi",
+      description: t("added_to_cart"),
       duration: 1500,
     });
   };
@@ -84,7 +87,7 @@ export default function Home() {
             type="text" 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search products..." 
+            placeholder={t("search_placeholder")} 
             className="w-full pl-9 pr-4 py-2.5 bg-secondary/50 border border-transparent focus:bg-background focus:border-primary/30 rounded-xl text-sm outline-none transition-all shadow-sm"
           />
         </div>
@@ -103,7 +106,7 @@ export default function Home() {
                   : "bg-card border border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"
               }`}
             >
-              {cat}
+              {t(`categories.${cat}`)}
             </button>
           ))}
         </div>
@@ -143,7 +146,9 @@ export default function Home() {
                     </button>
                   </div>
                   <div className="p-3">
-                    <div className="text-[10px] font-bold text-primary mb-1 uppercase tracking-wider bg-primary/5 inline-block px-1.5 rounded">{product.category}</div>
+                    <div className="text-[10px] font-bold text-primary mb-1 uppercase tracking-wider bg-primary/5 inline-block px-1.5 rounded">
+                      {t(`categories.${product.category}`)}
+                    </div>
                     <h3 className="font-bold text-sm leading-tight mb-1.5 line-clamp-2 h-9">{product.name}</h3>
                     <div className="flex items-center justify-between">
                       <div className="text-foreground font-extrabold text-lg">${product.price}</div>

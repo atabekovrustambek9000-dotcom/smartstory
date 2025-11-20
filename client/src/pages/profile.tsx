@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { User, Settings, Package, Plus, CreditCard, LogOut, ChevronRight, Store, Crown, AlertCircle, Heart, Bell, ClipboardList } from "lucide-react";
+import { User, Settings, Package, Plus, CreditCard, LogOut, ChevronRight, Store, Crown, AlertCircle, Heart, Bell, ClipboardList, Globe } from "lucide-react";
 import BottomNav from "@/components/bottom-nav";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/lib/language-store";
 
 export default function Profile() {
   const [isSeller, setIsSeller] = useState(false);
   const [listingsUsed, setListingsUsed] = useState(3);
   const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
+  const { language, setLanguage, t } = useLanguage();
 
   // Mock Seller Data
   const [sellerInfo, setSellerInfo] = useState({
@@ -22,6 +24,15 @@ export default function Profile() {
     setIsEditing(false);
     toast({
       description: "Seller profile updated!",
+    });
+  };
+
+  const toggleLanguage = () => {
+    const newLang = language === 'uz' ? 'ru' : 'uz';
+    setLanguage(newLang);
+    toast({
+      description: newLang === 'uz' ? "Til O'zbekchaga o'zgardi" : "Язык изменен на Русский",
+      duration: 1000,
     });
   };
 
@@ -39,13 +50,32 @@ export default function Profile() {
       </div>
 
       <div className="p-4 space-y-4 -mt-4">
+        
+        {/* Language Switcher */}
+        <div className="bg-card p-4 rounded-2xl border border-border shadow-sm flex items-center justify-between" onClick={toggleLanguage}>
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
+              <Globe size={20} />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-semibold text-sm">Language / Til</span>
+              <span className="text-xs text-muted-foreground">{language === 'uz' ? "O'zbekcha" : "Русский"}</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 bg-secondary px-3 py-1.5 rounded-lg font-bold text-xs cursor-pointer">
+            <span className={language === 'uz' ? 'text-primary' : 'text-muted-foreground'}>UZ</span>
+            <span className="text-muted-foreground/30">|</span>
+            <span className={language === 'ru' ? 'text-primary' : 'text-muted-foreground'}>RU</span>
+          </div>
+        </div>
+
         {/* User Actions - Always Visible */}
         <div className="bg-card p-4 rounded-2xl border border-border shadow-sm space-y-1">
           <Link href="/orders">
             <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">
               <div className="flex items-center gap-3">
                 <ClipboardList size={18} className="text-blue-600" />
-                <span className="font-medium">My Orders</span>
+                <span className="font-medium">{t('my_orders')}</span>
               </div>
               <ChevronRight size={16} className="text-muted-foreground" />
             </div>
@@ -65,7 +95,7 @@ export default function Profile() {
             <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">
               <div className="flex items-center gap-3">
                 <Bell size={18} className="text-orange-500" />
-                <span className="font-medium">Notifications</span>
+                <span className="font-medium">{t('notifications')}</span>
               </div>
               <ChevronRight size={16} className="text-muted-foreground" />
             </div>
@@ -79,7 +109,7 @@ export default function Profile() {
               <Store size={20} />
             </div>
             <div className="flex flex-col">
-              <span className="font-semibold text-sm">Seller Mode</span>
+              <span className="font-semibold text-sm">{t('seller_mode')}</span>
               <span className="text-xs text-muted-foreground">Manage your shop</span>
             </div>
           </div>
@@ -223,7 +253,7 @@ export default function Profile() {
         )}
 
         <div className="bg-card p-4 rounded-2xl border border-border shadow-sm space-y-1">
-          <h3 className="font-semibold text-sm text-muted-foreground mb-2 uppercase tracking-wider px-2">Settings</h3>
+          <h3 className="font-semibold text-sm text-muted-foreground mb-2 uppercase tracking-wider px-2">{t('settings')}</h3>
           
           <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">
             <div className="flex items-center gap-3">
@@ -236,7 +266,7 @@ export default function Profile() {
           <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors text-destructive">
             <div className="flex items-center gap-3">
               <LogOut size={18} />
-              <span className="font-medium">Log Out</span>
+              <span className="font-medium">{t('log_out')}</span>
             </div>
           </div>
         </div>
