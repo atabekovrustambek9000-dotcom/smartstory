@@ -1,4 +1,4 @@
-import { ArrowLeft, Minus, Plus, Trash2, X, Send, CreditCard, Store, MessageCircle } from "lucide-react";
+import { ArrowLeft, Minus, Plus, Trash2, X, Send, CreditCard, Store, MessageCircle, Banknote } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useCart } from "@/lib/cart-store";
 import BottomNav from "@/components/bottom-nav";
@@ -23,7 +23,7 @@ export default function Cart() {
     name: "John Doe",
     phone: "+998 90 123 45 67",
     address: "",
-    paymentMethod: "click" as "click" | "payme" | "cash"
+    paymentMethod: "cash" as "cash"
   });
 
   // Group items by seller
@@ -56,7 +56,7 @@ export default function Cart() {
     const sellerData = itemsBySeller[selectedSeller];
     const orderItems = sellerData.items.map(i => `- ${i.name} x${i.quantity} ($${i.price * i.quantity})`).join('\n');
     
-    const message = `📦 *Yangi Buyurtma (${selectedSeller})*\n\n👤 Mijoz: ${formData.name}\n📞 Tel: ${formData.phone}\n📍 Manzil: ${formData.address || "Kiritilmagan"}\n💳 To'lov: ${formData.paymentMethod.toUpperCase()}\n\n🛒 *Mahsulotlar:*\n${orderItems}\n\n💰 *Jami: $${sellerData.total}*`;
+    const message = `📦 *Yangi Buyurtma (${selectedSeller})*\n\n👤 Mijoz: ${formData.name}\n📞 Tel: ${formData.phone}\n📍 Manzil: ${formData.address || "Kiritilmagan"}\n💳 To'lov: NAQD\n\n🛒 *Mahsulotlar:*\n${orderItems}\n\n💰 *Jami: $${sellerData.total}*`;
     
     const encodedMessage = encodeURIComponent(message);
     const target = sellerData.telegram;
@@ -241,27 +241,12 @@ export default function Cart() {
 
                   <div className="space-y-3 pt-2">
                     <label className="text-sm font-medium">To'lov turi</label>
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="w-full">
                       <button 
-                        onClick={() => setFormData({...formData, paymentMethod: 'click'})}
-                        className={`p-3 rounded-xl border text-center text-sm font-medium transition-all flex flex-col items-center gap-2 ${formData.paymentMethod === 'click' ? 'border-primary bg-primary/5 text-primary' : 'border-border bg-card'}`}
+                        className="w-full p-3 rounded-xl border border-primary bg-primary/5 text-primary text-center text-sm font-medium transition-all flex items-center justify-center gap-2"
                       >
-                        <CreditCard size={20} />
-                        Click
-                      </button>
-                      <button 
-                        onClick={() => setFormData({...formData, paymentMethod: 'payme'})}
-                        className={`p-3 rounded-xl border text-center text-sm font-medium transition-all flex flex-col items-center gap-2 ${formData.paymentMethod === 'payme' ? 'border-primary bg-primary/5 text-primary' : 'border-border bg-card'}`}
-                      >
-                        <CreditCard size={20} />
-                        Payme
-                      </button>
-                      <button 
-                        onClick={() => setFormData({...formData, paymentMethod: 'cash'})}
-                        className={`p-3 rounded-xl border text-center text-sm font-medium transition-all flex flex-col items-center gap-2 ${formData.paymentMethod === 'cash' ? 'border-primary bg-primary/5 text-primary' : 'border-border bg-card'}`}
-                      >
-                        <div className="w-5 h-5 rounded-full border-2 border-current flex items-center justify-center text-[10px] font-bold">$</div>
-                        Naqd
+                        <Banknote size={20} />
+                        Naqd pul orqali (Yoki kelishilgan holda)
                       </button>
                     </div>
                   </div>
