@@ -44,7 +44,14 @@ export default function Home() {
       {/* Header */}
       <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border px-4 py-3">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-xl font-bold tracking-tight">Store</h1>
+          <div className="flex flex-col">
+             <h1 className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent" style={{ fontFamily: "'Outfit', sans-serif" }}>
+              Yangiyer
+            </h1>
+            <span className="text-xs font-medium text-muted-foreground tracking-[0.2em] uppercase" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              Smart Store
+            </span>
+          </div>
           <div className="flex items-center gap-3">
             <Link href="/notifications">
               <button className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center relative">
