@@ -1,4 +1,4 @@
-import { ArrowLeft, Check, Crown, Star, Zap, CreditCard, X, ShieldCheck, Calendar, Lock } from "lucide-react";
+import { ArrowLeft, Check, Crown, Star, Zap, CreditCard, Copy, X, ShieldCheck } from "lucide-react";
 import { Link } from "wouter";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -7,53 +7,35 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function Premium() {
   const [selectedPlan, setSelectedPlan] = useState<"monthly" | "yearly">("monthly");
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
 
-  // User Card State
-  const [cardDetails, setCardDetails] = useState({
-    number: "",
-    expiry: "",
-    cvc: "",
-    holder: ""
-  });
+  // SOTUVCHINING KARTASI (Sizning kartangiz)
+  // Xaridorlar shu kartaga pul o'tkazishadi
+  const adminCard = {
+    number: "8600 1234 5678 9999", // O'zingizning karta raqamingizni shu yerga yozasiz
+    holder: "YANGIYER ADMIN",
+    bank: "Ipak Yuli Bank"
+  };
 
   const handleSubscribe = () => {
     setIsPaymentModalOpen(true);
   };
 
-  const handlePayment = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsProcessing(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsProcessing(false);
-      setIsPaymentModalOpen(false);
-      toast({
-        title: "Muvaffaqiyatli to'landi!",
-        description: "Pul 'Yangiyer Smart Store' hisobiga o'tkazildi.",
-        duration: 3000,
-      });
-      // Reset form
-      setCardDetails({ number: "", expiry: "", cvc: "", holder: "" });
-    }, 2000);
+  const handleCopyCard = () => {
+    navigator.clipboard.writeText(adminCard.number.replace(/\s/g, ''));
+    toast({
+      description: "Karta raqami nusxalandi!",
+      duration: 1500,
+    });
   };
 
-  // Simple formatter for card number
-  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/\D/g, '');
-    if (value.length > 16) value = value.slice(0, 16);
-    const formatted = value.replace(/(\d{4})(?=\d)/g, '$1 ');
-    setCardDetails({ ...cardDetails, number: formatted });
-  };
-
-  // Simple formatter for expiry
-  const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/\D/g, '');
-    if (value.length > 4) value = value.slice(0, 4);
-    if (value.length > 2) value = value.slice(0, 2) + '/' + value.slice(2);
-    setCardDetails({ ...cardDetails, expiry: value });
+  const handleConfirmPayment = () => {
+    setIsPaymentModalOpen(false);
+    toast({
+      title: "So'rov yuborildi!",
+      description: "To'lov tekshirilgandan so'ng Premium aktivlashtiriladi.",
+      duration: 3000,
+    });
   };
 
   return (
@@ -76,9 +58,9 @@ export default function Premium() {
             <div className="w-20 h-20 bg-gradient-to-tr from-yellow-300 to-yellow-600 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-500/30 mb-6 rotate-3">
               <Crown size={40} className="text-white" strokeWidth={2.5} />
             </div>
-            <h1 className="text-3xl font-bold mb-2">Upgrade to Premium</h1>
+            <h1 className="text-3xl font-bold mb-2">Premium-ga o'tish</h1>
             <p className="text-gray-300 text-sm max-w-[260px]">
-              Unlock unlimited potential for your shop and reach more customers.
+              Cheksiz imkoniyatlar va ko'proq xaridorlarga ega bo'ling.
             </p>
           </div>
         </div>
@@ -94,13 +76,13 @@ export default function Premium() {
             onClick={() => setSelectedPlan("monthly")}
             className={`flex-1 py-2.5 text-sm font-bold z-10 transition-colors ${selectedPlan === "monthly" ? "text-white" : "text-gray-500"}`}
           >
-            Monthly
+            Oylik
           </button>
           <button 
             onClick={() => setSelectedPlan("yearly")}
             className={`flex-1 py-2.5 text-sm font-bold z-10 transition-colors ${selectedPlan === "yearly" ? "text-white" : "text-gray-500"}`}
           >
-            Yearly <span className="text-[9px] bg-green-500 text-white px-1.5 py-0.5 rounded ml-1">-20%</span>
+            Yillik <span className="text-[9px] bg-green-500 text-white px-1.5 py-0.5 rounded ml-1">-20%</span>
           </button>
         </div>
 
@@ -111,8 +93,8 @@ export default function Premium() {
               <Zap size={20} fill="currentColor" />
             </div>
             <div>
-              <h3 className="font-bold text-sm">Unlimited Listings</h3>
-              <p className="text-xs text-muted-foreground">Post as many products as you want without limits.</p>
+              <h3 className="font-bold text-sm">Cheksiz E'lonlar</h3>
+              <p className="text-xs text-muted-foreground">Istaganingizcha mahsulot joylashtiring.</p>
             </div>
           </div>
 
@@ -121,8 +103,8 @@ export default function Premium() {
               <Star size={20} fill="currentColor" />
             </div>
             <div>
-              <h3 className="font-bold text-sm">Featured Store</h3>
-              <p className="text-xs text-muted-foreground">Get a "Verified" badge and appear at the top of searches.</p>
+              <h3 className="font-bold text-sm">Top Do'kon</h3>
+              <p className="text-xs text-muted-foreground">Qidiruv natijalarida eng yuqorida turing.</p>
             </div>
           </div>
 
@@ -131,8 +113,8 @@ export default function Premium() {
               <Check size={20} />
             </div>
             <div>
-              <h3 className="font-bold text-sm">0% Commission</h3>
-              <p className="text-xs text-muted-foreground">Keep 100% of your sales revenue. No hidden fees.</p>
+              <h3 className="font-bold text-sm">0% Komissiya</h3>
+              <p className="text-xs text-muted-foreground">Sotuvdan tushgan pul 100% sizniki.</p>
             </div>
           </div>
         </div>
@@ -141,19 +123,19 @@ export default function Premium() {
         <div className="pt-4">
           <div className="flex flex-col items-center mb-6">
             <div className="text-3xl font-bold text-foreground">
-              {selectedPlan === "monthly" ? "$9.99" : "$99.99"}
+              {selectedPlan === "monthly" ? "99,000 so'm" : "990,000 so'm"}
               <span className="text-sm text-muted-foreground font-normal">
-                /{selectedPlan === "monthly" ? "mo" : "yr"}
+                /{selectedPlan === "monthly" ? "oy" : "yil"}
               </span>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Cancel anytime. Secure payment.</p>
+            <p className="text-xs text-muted-foreground mt-1">Istalgan vaqtda bekor qilish mumkin.</p>
           </div>
 
           <button 
             onClick={handleSubscribe}
             className="w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white py-4 rounded-2xl font-bold shadow-xl shadow-gray-900/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
           >
-            Subscribe Now
+            Obuna bo'lish
             <ArrowLeft className="rotate-180" size={20} />
           </button>
         </div>
@@ -174,107 +156,67 @@ export default function Premium() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="fixed inset-x-4 top-[10%] md:top-[10%] bg-background rounded-3xl z-50 shadow-2xl border border-border max-w-md mx-auto overflow-hidden"
+              className="fixed inset-x-4 top-[10%] md:top-[15%] bg-background rounded-3xl z-50 shadow-2xl border border-border max-w-md mx-auto overflow-hidden"
             >
               <div className="bg-primary/5 p-6 border-b border-border flex justify-between items-center">
                  <div className="flex items-center gap-2">
                     <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                      <CreditCard size={20} />
+                      <ShieldCheck size={20} />
                     </div>
-                    <span className="font-bold text-lg">Payment Details</span>
+                    <span className="font-bold text-lg">To'lov qilish</span>
                  </div>
                  <button onClick={() => setIsPaymentModalOpen(false)} className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-muted-foreground">
                     <X size={18} />
                  </button>
               </div>
 
-              <div className="p-6">
-                <div className="text-center mb-6">
-                  <p className="text-muted-foreground text-sm mb-1">Total to Pay</p>
-                  <h2 className="text-4xl font-bold text-foreground">{selectedPlan === "monthly" ? "$9.99" : "$99.99"}</h2>
+              <div className="p-6 space-y-6">
+                <div className="text-center">
+                  <p className="text-muted-foreground text-sm mb-1">Jami summa</p>
+                  <h2 className="text-4xl font-bold text-foreground">{selectedPlan === "monthly" ? "99,000" : "990,000"} so'm</h2>
                 </div>
 
-                <form onSubmit={handlePayment} className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-xs font-semibold uppercase text-muted-foreground ml-1">Card Number</label>
-                    <div className="relative">
-                      <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                      <input 
-                        type="text" 
-                        value={cardDetails.number}
-                        onChange={handleCardNumberChange}
-                        placeholder="0000 0000 0000 0000"
-                        className="w-full pl-10 pr-4 py-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none font-mono"
-                        required
-                      />
+                <div className="bg-secondary/30 p-4 rounded-2xl border border-border/50 space-y-4">
+                  <p className="text-sm font-medium text-center text-muted-foreground">To'lovni ushbu kartaga o'tkazing:</p>
+                  
+                  <div className="bg-background p-4 rounded-xl border border-border shadow-sm relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-2 opacity-10">
+                      <CreditCard size={64} />
                     </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-xs font-semibold uppercase text-muted-foreground ml-1">Expiry</label>
-                      <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                        <input 
-                          type="text" 
-                          value={cardDetails.expiry}
-                          onChange={handleExpiryChange}
-                          placeholder="MM/YY"
-                          className="w-full pl-10 pr-4 py-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none font-mono"
-                          required
-                        />
+                    <div className="relative z-10">
+                      <p className="text-xs text-muted-foreground mb-1">Karta raqami</p>
+                      <div className="flex items-center justify-between gap-2">
+                        <code className="text-lg font-mono font-bold text-foreground tracking-wider">
+                          {adminCard.number}
+                        </code>
+                        <button 
+                          onClick={handleCopyCard}
+                          className="p-2 hover:bg-secondary rounded-lg text-primary transition-colors active:scale-90"
+                        >
+                          <Copy size={18} />
+                        </button>
                       </div>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-xs font-semibold uppercase text-muted-foreground ml-1">CVC</label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                        <input 
-                          type="password" 
-                          value={cardDetails.cvc}
-                          onChange={(e) => {
-                            if(e.target.value.length <= 3) setCardDetails({...cardDetails, cvc: e.target.value})
-                          }}
-                          placeholder="123"
-                          className="w-full pl-10 pr-4 py-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none font-mono"
-                          required
-                        />
+                      <div className="mt-3 flex justify-between items-end">
+                         <div>
+                           <p className="text-[10px] text-muted-foreground">Karta egasi</p>
+                           <p className="text-sm font-bold">{adminCard.holder}</p>
+                         </div>
+                         <p className="text-[10px] font-medium bg-secondary px-2 py-1 rounded">{adminCard.bank}</p>
                       </div>
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-xs font-semibold uppercase text-muted-foreground ml-1">Card Holder</label>
-                    <input 
-                      type="text" 
-                      value={cardDetails.holder}
-                      onChange={(e) => setCardDetails({...cardDetails, holder: e.target.value.toUpperCase()})}
-                      placeholder="JOHN DOE"
-                      className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none uppercase"
-                      required
-                    />
+                  <div className="text-xs text-center text-muted-foreground bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-300 p-3 rounded-lg">
+                    Izohda <strong>Shop ID: #7823</strong> ni yozib qoldiring.
                   </div>
-
-                  <button 
-                    type="submit"
-                    disabled={isProcessing}
-                    className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold shadow-lg shadow-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-70 disabled:cursor-not-allowed"
-                  >
-                    {isProcessing ? (
-                      <>Processing...</>
-                    ) : (
-                      <>
-                        <ShieldCheck size={20} />
-                        Pay Securely
-                      </>
-                    )}
-                  </button>
-                </form>
-
-                <div className="mt-4 flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                   <Lock size={12} />
-                   <span>Payments are encrypted and secure</span>
                 </div>
+
+                <button 
+                  onClick={handleConfirmPayment}
+                  className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold shadow-lg shadow-primary/20 active:scale-[0.98] transition-all"
+                >
+                  To'lov qildim
+                </button>
               </div>
             </motion.div>
           </>
