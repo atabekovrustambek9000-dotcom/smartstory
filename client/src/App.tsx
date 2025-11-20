@@ -14,7 +14,8 @@ import Wishlist from "@/pages/wishlist";
 import Orders from "@/pages/orders";
 import Notifications from "@/pages/notifications";
 import AdminDashboard from "@/pages/admin";
-import BotChat from "@/pages/bot-chat"; // Import BotChat
+import BotChat from "@/pages/bot-chat";
+import SellerProfile from "@/pages/seller-profile"; // Import SellerProfile
 import Bubbles from "@/components/bubbles";
 
 function Router() {
@@ -31,6 +32,7 @@ function Router() {
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/bot-chat" component={BotChat} />
       <Route path="/product/:id" component={ProductDetail} />
+      <Route path="/seller/:name" component={SellerProfile} /> {/* Add Route */}
       <Route component={NotFound} />
     </Switch>
   );

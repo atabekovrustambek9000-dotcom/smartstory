@@ -1,4 +1,4 @@
-import { ArrowLeft, Minus, Plus, Trash2, X, Send, CreditCard, Store, MessageCircle, Banknote, Phone } from "lucide-react";
+import { ArrowLeft, Minus, Plus, Trash2, X, Send, CreditCard, Store, MessageCircle, Banknote, Phone, ChevronRight } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useCart } from "@/lib/cart-store";
 import BottomNav from "@/components/bottom-nav";
@@ -104,10 +104,15 @@ export default function Cart() {
       <div className="p-4 flex flex-col gap-6">
         {Object.entries(itemsBySeller).map(([sellerName, data]) => (
           <div key={sellerName} className="space-y-3">
-            <div className="flex items-center gap-2 px-1">
-              <Store size={18} className="text-primary" />
-              <h2 className="font-bold text-lg">{sellerName}</h2>
-            </div>
+            <Link href={`/seller/${encodeURIComponent(sellerName)}`}>
+              <div className="flex items-center justify-between px-1 cursor-pointer hover:opacity-80 transition-opacity">
+                <div className="flex items-center gap-2">
+                  <Store size={18} className="text-primary" />
+                  <h2 className="font-bold text-lg">{sellerName}</h2>
+                </div>
+                <ChevronRight size={16} className="text-muted-foreground" />
+              </div>
+            </Link>
             
             <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
               <AnimatePresence mode="popLayout">

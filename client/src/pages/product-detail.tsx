@@ -1,5 +1,5 @@
 import { useRoute, Link } from "wouter";
-import { ArrowLeft, ShoppingBag, Star, Share2, MessageCircle, Phone } from "lucide-react";
+import { ArrowLeft, ShoppingBag, Star, Share2, MessageCircle, Phone, Store, ChevronRight } from "lucide-react";
 import { products } from "@/lib/data";
 import { useCart } from "@/lib/cart-store";
 import { useToast } from "@/hooks/use-toast";
@@ -67,31 +67,27 @@ export default function ProductDetail() {
           <span className="text-sm text-muted-foreground">(4.0)</span>
         </div>
 
-        {/* Seller Info */}
-        <div className="bg-secondary/30 p-4 rounded-2xl mb-6 border border-border/50">
-          <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">Sold By</h3>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">
-                {product.sellerName.substring(0, 2).toUpperCase()}
-              </div>
-              <div>
-                <div className="font-bold text-sm">{product.sellerName}</div>
-                <div className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Phone size={10} />
-                  {product.sellerPhone}
+        {/* Seller Info - Now Clickable */}
+        <Link href={`/seller/${encodeURIComponent(product.sellerName)}`}>
+          <div className="bg-secondary/30 p-4 rounded-2xl mb-6 border border-border/50 cursor-pointer hover:bg-secondary/50 transition-colors group">
+            <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">Sold By</h3>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">
+                  {product.sellerName.substring(0, 2).toUpperCase()}
+                </div>
+                <div>
+                  <div className="font-bold text-sm group-hover:text-primary transition-colors">{product.sellerName}</div>
+                  <div className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Store size={10} />
+                    Official Store
+                  </div>
                 </div>
               </div>
+              <ChevronRight size={18} className="text-muted-foreground" />
             </div>
-            <button 
-              onClick={handleTelegramMessage}
-              className="bg-[#0088cc] text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all"
-            >
-              <MessageCircle size={14} />
-              Chat
-            </button>
           </div>
-        </div>
+        </Link>
 
         <div className="space-y-4 mb-8">
           <h3 className="font-semibold">Description</h3>
