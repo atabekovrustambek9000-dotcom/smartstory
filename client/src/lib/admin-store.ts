@@ -70,7 +70,7 @@ export const useAdminStore = create<AdminStore>()(
         if (newAttempts >= 3) {
           return {
             loginAttempts: newAttempts,
-            lockoutUntil: Date.now() + 60000 // Lock for 1 minute
+            lockoutUntil: Date.now() + 24 * 60 * 60 * 1000 // Lock for 24 hours
           };
         }
         return { loginAttempts: newAttempts };

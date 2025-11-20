@@ -23,6 +23,14 @@ export default function AdminDashboard() {
   const [isLocked, setIsLocked] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
 
+  // Format seconds to HH:MM:SS
+  const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
   // Check Lockout Status
   useEffect(() => {
     if (lockoutUntil && lockoutUntil > Date.now()) {
@@ -70,7 +78,7 @@ export default function AdminDashboard() {
          toast({
           variant: "destructive",
           title: "Tizim bloklandi!",
-          description: "Juda ko'p noto'g'ri urinishlar. 1 daqiqa kuting.",
+          description: "Juda ko'p noto'g'ri urinishlar. 24 soat kuting.",
         });
       } else {
         toast({
@@ -142,7 +150,7 @@ export default function AdminDashboard() {
             <h1 className="text-2xl font-bold text-white mb-2">Admin Kirish</h1>
             {isLocked ? (
               <p className="text-red-400 text-sm font-bold">
-                Tizim vaqtincha bloklandi: {timeLeft}s
+                Tizim vaqtincha bloklandi: {formatTime(timeLeft)}
               </p>
             ) : (
               <p className="text-gray-400 text-sm">Davom etish uchun maxsus kodni kiriting</p>
