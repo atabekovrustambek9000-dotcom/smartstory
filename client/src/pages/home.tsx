@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Search, Plus, Heart, Bell, Store, ShoppingBag } from "lucide-react";
@@ -168,7 +168,7 @@ export default function Home() {
         ) : (
           <div className="col-span-2 flex flex-col items-center justify-center py-16 text-muted-foreground">
             <Search size={48} className="mb-4 opacity-20" />
-            <p>No products found.</p>
+            <p>Hozircha mahsulotlar yo'q.</p>
           </div>
         )}
       </div>
