@@ -18,11 +18,18 @@ interface AdminCard {
   bank: string;
 }
 
+interface BotConfig {
+  username: string; // Bot username without @ (e.g. yangiyer_smart_bot)
+  token: string;    // Bot Token (optional for frontend-only)
+  chatId: string;   // Channel/Admin ID (optional)
+}
+
 interface AdminStore {
   requests: PremiumRequest[];
   approvedShops: string[]; // Tasdiqlangan do'kon nomlari ro'yxati
   adminCard: AdminCard; // Admin card details
   adminPin: string; // Admin PIN code
+  botConfig: BotConfig; // Telegram Bot configuration
   
   // Security State
   loginAttempts: number;
@@ -30,6 +37,7 @@ interface AdminStore {
 
   setAdminCard: (card: Partial<AdminCard>) => void; // Function to update card details
   setAdminPin: (pin: string) => void; // Function to update PIN
+  setBotConfig: (config: Partial<BotConfig>) => void; // Function to update Bot config
   
   // Security Actions
   recordFailedAttempt: () => void;
@@ -53,6 +61,11 @@ export const useAdminStore = create<AdminStore>()(
         bank: "Ipak Yuli Bank"
       },
       adminPin: "7777", // Default PIN
+      botConfig: {
+        username: "yangiyer_smart_bot",
+        token: "",
+        chatId: ""
+      },
       
       loginAttempts: 0,
       lockoutUntil: null,
@@ -63,6 +76,10 @@ export const useAdminStore = create<AdminStore>()(
 
       setAdminPin: (pin) => set(() => ({
         adminPin: pin
+      })),
+
+      setBotConfig: (config) => set((state) => ({
+        botConfig: { ...state.botConfig, ...config }
       })),
 
       recordFailedAttempt: () => set((state) => {

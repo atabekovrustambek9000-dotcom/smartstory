@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { useAdminStore } from "@/lib/admin-store";
 
 export default function Cart() {
   const { items, incrementQuantity, decrementQuantity, removeFromCart, total, clearCart } = useCart();
@@ -13,6 +14,9 @@ export default function Cart() {
   const { toast } = useToast();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const cartTotal = total();
+  
+  // Get bot username from Admin Store
+  const botUsername = useAdminStore(state => state.botConfig.username);
 
   // Mock User Info
   const [formData, setFormData] = useState({
@@ -30,7 +34,10 @@ export default function Cart() {
     // In a real app, this would send to a backend or bot API
     // For this prototype, we simulate sending to a Telegram bot
     const encodedMessage = encodeURIComponent(message);
-    window.open(`https://t.me/yangiyer_smart_bot?start=order_${Date.now()}`, '_blank');
+    
+    // Use the configured bot username
+    const targetBot = botUsername || "yangiyer_smart_bot";
+    window.open(`https://t.me/${targetBot}?start=order_${Date.now()}`, '_blank');
     
     toast({
       title: "Buyurtma yuborildi!",

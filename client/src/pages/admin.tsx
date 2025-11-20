@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { ArrowLeft, Check, X, Clock, Shield, Search, Filter, Store, Lock, KeyRound, ChevronRight, CreditCard, Settings, Key, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Check, X, Clock, Shield, Search, Filter, Store, Lock, KeyRound, ChevronRight, CreditCard, Settings, Key, AlertTriangle, MessageSquare } from "lucide-react";
 import { useAdminStore } from "@/lib/admin-store";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminDashboard() {
-  const { requests, approveRequest, rejectRequest, adminCard, setAdminCard, adminPin, setAdminPin, loginAttempts, lockoutUntil, recordFailedAttempt, resetSecurity } = useAdminStore();
+  const { requests, approveRequest, rejectRequest, adminCard, setAdminCard, adminPin, setAdminPin, loginAttempts, lockoutUntil, recordFailedAttempt, resetSecurity, botConfig, setBotConfig } = useAdminStore();
   const { toast } = useToast();
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -14,7 +14,8 @@ export default function AdminDashboard() {
   // Settings Form State
   const [cardForm, setCardForm] = useState(adminCard);
   const [pinForm, setPinForm] = useState({ current: "", new: "", confirm: "" });
-  const [activeTab, setActiveTab] = useState<'card' | 'security'>('card');
+  const [botForm, setBotForm] = useState(botConfig);
+  const [activeTab, setActiveTab] = useState<'card' | 'security' | 'bot'>('card');
 
   // SECURITY: Admin Login State
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -112,10 +113,10 @@ export default function AdminDashboard() {
     
     if (activeTab === 'card') {
       setAdminCard(cardForm);
-      setIsSettingsOpen(false);
-      toast({
-        description: "To'lov ma'lumotlari yangilandi!",
-      });
+      toast({ description: "To'lov ma'lumotlari yangilandi!" });
+    } else if (activeTab === 'bot') {
+      setBotConfig(botForm);
+      toast({ description: "Bot sozlamalari saqlandi!" });
     } else {
       // Change Password Logic
       if (pinForm.current !== adminPin) {
@@ -133,9 +134,9 @@ export default function AdminDashboard() {
       
       setAdminPin(pinForm.new);
       setPinForm({ current: "", new: "", confirm: "" });
-      setIsSettingsOpen(false);
       toast({ description: "Parol muvaffaqiyatli o'zgartirildi!" });
     }
+    setIsSettingsOpen(false);
   };
 
   // If not authenticated, show Lock Screen
@@ -278,18 +279,24 @@ export default function AdminDashboard() {
               </div>
               
               {/* Tabs */}
-              <div className="flex border-b border-border p-2 gap-2">
+              <div className="flex border-b border-border p-2 gap-2 overflow-x-auto hide-scrollbar">
                 <button 
                   onClick={() => setActiveTab('card')}
-                  className={`flex-1 py-2 text-sm font-medium rounded-xl transition-colors ${activeTab === 'card' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:bg-secondary/50'}`}
+                  className={`flex-1 py-2 px-3 text-xs font-medium rounded-xl transition-colors whitespace-nowrap ${activeTab === 'card' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:bg-secondary/50'}`}
                 >
-                  Karta Ma'lumotlari
+                  Karta
+                </button>
+                <button 
+                  onClick={() => setActiveTab('bot')}
+                  className={`flex-1 py-2 px-3 text-xs font-medium rounded-xl transition-colors whitespace-nowrap ${activeTab === 'bot' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:bg-secondary/50'}`}
+                >
+                  Telegram Bot
                 </button>
                 <button 
                   onClick={() => setActiveTab('security')}
-                  className={`flex-1 py-2 text-sm font-medium rounded-xl transition-colors ${activeTab === 'security' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:bg-secondary/50'}`}
+                  className={`flex-1 py-2 px-3 text-xs font-medium rounded-xl transition-colors whitespace-nowrap ${activeTab === 'security' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:bg-secondary/50'}`}
                 >
-                  Xavfsizlik (PIN)
+                  Xavfsizlik
                 </button>
               </div>
 
@@ -321,6 +328,46 @@ export default function AdminDashboard() {
                         onChange={(e) => setCardForm({...cardForm, bank: e.target.value})}
                         className="w-full p-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none"
                         placeholder="Bank Nomi"
+                      />
+                    </div>
+                  </>
+                ) : activeTab === 'bot' ? (
+                  <>
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-muted-foreground uppercase">Bot Username</label>
+                      <div className="flex items-center bg-secondary/50 rounded-xl border border-transparent focus-within:border-primary overflow-hidden">
+                        <span className="pl-3 text-muted-foreground">@</span>
+                        <input 
+                          value={botForm.username}
+                          onChange={(e) => setBotForm({...botForm, username: e.target.value})}
+                          className="w-full p-3 bg-transparent outline-none"
+                          placeholder="yangiyer_smart_bot"
+                        />
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">
+                        Buyurtmalar shu botga yo'naltiriladi.
+                      </p>
+                    </div>
+                    <div className="space-y-2 opacity-50 pointer-events-none">
+                      <label className="text-xs font-medium text-muted-foreground uppercase flex items-center gap-1">
+                        Bot Token <span className="text-[9px] bg-secondary px-1 rounded">Tez kunda</span>
+                      </label>
+                      <input 
+                        value={botForm.token}
+                        disabled
+                        className="w-full p-3 rounded-xl bg-secondary/30 border border-transparent outline-none font-mono text-xs"
+                        placeholder="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+                      />
+                    </div>
+                    <div className="space-y-2 opacity-50 pointer-events-none">
+                      <label className="text-xs font-medium text-muted-foreground uppercase flex items-center gap-1">
+                        Channel ID <span className="text-[9px] bg-secondary px-1 rounded">Tez kunda</span>
+                      </label>
+                      <input 
+                        value={botForm.chatId}
+                        disabled
+                        className="w-full p-3 rounded-xl bg-secondary/30 border border-transparent outline-none font-mono text-xs"
+                        placeholder="-1001234567890"
                       />
                     </div>
                   </>
