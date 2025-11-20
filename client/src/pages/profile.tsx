@@ -5,22 +5,24 @@ import BottomNav from "@/components/bottom-nav";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-store";
 import { useAdminStore } from "@/lib/admin-store";
+import { useShopStore } from "@/lib/shop-store";
 
 export default function Profile() {
-  const [isSeller, setIsSeller] = useState(false);
+  const [isSeller, setIsSeller] = useState(false); // Local toggle for view mode
   const [listingsUsed, setListingsUsed] = useState(3);
   const [isEditing, setIsEditing] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  
   const { toast } = useToast();
   const { language, setLanguage, t } = useLanguage();
+  
+  // Stores
   const pendingCount = useAdminStore(state => state.pendingCount());
+  const isShopPremium = useAdminStore(state => state.isShopPremium);
+  const { shopName, description, phone, setShopInfo } = useShopStore();
 
-  // Mock Seller Data
-  const [sellerInfo, setSellerInfo] = useState({
-    shopName: "Tech Haven",
-    description: "Best gadgets in town!",
-    phone: "+998 90 123 45 67"
-  });
+  // Check if current shop is premium
+  const isPremium = isShopPremium(shopName);
 
   useEffect(() => {
     // Check initial theme
@@ -181,39 +183,45 @@ export default function Profile() {
           <div className="space-y-4 animate-in slide-in-from-top-4 fade-in duration-300">
             
             {/* Subscription Status Card */}
-            <div className="bg-gradient-to-br from-gray-900 to-gray-800 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden border border-gray-700">
+            <div className={`p-5 rounded-2xl shadow-lg relative overflow-hidden border ${isPremium ? 'bg-gradient-to-br from-yellow-600 to-orange-700 border-yellow-500' : 'bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700'} text-white`}>
               <div className="absolute top-0 right-0 p-4 opacity-10">
                 <Crown size={100} />
               </div>
               <div className="relative z-10">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 className="font-bold text-lg">Free Plan</h3>
-                    <p className="text-gray-400 text-xs">Basic seller account</p>
+                    <h3 className="font-bold text-lg">{isPremium ? 'Premium Plan' : 'Free Plan'}</h3>
+                    <p className={`${isPremium ? 'text-yellow-100' : 'text-gray-400'} text-xs`}>
+                      {isPremium ? 'Unlimited access unlocked' : 'Basic seller account'}
+                    </p>
                   </div>
                   <span className="bg-white/20 px-2 py-1 rounded text-xs font-medium">Active</span>
                 </div>
                 
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-300">Listings Used</span>
-                    <span className="font-bold">{listingsUsed} / 10</span>
+                    <span className={isPremium ? 'text-yellow-100' : 'text-gray-300'}>Listings Used</span>
+                    <span className="font-bold">{listingsUsed} / {isPremium ? '∞' : '10'}</span>
                   </div>
-                  <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                  <div className={`h-2 ${isPremium ? 'bg-yellow-900/40' : 'bg-gray-700'} rounded-full overflow-hidden`}>
                     <div 
-                      className="h-full bg-primary transition-all duration-500" 
-                      style={{ width: `${(listingsUsed / 10) * 100}%` }} 
+                      className={`h-full ${isPremium ? 'bg-white' : 'bg-primary'} transition-all duration-500`} 
+                      style={{ width: isPremium ? '100%' : `${(listingsUsed / 10) * 100}%` }} 
                     />
                   </div>
-                  <p className="text-[10px] text-gray-400">You have {10 - listingsUsed} free listings remaining.</p>
+                  <p className={`text-[10px] ${isPremium ? 'text-yellow-100' : 'text-gray-400'}`}>
+                    {isPremium ? 'You have unlimited listings.' : `You have ${10 - listingsUsed} free listings remaining.`}
+                  </p>
                 </div>
 
-                <Link href="/premium">
-                  <button className="w-full bg-white text-black py-2.5 rounded-xl font-bold text-sm hover:bg-gray-100 transition-colors flex items-center justify-center gap-2">
-                    <Crown size={16} />
-                    Upgrade to Premium
-                  </button>
-                </Link>
+                {!isPremium && (
+                  <Link href="/premium">
+                    <button className="w-full bg-white text-black py-2.5 rounded-xl font-bold text-sm hover:bg-gray-100 transition-colors flex items-center justify-center gap-2">
+                      <Crown size={16} />
+                      Upgrade to Premium
+                    </button>
+                  </Link>
+                )}
               </div>
             </div>
 
@@ -234,16 +242,16 @@ export default function Profile() {
                   <div className="space-y-1">
                     <label className="text-xs font-medium">Shop Name</label>
                     <input 
-                      value={sellerInfo.shopName}
-                      onChange={(e) => setSellerInfo({...sellerInfo, shopName: e.target.value})}
+                      value={shopName}
+                      onChange={(e) => setShopInfo({ shopName: e.target.value })}
                       className="w-full px-3 py-2 rounded-lg bg-secondary/50 border border-transparent focus:border-primary outline-none text-sm"
                     />
                   </div>
                   <div className="space-y-1">
                     <label className="text-xs font-medium">Description</label>
                     <textarea 
-                      value={sellerInfo.description}
-                      onChange={(e) => setSellerInfo({...sellerInfo, description: e.target.value})}
+                      value={description}
+                      onChange={(e) => setShopInfo({ description: e.target.value })}
                       rows={2}
                       className="w-full px-3 py-2 rounded-lg bg-secondary/50 border border-transparent focus:border-primary outline-none text-sm resize-none"
                     />
@@ -251,8 +259,8 @@ export default function Profile() {
                   <div className="space-y-1">
                     <label className="text-xs font-medium">Phone Number</label>
                     <input 
-                      value={sellerInfo.phone}
-                      onChange={(e) => setSellerInfo({...sellerInfo, phone: e.target.value})}
+                      value={phone}
+                      onChange={(e) => setShopInfo({ phone: e.target.value })}
                       className="w-full px-3 py-2 rounded-lg bg-secondary/50 border border-transparent focus:border-primary outline-none text-sm"
                     />
                   </div>
@@ -264,15 +272,22 @@ export default function Profile() {
                 <div className="space-y-3">
                   <div>
                     <p className="text-xs text-muted-foreground">Shop Name</p>
-                    <p className="font-medium">{sellerInfo.shopName}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium">{shopName}</p>
+                      {isPremium && (
+                        <div className="bg-yellow-100 text-yellow-700 text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1">
+                          <Crown size={10} fill="currentColor" /> PRO
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Description</p>
-                    <p className="text-sm">{sellerInfo.description}</p>
+                    <p className="text-sm">{description}</p>
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Contact</p>
-                    <p className="font-medium">{sellerInfo.phone}</p>
+                    <p className="font-medium">{phone}</p>
                   </div>
                 </div>
               )}
@@ -299,7 +314,9 @@ export default function Profile() {
                   </div>
                   <span className="font-medium">My Products</span>
                 </div>
-                <span className="text-xs font-bold bg-secondary px-2 py-1 rounded-md">{listingsUsed}</span>
+                <span className="text-xs font-bold bg-secondary px-2 py-1 rounded-md">
+                  {listingsUsed} {isPremium ? '' : '/ 10'}
+                </span>
               </div>
             </div>
           </div>

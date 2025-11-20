@@ -1,9 +1,10 @@
 import { ArrowLeft, Check, Crown, Star, Zap, CreditCard, Copy, X, ShieldCheck, Store } from "lucide-react";
 import { Link } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAdminStore } from "@/lib/admin-store";
+import { useShopStore } from "@/lib/shop-store";
 
 export default function Premium() {
   const [selectedPlan, setSelectedPlan] = useState<"monthly" | "yearly">("monthly");
@@ -11,6 +12,14 @@ export default function Premium() {
   const [senderName, setSenderName] = useState("");
   const { toast } = useToast();
   const addRequest = useAdminStore(state => state.addRequest);
+  const { shopName } = useShopStore();
+
+  // Auto-fill shop name
+  useEffect(() => {
+    if (shopName) {
+      setSenderName(shopName);
+    }
+  }, [shopName]);
 
   // SOTUVCHINING KARTASI (Sizning kartangiz)
   const adminCard = {
@@ -50,7 +59,6 @@ export default function Premium() {
     });
 
     setIsPaymentModalOpen(false);
-    setSenderName("");
     toast({
       title: "So'rov yuborildi!",
       description: "Admin tasdiqlashini kuting. To'lovingiz tekshirilmoqda.",
