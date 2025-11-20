@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Search, Plus, Heart, Bell, Store, ShoppingBag } from "lucide-react";
 import { products, categories } from "@/lib/data";
 import BottomNav from "@/components/bottom-nav";
+import Stories from "@/components/stories";
 import { useCart } from "@/lib/cart-store";
 import { useWishlist } from "@/lib/wishlist-store";
 import { useToast } from "@/hooks/use-toast";
@@ -15,11 +16,10 @@ export default function Home() {
   const addToCart = useCart((state) => state.addToCart);
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { toast } = useToast();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
   // Filtering Logic
   const filteredProducts = products.filter(p => {
-    // Note: activeCategory is stored in English (keys) to match product data
     const matchesCategory = activeCategory === "All" || p.category === activeCategory;
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           p.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -93,8 +93,11 @@ export default function Home() {
         </div>
       </header>
 
+      {/* Stories */}
+      <Stories />
+
       {/* Categories */}
-      <div className="py-4 overflow-x-auto hide-scrollbar">
+      <div className="py-2 overflow-x-auto hide-scrollbar">
         <div className="flex px-4 gap-2 w-max">
           {categories.map((cat) => (
             <button
@@ -113,7 +116,7 @@ export default function Home() {
       </div>
 
       {/* Product Grid */}
-      <div className="px-4 grid grid-cols-2 gap-4">
+      <div className="px-4 grid grid-cols-2 gap-4 mt-4">
         {filteredProducts.length > 0 ? (
           filteredProducts.map((product) => {
             const isWishlisted = isInWishlist(product.id);

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { User, Settings, Package, Plus, CreditCard, LogOut, ChevronRight, Store, Crown, AlertCircle, Heart, Bell, ClipboardList, Globe, Clock, CheckCircle2, XCircle } from "lucide-react";
+import { User, Settings, Package, Plus, CreditCard, LogOut, ChevronRight, Store, Crown, AlertCircle, Heart, Bell, ClipboardList, Globe, Clock, CheckCircle2, XCircle, Moon, Sun } from "lucide-react";
 import BottomNav from "@/components/bottom-nav";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-store";
@@ -9,6 +9,7 @@ export default function Profile() {
   const [isSeller, setIsSeller] = useState(false);
   const [listingsUsed, setListingsUsed] = useState(3);
   const [isEditing, setIsEditing] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const { toast } = useToast();
   const { language, setLanguage, t } = useLanguage();
 
@@ -18,6 +19,13 @@ export default function Profile() {
     description: "Best gadgets in town!",
     phone: "+998 90 123 45 67"
   });
+
+  useEffect(() => {
+    // Check initial theme
+    if (document.documentElement.classList.contains('dark')) {
+      setIsDarkMode(true);
+    }
+  }, []);
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,8 +44,20 @@ export default function Profile() {
     });
   };
 
+  const toggleTheme = () => {
+    if (isDarkMode) {
+      document.documentElement.classList.remove('dark');
+      setIsDarkMode(false);
+      toast({ description: "Kunduzgi rejim yoqildi" });
+    } else {
+      document.documentElement.classList.add('dark');
+      setIsDarkMode(true);
+      toast({ description: "Tungi rejim yoqildi" });
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-background pb-20 transition-colors duration-300">
       <div className="bg-primary/5 pb-8 pt-12 px-6 rounded-b-[2rem]">
         <div className="flex flex-col items-center">
           <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mb-4 text-2xl font-bold text-primary relative">
@@ -51,21 +71,32 @@ export default function Profile() {
 
       <div className="p-4 space-y-4 -mt-4">
         
-        {/* Language Switcher */}
-        <div className="bg-card p-4 rounded-2xl border border-border shadow-sm flex items-center justify-between" onClick={toggleLanguage}>
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
+        {/* Settings Grid */}
+        <div className="grid grid-cols-2 gap-4">
+           {/* Language Switcher */}
+          <div className="bg-card p-4 rounded-2xl border border-border shadow-sm flex flex-col justify-between gap-3 cursor-pointer" onClick={toggleLanguage}>
+            <div className="p-2 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 rounded-lg w-fit">
               <Globe size={20} />
             </div>
-            <div className="flex flex-col">
-              <span className="font-semibold text-sm">Language / Til</span>
-              <span className="text-xs text-muted-foreground">{language === 'uz' ? "O'zbekcha" : "Русский"}</span>
+            <div>
+              <span className="font-semibold text-sm block">Language / Til</span>
+              <div className="flex items-center gap-2 text-xs mt-1">
+                <span className={language === 'uz' ? 'text-primary font-bold' : 'text-muted-foreground'}>UZ</span>
+                <span className="text-muted-foreground/30">|</span>
+                <span className={language === 'ru' ? 'text-primary font-bold' : 'text-muted-foreground'}>RU</span>
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-2 bg-secondary px-3 py-1.5 rounded-lg font-bold text-xs cursor-pointer">
-            <span className={language === 'uz' ? 'text-primary' : 'text-muted-foreground'}>UZ</span>
-            <span className="text-muted-foreground/30">|</span>
-            <span className={language === 'ru' ? 'text-primary' : 'text-muted-foreground'}>RU</span>
+
+          {/* Theme Switcher */}
+          <div className="bg-card p-4 rounded-2xl border border-border shadow-sm flex flex-col justify-between gap-3 cursor-pointer" onClick={toggleTheme}>
+            <div className={`p-2 rounded-lg w-fit transition-colors ${isDarkMode ? 'bg-purple-900 text-purple-300' : 'bg-yellow-100 text-yellow-600'}`}>
+              {isDarkMode ? <Moon size={20} /> : <Sun size={20} />}
+            </div>
+            <div>
+              <span className="font-semibold text-sm block">Theme</span>
+              <span className="text-xs text-muted-foreground mt-1">{isDarkMode ? "Tungi rejim" : "Kunduzgi rejim"}</span>
+            </div>
           </div>
         </div>
 
@@ -239,7 +270,6 @@ export default function Profile() {
                 </div>
               </Link>
 
-              {/* My Products with Status */}
               <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center">
@@ -247,14 +277,7 @@ export default function Profile() {
                   </div>
                   <span className="font-medium">My Products</span>
                 </div>
-                <div className="flex items-center gap-2">
-                   {/* Status indicator simulation */}
-                   <div className="flex -space-x-2">
-                      <div className="w-2 h-2 rounded-full bg-green-500 ring-2 ring-background" />
-                      <div className="w-2 h-2 rounded-full bg-yellow-500 ring-2 ring-background" />
-                   </div>
-                   <span className="text-xs font-bold bg-secondary px-2 py-1 rounded-md">{listingsUsed}</span>
-                </div>
+                <span className="text-xs font-bold bg-secondary px-2 py-1 rounded-md">{listingsUsed}</span>
               </div>
             </div>
           </div>
