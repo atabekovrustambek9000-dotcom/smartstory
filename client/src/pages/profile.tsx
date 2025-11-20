@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { User, Settings, Package, Plus, CreditCard, LogOut, ChevronRight, Store, Crown, AlertCircle, Heart, Bell, ClipboardList, Globe } from "lucide-react";
+import { User, Settings, Package, Plus, CreditCard, LogOut, ChevronRight, Store, Crown, AlertCircle, Heart, Bell, ClipboardList, Globe, Clock, CheckCircle2, XCircle } from "lucide-react";
 import BottomNav from "@/components/bottom-nav";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-store";
@@ -239,6 +239,7 @@ export default function Profile() {
                 </div>
               </Link>
 
+              {/* My Products with Status */}
               <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center">
@@ -246,7 +247,14 @@ export default function Profile() {
                   </div>
                   <span className="font-medium">My Products</span>
                 </div>
-                <span className="text-xs font-bold bg-secondary px-2 py-1 rounded-md">{listingsUsed}</span>
+                <div className="flex items-center gap-2">
+                   {/* Status indicator simulation */}
+                   <div className="flex -space-x-2">
+                      <div className="w-2 h-2 rounded-full bg-green-500 ring-2 ring-background" />
+                      <div className="w-2 h-2 rounded-full bg-yellow-500 ring-2 ring-background" />
+                   </div>
+                   <span className="text-xs font-bold bg-secondary px-2 py-1 rounded-md">{listingsUsed}</span>
+                </div>
               </div>
             </div>
           </div>
