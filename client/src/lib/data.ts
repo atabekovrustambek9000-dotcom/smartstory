@@ -2,10 +2,6 @@ import watchImg from "@assets/stock_images/modern_smart_watch_p_f3b0dc4e.jpg";
 import headphonesImg from "@assets/stock_images/wireless_headphones__77a1f1f0.jpg";
 import shoesImg from "@assets/stock_images/running_shoes_produc_7d45a1d0.jpg";
 import backpackImg from "@assets/stock_images/stylish_minimalist_b_b68eb963.jpg";
-import tshirtImg from "@assets/stock_images/t-shirt.jpg"; // Placeholder, will need to use stock image tool if not exists, but for now reuse existing or use placeholders
-// Actually, I should just use the existing images but rename the products to be more "Uzbek market" friendly or just generic English is fine as user asked for multi-language.
-// Let's keep English names but maybe update the sellers to look more local if needed.
-// The user asked to "prepare fully".
 
 export interface Product {
   id: number;
