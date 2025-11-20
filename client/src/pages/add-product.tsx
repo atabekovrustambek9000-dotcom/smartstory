@@ -1,22 +1,65 @@
-import { ArrowLeft, Upload, DollarSign, AlertCircle, ShieldCheck, Loader2 } from "lucide-react";
+import { ArrowLeft, Upload, DollarSign, AlertCircle, ShieldCheck, Loader2, Wand2, Image as ImageIcon, X } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AddProduct() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isBackgroundBlurred, setIsBackgroundBlurred] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Mock limit check
   const listingsUsed = 3;
   const listingsLimit = 10;
   const remaining = listingsLimit - listingsUsed;
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setSelectedImage(imageUrl);
+      toast({
+        description: "Rasm yuklandi. Endi tahrirlashingiz mumkin.",
+      });
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
+  const toggleBlur = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsBackgroundBlurred(!isBackgroundBlurred);
+    toast({
+      description: isBackgroundBlurred ? "Xiralashtirish o'chirildi" : "Orqa fon xiralashtirildi (AI Focus)",
+    });
+  };
+
+  const removeImage = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedImage(null);
+    setIsBackgroundBlurred(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!selectedImage) {
+      toast({
+        variant: "destructive",
+        title: "Rasm yuklanmadi",
+        description: "Iltimos, mahsulot rasmini yuklang.",
+      });
+      return;
+    }
+
     // Simulate AI Safety Check
     setIsAnalyzing(true);
     
@@ -63,27 +106,86 @@ export default function AddProduct() {
           </div>
         </div>
 
-        {/* Image Upload */}
+        {/* Image Upload Area */}
         <div className="space-y-2">
-          <label className="text-sm font-medium">Mahsulot rasmi</label>
-          <div className="border-2 border-dashed border-border rounded-2xl h-48 flex flex-col items-center justify-center text-muted-foreground bg-secondary/20 cursor-pointer hover:bg-secondary/40 transition-colors group relative overflow-hidden">
-            <div className="w-12 h-12 rounded-full bg-background shadow-sm flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-              <Upload size={20} className="text-primary" />
-            </div>
-            <span className="text-xs font-medium">Rasmni yuklash uchun bosing</span>
-            <p className="text-[10px] text-muted-foreground mt-2 opacity-60">JPG, PNG (Max 5MB)</p>
+          <div className="flex justify-between items-center">
+            <label className="text-sm font-medium">Mahsulot rasmi</label>
+            {selectedImage && (
+               <button 
+                 onClick={toggleBlur}
+                 className={`text-xs flex items-center gap-1 px-2 py-1 rounded-md transition-all ${isBackgroundBlurred ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}
+               >
+                 <Wand2 size={12} />
+                 {isBackgroundBlurred ? "Xiralikni olish" : "Fonni xiralashtirish"}
+               </button>
+            )}
+          </div>
+          
+          <input 
+            type="file" 
+            ref={fileInputRef} 
+            className="hidden" 
+            accept="image/*" 
+            onChange={handleImageUpload}
+          />
+
+          <div 
+            onClick={!selectedImage ? triggerFileInput : undefined}
+            className={`border-2 border-dashed border-border rounded-2xl h-64 flex flex-col items-center justify-center text-muted-foreground bg-secondary/20 relative overflow-hidden transition-all ${!selectedImage ? 'cursor-pointer hover:bg-secondary/40' : ''}`}
+          >
+            {selectedImage ? (
+              <>
+                {/* The Image Display */}
+                <div className="relative w-full h-full">
+                  <img 
+                    src={selectedImage} 
+                    alt="Preview" 
+                    className="w-full h-full object-cover"
+                  />
+                  
+                  {/* Blur Effect Overlay (Radial Mask) */}
+                  {isBackgroundBlurred && (
+                    <div className="absolute inset-0 backdrop-blur-sm" 
+                         style={{ 
+                           maskImage: "radial-gradient(circle at center, transparent 30%, black 100%)",
+                           WebkitMaskImage: "radial-gradient(circle at center, transparent 30%, black 100%)" 
+                         }} 
+                    />
+                  )}
+
+                  <button 
+                    onClick={removeImage}
+                    className="absolute top-2 right-2 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center backdrop-blur-md hover:bg-black/70 transition-colors z-20"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="w-16 h-16 rounded-full bg-background shadow-sm flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                  <Upload size={24} className="text-primary" />
+                </div>
+                <span className="text-sm font-medium text-foreground">Rasm yuklash</span>
+                <p className="text-xs text-muted-foreground mt-1">Galereyadan tanlash</p>
+              </>
+            )}
             
-            {/* Overlay for analysis simulation */}
+            {/* Analysis Overlay */}
             <AnimatePresence>
               {isAnalyzing && (
                 <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="absolute inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center z-10"
+                  className="absolute inset-0 bg-background/90 backdrop-blur-md flex flex-col items-center justify-center z-30"
                 >
-                  <Loader2 className="w-8 h-8 text-primary animate-spin mb-2" />
-                  <span className="text-xs font-bold text-primary">AI Tekshiruvi...</span>
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse"></div>
+                    <Loader2 className="w-12 h-12 text-primary animate-spin relative z-10" />
+                  </div>
+                  <span className="text-sm font-bold text-primary mt-4">AI Tahlil qilmoqda...</span>
+                  <p className="text-xs text-muted-foreground mt-1">Kontent tekshiruvi</p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -144,10 +246,7 @@ export default function AddProduct() {
           className="w-full bg-primary text-primary-foreground py-3.5 rounded-xl font-bold shadow-lg shadow-primary/25 active:scale-[0.98] transition-all mt-4 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {isAnalyzing ? (
-            <>
-              <Loader2 size={18} className="animate-spin" />
-              Tekshirilmoqda...
-            </>
+            "Tekshirilmoqda..."
           ) : (
             "E'lonni joylash"
           )}
@@ -167,7 +266,7 @@ export default function AddProduct() {
             <div>
               <h4 className="font-bold text-sm">AI Moderatsiya</h4>
               <p className="text-xs text-gray-300 mt-1">
-                Rasm tarkibi tekshirilmoqda: 18+ kontent, zo'ravonlik va taqiqlangan belgilar tahlil qilinmoqda.
+                Rasm tahlil qilinmoqda. Ortiqcha detallar va taqiqlangan kontent tekshirilmoqda.
               </p>
             </div>
           </motion.div>
