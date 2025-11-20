@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { User, Settings, Package, Plus, CreditCard, LogOut, ChevronRight, Store, Crown, AlertCircle } from "lucide-react";
+import { User, Settings, Package, Plus, CreditCard, LogOut, ChevronRight, Store, Crown, AlertCircle, Heart, Bell, ClipboardList } from "lucide-react";
 import BottomNav from "@/components/bottom-nav";
 import { useToast } from "@/hooks/use-toast";
 
@@ -39,6 +39,39 @@ export default function Profile() {
       </div>
 
       <div className="p-4 space-y-4 -mt-4">
+        {/* User Actions - Always Visible */}
+        <div className="bg-card p-4 rounded-2xl border border-border shadow-sm space-y-1">
+          <Link href="/orders">
+            <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">
+              <div className="flex items-center gap-3">
+                <ClipboardList size={18} className="text-blue-600" />
+                <span className="font-medium">My Orders</span>
+              </div>
+              <ChevronRight size={16} className="text-muted-foreground" />
+            </div>
+          </Link>
+
+          <Link href="/wishlist">
+            <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">
+              <div className="flex items-center gap-3">
+                <Heart size={18} className="text-red-500" />
+                <span className="font-medium">Wishlist</span>
+              </div>
+              <ChevronRight size={16} className="text-muted-foreground" />
+            </div>
+          </Link>
+
+          <Link href="/notifications">
+            <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">
+              <div className="flex items-center gap-3">
+                <Bell size={18} className="text-orange-500" />
+                <span className="font-medium">Notifications</span>
+              </div>
+              <ChevronRight size={16} className="text-muted-foreground" />
+            </div>
+          </Link>
+        </div>
+
         {/* Mode Switcher */}
         <div className="bg-card p-4 rounded-2xl border border-border shadow-sm flex items-center justify-between">
           <div className="flex items-center gap-3">
