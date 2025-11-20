@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { ArrowLeft, Check, X, Clock, Shield, Search, Filter, Store, Lock, KeyRound, ChevronRight, CreditCard, Settings, Key } from "lucide-react";
+import { ArrowLeft, Check, X, Clock, Shield, Search, Filter, Store, Lock, KeyRound, ChevronRight, CreditCard, Settings, Key, AlertTriangle } from "lucide-react";
 import { useAdminStore } from "@/lib/admin-store";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminDashboard() {
-  const { requests, approveRequest, rejectRequest, adminCard, setAdminCard, adminPin, setAdminPin } = useAdminStore();
+  const { requests, approveRequest, rejectRequest, adminCard, setAdminCard, adminPin, setAdminPin, loginAttempts, lockoutUntil, recordFailedAttempt, resetSecurity } = useAdminStore();
   const { toast } = useToast();
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -20,6 +20,29 @@ export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
+
+  // Check Lockout Status
+  useEffect(() => {
+    if (lockoutUntil && lockoutUntil > Date.now()) {
+      setIsLocked(true);
+      const interval = setInterval(() => {
+        const remaining = Math.ceil((lockoutUntil - Date.now()) / 1000);
+        if (remaining <= 0) {
+          setIsLocked(false);
+          resetSecurity();
+          clearInterval(interval);
+        } else {
+          setTimeLeft(remaining);
+        }
+      }, 1000);
+      return () => clearInterval(interval);
+    } else if (lockoutUntil && lockoutUntil <= Date.now()) {
+      resetSecurity();
+      setIsLocked(false);
+    }
+  }, [lockoutUntil]);
 
   const filteredRequests = requests.filter(req => 
     filter === 'all' ? true : req.status === filter
@@ -27,8 +50,12 @@ export default function AdminDashboard() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (isLocked) return;
+
     if (pin === adminPin) {
       setIsAuthenticated(true);
+      resetSecurity(); // Reset attempts on successful login
       toast({
         title: "Xush kelibsiz, Admin!",
         description: "Tizimga muvaffaqiyatli kirdingiz.",
@@ -36,11 +63,22 @@ export default function AdminDashboard() {
     } else {
       setError(true);
       setPin("");
-      toast({
-        variant: "destructive",
-        title: "Xato kod",
-        description: "Kirish kodi noto'g'ri.",
-      });
+      recordFailedAttempt(); // Increment failed attempts
+      
+      // Check if this attempt caused a lockout
+      if (loginAttempts + 1 >= 3) {
+         toast({
+          variant: "destructive",
+          title: "Tizim bloklandi!",
+          description: "Juda ko'p noto'g'ri urinishlar. 1 daqiqa kuting.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Xato kod",
+          description: `Kirish kodi noto'g'ri. ${3 - (loginAttempts + 1)} ta urinish qoldi.`,
+        });
+      }
     }
   };
 
@@ -98,11 +136,17 @@ export default function AdminDashboard() {
       <div className="min-h-screen bg-gray-900/90 backdrop-blur-md flex flex-col items-center justify-center p-6">
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
-            <div className="w-20 h-20 bg-blue-500/20 text-blue-400 rounded-3xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border border-blue-500/30">
-              <Lock size={40} />
+            <div className={`w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border transition-all ${isLocked ? 'bg-red-500/20 text-red-500 border-red-500/30 animate-pulse' : 'bg-blue-500/20 text-blue-400 border-blue-500/30'}`}>
+              {isLocked ? <AlertTriangle size={40} /> : <Lock size={40} />}
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">Admin Kirish</h1>
-            <p className="text-gray-400 text-sm">Davom etish uchun maxsus kodni kiriting</p>
+            {isLocked ? (
+              <p className="text-red-400 text-sm font-bold">
+                Tizim vaqtincha bloklandi: {timeLeft}s
+              </p>
+            ) : (
+              <p className="text-gray-400 text-sm">Davom etish uchun maxsus kodni kiriting</p>
+            )}
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
@@ -116,8 +160,9 @@ export default function AdminDashboard() {
                   setPin(e.target.value);
                   setError(false);
                 }}
-                placeholder="PIN kod..."
-                className={`w-full bg-gray-800 text-white pl-12 pr-4 py-4 rounded-2xl border outline-none transition-all text-lg tracking-widest text-center ${
+                disabled={isLocked}
+                placeholder={isLocked ? "Bloklangan" : "PIN kod..."}
+                className={`w-full bg-gray-800 text-white pl-12 pr-4 py-4 rounded-2xl border outline-none transition-all text-lg tracking-widest text-center disabled:opacity-50 disabled:cursor-not-allowed ${
                   error ? "border-red-500 focus:border-red-500" : "border-gray-700 focus:border-blue-500"
                 }`}
                 maxLength={4}
@@ -127,9 +172,14 @@ export default function AdminDashboard() {
             
             <button 
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-bold text-lg transition-colors shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2"
+              disabled={isLocked}
+              className={`w-full py-4 rounded-2xl font-bold text-lg transition-colors shadow-lg flex items-center justify-center gap-2 ${
+                isLocked 
+                  ? "bg-gray-700 text-gray-400 cursor-not-allowed" 
+                  : "bg-blue-600 hover:bg-blue-500 text-white shadow-blue-900/20"
+              }`}
             >
-              Kirish <ChevronRight size={20} />
+              {isLocked ? "Kuting..." : "Kirish"} {isLocked ? <Clock size={20} /> : <ChevronRight size={20} />}
             </button>
           </form>
 

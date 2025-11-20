@@ -23,8 +23,18 @@ interface AdminStore {
   approvedShops: string[]; // Tasdiqlangan do'kon nomlari ro'yxati
   adminCard: AdminCard; // Admin card details
   adminPin: string; // Admin PIN code
+  
+  // Security State
+  loginAttempts: number;
+  lockoutUntil: number | null;
+
   setAdminCard: (card: Partial<AdminCard>) => void; // Function to update card details
   setAdminPin: (pin: string) => void; // Function to update PIN
+  
+  // Security Actions
+  recordFailedAttempt: () => void;
+  resetSecurity: () => void;
+
   addRequest: (request: Omit<PremiumRequest, 'id' | 'date' | 'status'>) => void;
   approveRequest: (id: string) => void;
   rejectRequest: (id: string) => void;
@@ -43,6 +53,9 @@ export const useAdminStore = create<AdminStore>()(
         bank: "Ipak Yuli Bank"
       },
       adminPin: "7777", // Default PIN
+      
+      loginAttempts: 0,
+      lockoutUntil: null,
 
       setAdminCard: (card) => set((state) => ({
         adminCard: { ...state.adminCard, ...card }
@@ -50,6 +63,22 @@ export const useAdminStore = create<AdminStore>()(
 
       setAdminPin: (pin) => set(() => ({
         adminPin: pin
+      })),
+
+      recordFailedAttempt: () => set((state) => {
+        const newAttempts = state.loginAttempts + 1;
+        if (newAttempts >= 3) {
+          return {
+            loginAttempts: newAttempts,
+            lockoutUntil: Date.now() + 60000 // Lock for 1 minute
+          };
+        }
+        return { loginAttempts: newAttempts };
+      }),
+
+      resetSecurity: () => set(() => ({
+        loginAttempts: 0,
+        lockoutUntil: null
       })),
       
       addRequest: (req) => set((state) => ({
