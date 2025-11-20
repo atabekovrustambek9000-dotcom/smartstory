@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { User, Settings, Package, Plus, CreditCard, LogOut, ChevronRight, Store, Crown, AlertCircle, Heart, Bell, ClipboardList, Globe, Clock, CheckCircle2, XCircle, Moon, Sun } from "lucide-react";
+import { User, Settings, Package, Plus, CreditCard, LogOut, ChevronRight, Store, Crown, AlertCircle, Heart, Bell, ClipboardList, Globe, Clock, CheckCircle2, XCircle, Moon, Sun, Shield } from "lucide-react";
 import BottomNav from "@/components/bottom-nav";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-store";
+import { useAdminStore } from "@/lib/admin-store";
 
 export default function Profile() {
   const [isSeller, setIsSeller] = useState(false);
@@ -12,6 +13,7 @@ export default function Profile() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const { toast } = useToast();
   const { language, setLanguage, t } = useLanguage();
+  const pendingCount = useAdminStore(state => state.pendingCount());
 
   // Mock Seller Data
   const [sellerInfo, setSellerInfo] = useState({
@@ -70,6 +72,26 @@ export default function Profile() {
       </div>
 
       <div className="p-4 space-y-4 -mt-4">
+        
+        {/* Admin Link (Only for Admin) */}
+        <Link href="/admin">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-4 rounded-2xl shadow-lg mb-4 flex items-center justify-between cursor-pointer text-white">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
+                <Shield size={20} />
+              </div>
+              <div>
+                <h3 className="font-bold text-sm">Admin Panel</h3>
+                <p className="text-xs text-blue-200">To'lovlarni boshqarish</p>
+              </div>
+            </div>
+            {pendingCount > 0 && (
+              <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse">
+                {pendingCount} yangi
+              </div>
+            )}
+          </div>
+        </Link>
         
         {/* Settings Grid */}
         <div className="grid grid-cols-2 gap-4">

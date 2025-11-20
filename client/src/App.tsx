@@ -13,6 +13,7 @@ import Premium from "@/pages/premium";
 import Wishlist from "@/pages/wishlist";
 import Orders from "@/pages/orders";
 import Notifications from "@/pages/notifications";
+import AdminDashboard from "@/pages/admin";
 
 function Router() {
   return (
@@ -25,6 +26,7 @@ function Router() {
       <Route path="/wishlist" component={Wishlist} />
       <Route path="/orders" component={Orders} />
       <Route path="/notifications" component={Notifications} />
+      <Route path="/admin" component={AdminDashboard} />
       <Route path="/product/:id" component={ProductDetail} />
       <Route component={NotFound} />
     </Switch>

@@ -3,14 +3,15 @@ import { Link } from "wouter";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAdminStore } from "@/lib/admin-store";
 
 export default function Premium() {
   const [selectedPlan, setSelectedPlan] = useState<"monthly" | "yearly">("monthly");
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const { toast } = useToast();
+  const addRequest = useAdminStore(state => state.addRequest);
 
   // SOTUVCHINING KARTASI (Sizning kartangiz)
-  // Xaridorlar shu kartaga pul o'tkazganda ishlatiladi
   const adminCard = {
     number: "8600 1234 5678 9999", 
     holder: "YANGIYER ADMIN",
@@ -30,10 +31,18 @@ export default function Premium() {
   };
 
   const handleConfirmPayment = () => {
+    // Add request to admin store
+    addRequest({
+      userId: '7823',
+      userName: 'John Doe',
+      plan: selectedPlan,
+      amount: selectedPlan === "monthly" ? "$1.50" : "$13.00"
+    });
+
     setIsPaymentModalOpen(false);
     toast({
       title: "So'rov yuborildi!",
-      description: "To'lov tekshirilgandan so'ng Premium aktivlashtiriladi.",
+      description: "Admin tasdiqlashini kuting. To'lovingiz tekshirilmoqda.",
       duration: 3000,
     });
   };
