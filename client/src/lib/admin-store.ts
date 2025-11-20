@@ -12,9 +12,17 @@ export interface PremiumRequest {
   status: 'pending' | 'approved' | 'rejected';
 }
 
+interface AdminCard {
+  number: string;
+  holder: string;
+  bank: string;
+}
+
 interface AdminStore {
   requests: PremiumRequest[];
   approvedShops: string[]; // Tasdiqlangan do'kon nomlari ro'yxati
+  adminCard: AdminCard; // Admin card details
+  setAdminCard: (card: Partial<AdminCard>) => void; // Function to update card details
   addRequest: (request: Omit<PremiumRequest, 'id' | 'date' | 'status'>) => void;
   approveRequest: (id: string) => void;
   rejectRequest: (id: string) => void;
@@ -27,6 +35,15 @@ export const useAdminStore = create<AdminStore>()(
     (set, get) => ({
       requests: [],
       approvedShops: [],
+      adminCard: {
+        number: "8600 1234 5678 9999",
+        holder: "YANGIYER ADMIN",
+        bank: "Ipak Yuli Bank"
+      },
+
+      setAdminCard: (card) => set((state) => ({
+        adminCard: { ...state.adminCard, ...card }
+      })),
       
       addRequest: (req) => set((state) => ({
         requests: [

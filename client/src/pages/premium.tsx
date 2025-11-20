@@ -11,7 +11,7 @@ export default function Premium() {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [senderName, setSenderName] = useState("");
   const { toast } = useToast();
-  const addRequest = useAdminStore(state => state.addRequest);
+  const { addRequest, adminCard } = useAdminStore();
   const { shopName } = useShopStore();
 
   // Auto-fill shop name
@@ -20,13 +20,6 @@ export default function Premium() {
       setSenderName(shopName);
     }
   }, [shopName]);
-
-  // SOTUVCHINING KARTASI (Sizning kartangiz)
-  const adminCard = {
-    number: "8600 1234 5678 9999", 
-    holder: "YANGIYER ADMIN",
-    bank: "Ipak Yuli Bank"
-  };
 
   const handleSubscribe = () => {
     setIsPaymentModalOpen(true);

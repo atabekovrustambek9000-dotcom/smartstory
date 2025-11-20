@@ -1,15 +1,19 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { ArrowLeft, Check, X, Clock, Shield, Search, Filter, Store, Lock, KeyRound, ChevronRight } from "lucide-react";
+import { ArrowLeft, Check, X, Clock, Shield, Search, Filter, Store, Lock, KeyRound, ChevronRight, CreditCard, Settings } from "lucide-react";
 import { useAdminStore } from "@/lib/admin-store";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminDashboard() {
-  const { requests, approveRequest, rejectRequest } = useAdminStore();
+  const { requests, approveRequest, rejectRequest, adminCard, setAdminCard } = useAdminStore();
   const { toast } = useToast();
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   
+  // Settings Form State
+  const [cardForm, setCardForm] = useState(adminCard);
+
   // SECURITY: Admin Login State
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pin, setPin] = useState("");
@@ -53,6 +57,15 @@ export default function AdminDashboard() {
       variant: "destructive",
       title: "Rad etildi ❌",
       description: `${name}ning so'rovi bekor qilindi.`,
+    });
+  };
+
+  const handleSaveSettings = (e: React.FormEvent) => {
+    e.preventDefault();
+    setAdminCard(cardForm);
+    setIsSettingsOpen(false);
+    toast({
+      description: "To'lov ma'lumotlari yangilandi!",
     });
   };
 
@@ -111,23 +124,33 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
-      <div className="bg-gray-900 text-white pt-6 pb-8 px-6 rounded-b-[2rem] shadow-xl">
-        <div className="flex items-center gap-4 mb-6">
-          <Link href="/profile">
-            <button className="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center hover:bg-white/20 transition-colors">
-              <ArrowLeft size={20} />
+      <div className="bg-gray-900 text-white pt-6 pb-8 px-6 rounded-b-[2rem] shadow-xl relative">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-4">
+            <Link href="/profile">
+              <button className="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center hover:bg-white/20 transition-colors">
+                <ArrowLeft size={20} />
+              </button>
+            </Link>
+            <h1 className="text-xl font-bold flex items-center gap-2">
+              <Shield size={24} className="text-blue-400" />
+              Admin Panel
+            </h1>
+          </div>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => setIsSettingsOpen(true)}
+              className="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center hover:bg-white/20 transition-colors"
+            >
+              <Settings size={20} />
             </button>
-          </Link>
-          <h1 className="text-xl font-bold flex items-center gap-2">
-            <Shield size={24} className="text-blue-400" />
-            Admin Panel
-          </h1>
-          <button 
-            onClick={() => setIsAuthenticated(false)}
-            className="ml-auto p-2 bg-white/10 rounded-lg hover:bg-red-500/20 hover:text-red-400 transition-colors"
-          >
-            <Lock size={18} />
-          </button>
+            <button 
+              onClick={() => setIsAuthenticated(false)}
+              className="w-10 h-10 rounded-full bg-red-500/20 text-red-400 backdrop-blur flex items-center justify-center hover:bg-red-500/30 transition-colors"
+            >
+              <Lock size={18} />
+            </button>
+          </div>
         </div>
 
         <div className="flex gap-4 justify-between text-center">
@@ -145,6 +168,72 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Settings Modal */}
+      <AnimatePresence>
+        {isSettingsOpen && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsSettingsOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="fixed inset-x-4 top-[10%] bg-background rounded-3xl z-50 shadow-2xl border border-border max-w-md mx-auto overflow-hidden"
+            >
+              <div className="bg-primary/5 p-5 border-b border-border flex justify-between items-center">
+                <h3 className="font-bold text-lg flex items-center gap-2">
+                  <CreditCard size={20} className="text-primary" />
+                  To'lov Sozlamalari
+                </h3>
+                <button onClick={() => setIsSettingsOpen(false)} className="p-2 hover:bg-secondary rounded-full">
+                  <X size={20} />
+                </button>
+              </div>
+              <form onSubmit={handleSaveSettings} className="p-6 space-y-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-muted-foreground uppercase">Karta Raqami</label>
+                  <input 
+                    value={cardForm.number}
+                    onChange={(e) => setCardForm({...cardForm, number: e.target.value})}
+                    className="w-full p-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none font-mono"
+                    placeholder="8600 0000 0000 0000"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-muted-foreground uppercase">Karta Egasi</label>
+                  <input 
+                    value={cardForm.holder}
+                    onChange={(e) => setCardForm({...cardForm, holder: e.target.value})}
+                    className="w-full p-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none"
+                    placeholder="ISM FAMILIYA"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-muted-foreground uppercase">Bank Nomi</label>
+                  <input 
+                    value={cardForm.bank}
+                    onChange={(e) => setCardForm({...cardForm, bank: e.target.value})}
+                    className="w-full p-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none"
+                    placeholder="Bank Nomi"
+                  />
+                </div>
+                <button 
+                  type="submit"
+                  className="w-full bg-primary text-primary-foreground py-3 rounded-xl font-bold mt-2"
+                >
+                  Saqlash
+                </button>
+              </form>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Filters */}
       <div className="px-4 mt-6 mb-4">
