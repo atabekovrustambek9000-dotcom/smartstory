@@ -1,4 +1,4 @@
-import { ArrowLeft, Upload, DollarSign, AlertCircle, ShieldCheck, Loader2, Wand2, Image as ImageIcon, X } from "lucide-react";
+import { ArrowLeft, Upload, DollarSign, AlertCircle, ShieldCheck, Loader2, Wand2, Image as ImageIcon, X, Link as LinkIcon } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useRef } from "react";
@@ -9,6 +9,8 @@ export default function AddProduct() {
   const [, setLocation] = useLocation();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [imageLink, setImageLink] = useState("");
+  const [uploadMode, setUploadMode] = useState<'file' | 'link'>('file');
   const [isBackgroundBlurred, setIsBackgroundBlurred] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
@@ -22,9 +24,18 @@ export default function AddProduct() {
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setSelectedImage(imageUrl);
+      setImageLink("");
       toast({
         description: "Rasm yuklandi. Endi tahrirlashingiz mumkin.",
       });
+    }
+  };
+
+  const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const url = e.target.value;
+    setImageLink(url);
+    if (url.match(/\.(jpeg|jpg|gif|png|webp)$/) != null || url.includes('tg_image') || url.length > 10) {
+        setSelectedImage(url);
     }
   };
 
@@ -45,6 +56,7 @@ export default function AddProduct() {
     e.preventDefault();
     e.stopPropagation();
     setSelectedImage(null);
+    setImageLink("");
     setIsBackgroundBlurred(false);
   };
 
@@ -55,7 +67,7 @@ export default function AddProduct() {
       toast({
         variant: "destructive",
         title: "Rasm yuklanmadi",
-        description: "Iltimos, mahsulot rasmini yuklang.",
+        description: "Iltimos, mahsulot rasmini yuklang yoki linkini qo'ying.",
       });
       return;
     }
@@ -121,6 +133,26 @@ export default function AddProduct() {
             )}
           </div>
           
+          {/* Toggle Mode */}
+          {!selectedImage && (
+            <div className="flex bg-secondary/50 p-1 rounded-xl mb-2">
+                <button
+                    type="button"
+                    onClick={() => setUploadMode('file')}
+                    className={`flex-1 py-2 text-xs font-medium rounded-lg transition-all ${uploadMode === 'file' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground'}`}
+                >
+                    Galereyadan
+                </button>
+                <button
+                    type="button"
+                    onClick={() => setUploadMode('link')}
+                    className={`flex-1 py-2 text-xs font-medium rounded-lg transition-all ${uploadMode === 'link' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground'}`}
+                >
+                    Telegram Link
+                </button>
+            </div>
+          )}
+
           <input 
             type="file" 
             ref={fileInputRef} 
@@ -129,67 +161,82 @@ export default function AddProduct() {
             onChange={handleImageUpload}
           />
 
-          <div 
-            onClick={!selectedImage ? triggerFileInput : undefined}
-            className={`border-2 border-dashed border-border rounded-2xl h-64 flex flex-col items-center justify-center text-muted-foreground bg-secondary/20 relative overflow-hidden transition-all ${!selectedImage ? 'cursor-pointer hover:bg-secondary/40' : ''}`}
-          >
-            {selectedImage ? (
-              <>
-                {/* The Image Display */}
-                <div className="relative w-full h-full">
-                  <img 
-                    src={selectedImage} 
-                    alt="Preview" 
-                    className="w-full h-full object-cover"
-                  />
-                  
-                  {/* Blur Effect Overlay (Radial Mask) */}
-                  {isBackgroundBlurred && (
-                    <div className="absolute inset-0 backdrop-blur-sm" 
-                         style={{ 
-                           maskImage: "radial-gradient(circle at center, transparent 30%, black 100%)",
-                           WebkitMaskImage: "radial-gradient(circle at center, transparent 30%, black 100%)" 
-                         }} 
+          {uploadMode === 'link' && !selectedImage ? (
+             <div className="space-y-2">
+                <div className="relative">
+                    <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+                    <input 
+                        type="url"
+                        value={imageLink}
+                        onChange={handleLinkChange}
+                        placeholder="https://t.me/kanal/123..."
+                        className="w-full pl-10 pr-4 py-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none text-sm"
                     />
+                </div>
+                <p className="text-[10px] text-muted-foreground pl-1">
+                    Telegram kanalingizdagi rasm linkini nusxalab qo'ying.
+                </p>
+             </div>
+          ) : (
+              <div 
+                onClick={!selectedImage ? triggerFileInput : undefined}
+                className={`border-2 border-dashed border-border rounded-2xl h-64 flex flex-col items-center justify-center text-muted-foreground bg-secondary/20 relative overflow-hidden transition-all ${!selectedImage ? 'cursor-pointer hover:bg-secondary/40' : ''}`}
+              >
+                {selectedImage ? (
+                  <>
+                    <div className="relative w-full h-full">
+                      <img 
+                        src={selectedImage} 
+                        alt="Preview" 
+                        className="w-full h-full object-cover"
+                      />
+                      
+                      {isBackgroundBlurred && (
+                        <div className="absolute inset-0 backdrop-blur-sm" 
+                             style={{ 
+                               maskImage: "radial-gradient(circle at center, transparent 30%, black 100%)",
+                               WebkitMaskImage: "radial-gradient(circle at center, transparent 30%, black 100%)" 
+                             }} 
+                        />
+                      )}
+    
+                      <button 
+                        onClick={removeImage}
+                        className="absolute top-2 right-2 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center backdrop-blur-md hover:bg-black/70 transition-colors z-20"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-16 h-16 rounded-full bg-background shadow-sm flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <Upload size={24} className="text-primary" />
+                    </div>
+                    <span className="text-sm font-medium text-foreground">Rasm yuklash</span>
+                    <p className="text-xs text-muted-foreground mt-1">Galereyadan tanlash</p>
+                  </>
+                )}
+                
+                <AnimatePresence>
+                  {isAnalyzing && (
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0 bg-background/90 backdrop-blur-md flex flex-col items-center justify-center z-30"
+                    >
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse"></div>
+                        <Loader2 className="w-12 h-12 text-primary animate-spin relative z-10" />
+                      </div>
+                      <span className="text-sm font-bold text-primary mt-4">AI Tahlil qilmoqda...</span>
+                      <p className="text-xs text-muted-foreground mt-1">Kontent tekshiruvi</p>
+                    </motion.div>
                   )}
-
-                  <button 
-                    onClick={removeImage}
-                    className="absolute top-2 right-2 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center backdrop-blur-md hover:bg-black/70 transition-colors z-20"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="w-16 h-16 rounded-full bg-background shadow-sm flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                  <Upload size={24} className="text-primary" />
-                </div>
-                <span className="text-sm font-medium text-foreground">Rasm yuklash</span>
-                <p className="text-xs text-muted-foreground mt-1">Galereyadan tanlash</p>
-              </>
-            )}
-            
-            {/* Analysis Overlay */}
-            <AnimatePresence>
-              {isAnalyzing && (
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="absolute inset-0 bg-background/90 backdrop-blur-md flex flex-col items-center justify-center z-30"
-                >
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse"></div>
-                    <Loader2 className="w-12 h-12 text-primary animate-spin relative z-10" />
-                  </div>
-                  <span className="text-sm font-bold text-primary mt-4">AI Tahlil qilmoqda...</span>
-                  <p className="text-xs text-muted-foreground mt-1">Kontent tekshiruvi</p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+                </AnimatePresence>
+              </div>
+          )}
         </div>
 
         {/* Product Details */}
@@ -253,7 +300,6 @@ export default function AddProduct() {
         </button>
       </form>
       
-      {/* Safety Info Modal Simulation */}
       <AnimatePresence>
         {isAnalyzing && (
           <motion.div 
