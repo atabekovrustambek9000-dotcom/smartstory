@@ -92,10 +92,12 @@ export default function Profile() {
                   <p className="text-[10px] text-gray-400">You have {10 - listingsUsed} free listings remaining.</p>
                 </div>
 
-                <button className="w-full bg-white text-black py-2.5 rounded-xl font-bold text-sm hover:bg-gray-100 transition-colors flex items-center justify-center gap-2">
-                  <Crown size={16} />
-                  Upgrade to Premium
-                </button>
+                <Link href="/premium">
+                  <button className="w-full bg-white text-black py-2.5 rounded-xl font-bold text-sm hover:bg-gray-100 transition-colors flex items-center justify-center gap-2">
+                    <Crown size={16} />
+                    Upgrade to Premium
+                  </button>
+                </Link>
               </div>
             </div>
 

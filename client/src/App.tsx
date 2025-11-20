@@ -9,6 +9,7 @@ import Cart from "@/pages/cart";
 import ProductDetail from "@/pages/product-detail";
 import Profile from "@/pages/profile";
 import AddProduct from "@/pages/add-product";
+import Premium from "@/pages/premium";
 
 function Router() {
   return (
@@ -17,6 +18,7 @@ function Router() {
       <Route path="/cart" component={Cart} />
       <Route path="/profile" component={Profile} />
       <Route path="/add-product" component={AddProduct} />
+      <Route path="/premium" component={Premium} />
       <Route path="/product/:id" component={ProductDetail} />
       <Route component={NotFound} />
     </Switch>

@@ -1,0 +1,122 @@
+import { ArrowLeft, Check, Crown, Star, Zap } from "lucide-react";
+import { Link } from "wouter";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { motion } from "framer-motion";
+
+export default function Premium() {
+  const [selectedPlan, setSelectedPlan] = useState<"monthly" | "yearly">("monthly");
+  const { toast } = useToast();
+
+  const handleSubscribe = () => {
+    toast({
+      title: "Payment Initiated",
+      description: "This would open the payment provider (Click, Payme, Telegram Stars).",
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-background pb-10">
+      {/* Header */}
+      <div className="bg-gray-900 text-white pb-10 pt-6 px-6 rounded-b-[2.5rem] relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20">
+          <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-yellow-500 rounded-full blur-[80px]"></div>
+          <div className="absolute bottom-[-20%] left-[-10%] w-64 h-64 bg-purple-600 rounded-full blur-[80px]"></div>
+        </div>
+        
+        <div className="relative z-10">
+          <Link href="/profile">
+            <button className="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center mb-6 hover:bg-white/20 transition-colors">
+              <ArrowLeft size={20} />
+            </button>
+          </Link>
+          
+          <div className="flex flex-col items-center text-center">
+            <div className="w-20 h-20 bg-gradient-to-tr from-yellow-300 to-yellow-600 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-500/30 mb-6 rotate-3">
+              <Crown size={40} className="text-white" strokeWidth={2.5} />
+            </div>
+            <h1 className="text-3xl font-bold mb-2">Upgrade to Premium</h1>
+            <p className="text-gray-300 text-sm max-w-[260px]">
+              Unlock unlimited potential for your shop and reach more customers.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="px-6 -mt-8 relative z-20 space-y-6">
+        {/* Plan Switcher */}
+        <div className="bg-white p-1.5 rounded-xl shadow-lg flex relative">
+          <div 
+            className={`absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-gray-900 rounded-lg transition-all duration-300 ${selectedPlan === 'monthly' ? 'left-1.5' : 'left-[calc(50%+3px)]'}`}
+          />
+          <button 
+            onClick={() => setSelectedPlan("monthly")}
+            className={`flex-1 py-2.5 text-sm font-bold z-10 transition-colors ${selectedPlan === "monthly" ? "text-white" : "text-gray-500"}`}
+          >
+            Monthly
+          </button>
+          <button 
+            onClick={() => setSelectedPlan("yearly")}
+            className={`flex-1 py-2.5 text-sm font-bold z-10 transition-colors ${selectedPlan === "yearly" ? "text-white" : "text-gray-500"}`}
+          >
+            Yearly <span className="text-[9px] bg-green-500 text-white px-1.5 py-0.5 rounded ml-1">-20%</span>
+          </button>
+        </div>
+
+        {/* Features */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-4 bg-card p-4 rounded-2xl border border-border/50 shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
+              <Zap size={20} fill="currentColor" />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm">Unlimited Listings</h3>
+              <p className="text-xs text-muted-foreground">Post as many products as you want without limits.</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 bg-card p-4 rounded-2xl border border-border/50 shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center flex-shrink-0">
+              <Star size={20} fill="currentColor" />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm">Featured Store</h3>
+              <p className="text-xs text-muted-foreground">Get a "Verified" badge and appear at the top of searches.</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 bg-card p-4 rounded-2xl border border-border/50 shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center flex-shrink-0">
+              <Check size={20} />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm">0% Commission</h3>
+              <p className="text-xs text-muted-foreground">Keep 100% of your sales revenue. No hidden fees.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Price and CTA */}
+        <div className="pt-4">
+          <div className="flex flex-col items-center mb-6">
+            <div className="text-3xl font-bold text-foreground">
+              {selectedPlan === "monthly" ? "$9.99" : "$99.99"}
+              <span className="text-sm text-muted-foreground font-normal">
+                /{selectedPlan === "monthly" ? "mo" : "yr"}
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">Cancel anytime. Secure payment.</p>
+          </div>
+
+          <button 
+            onClick={handleSubscribe}
+            className="w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white py-4 rounded-2xl font-bold shadow-xl shadow-gray-900/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          >
+            Subscribe Now
+            <ArrowLeft className="rotate-180" size={20} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
