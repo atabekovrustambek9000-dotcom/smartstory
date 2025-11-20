@@ -49,16 +49,16 @@ export default function Home() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             {/* Store Icon */}
-            <div className="w-10 h-10 bg-gradient-to-br from-primary to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary/30 text-white">
-              <ShoppingBag size={20} strokeWidth={2.5} />
+            <div className="w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary/30 text-white">
+              <ShoppingBag size={24} strokeWidth={2.5} />
             </div>
             
             {/* Store Name */}
             <div className="flex items-center gap-2">
-               <h1 className="text-xl font-extrabold tracking-tight text-foreground leading-none" style={{ fontFamily: "'Outfit', sans-serif" }}>
+               <h1 className="text-3xl font-extrabold tracking-tight text-foreground leading-none" style={{ fontFamily: "'Outfit', sans-serif" }}>
                 Yangiyer
               </h1>
-              <span className="text-[10px] font-bold text-primary tracking-[0.15em] uppercase bg-primary/10 px-1.5 py-0.5 rounded-md mt-0.5" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              <span className="text-xs font-bold text-primary tracking-[0.15em] uppercase bg-primary/10 px-2 py-1 rounded-md mt-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 Smart Store
               </span>
             </div>
