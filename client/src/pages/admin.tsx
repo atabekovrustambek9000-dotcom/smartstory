@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { ArrowLeft, Check, X, Clock, Shield, Search, Filter, Store } from "lucide-react";
+import { ArrowLeft, Check, X, Clock, Shield, Search, Filter, Store, Lock, KeyRound, ChevronRight } from "lucide-react";
 import { useAdminStore } from "@/lib/admin-store";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,10 +9,35 @@ export default function AdminDashboard() {
   const { requests, approveRequest, rejectRequest } = useAdminStore();
   const { toast } = useToast();
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
+  
+  // SECURITY: Admin Login State
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [pin, setPin] = useState("");
+  const [error, setError] = useState(false);
 
   const filteredRequests = requests.filter(req => 
     filter === 'all' ? true : req.status === filter
   );
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Simple frontend protection for mockup
+    if (pin === "7777") {
+      setIsAuthenticated(true);
+      toast({
+        title: "Xush kelibsiz, Admin!",
+        description: "Tizimga muvaffaqiyatli kirdingiz.",
+      });
+    } else {
+      setError(true);
+      setPin("");
+      toast({
+        variant: "destructive",
+        title: "Xato kod",
+        description: "Kirish kodi noto'g'ri.",
+      });
+    }
+  };
 
   const handleApprove = (id: string, name: string) => {
     approveRequest(id);
@@ -31,6 +56,58 @@ export default function AdminDashboard() {
     });
   };
 
+  // If not authenticated, show Lock Screen
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-6">
+        <div className="w-full max-w-sm">
+          <div className="text-center mb-8">
+            <div className="w-20 h-20 bg-blue-500/20 text-blue-400 rounded-3xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border border-blue-500/30">
+              <Lock size={40} />
+            </div>
+            <h1 className="text-2xl font-bold text-white mb-2">Admin Kirish</h1>
+            <p className="text-gray-400 text-sm">Davom etish uchun maxsus kodni kiriting</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="relative">
+              <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
+              <input
+                type="password"
+                inputMode="numeric"
+                value={pin}
+                onChange={(e) => {
+                  setPin(e.target.value);
+                  setError(false);
+                }}
+                placeholder="PIN kod..."
+                className={`w-full bg-gray-800 text-white pl-12 pr-4 py-4 rounded-2xl border outline-none transition-all text-lg tracking-widest text-center ${
+                  error ? "border-red-500 focus:border-red-500" : "border-gray-700 focus:border-blue-500"
+                }`}
+                maxLength={4}
+                autoFocus
+              />
+            </div>
+            
+            <button 
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-bold text-lg transition-colors shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2"
+            >
+              Kirish <ChevronRight size={20} />
+            </button>
+          </form>
+
+          <Link href="/">
+            <button className="w-full mt-4 text-gray-500 hover:text-gray-300 text-sm py-2 transition-colors">
+              Bosh sahifaga qaytish
+            </button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Main Admin Dashboard Content
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
@@ -45,6 +122,12 @@ export default function AdminDashboard() {
             <Shield size={24} className="text-blue-400" />
             Admin Panel
           </h1>
+          <button 
+            onClick={() => setIsAuthenticated(false)}
+            className="ml-auto p-2 bg-white/10 rounded-lg hover:bg-red-500/20 hover:text-red-400 transition-colors"
+          >
+            <Lock size={18} />
+          </button>
         </div>
 
         <div className="flex gap-4 justify-between text-center">
