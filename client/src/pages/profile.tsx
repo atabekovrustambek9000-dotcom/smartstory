@@ -40,7 +40,7 @@ export default function Profile() {
 
       <div className="p-4 space-y-4 -mt-4">
         {/* Mode Switcher */}
-        <div className="bg-card p-4 rounded-2xl border border-border/50 shadow-sm flex items-center justify-between">
+        <div className="bg-card p-4 rounded-2xl border border-border shadow-sm flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-primary/10 rounded-lg text-primary">
               <Store size={20} />
@@ -65,7 +65,7 @@ export default function Profile() {
           <div className="space-y-4 animate-in slide-in-from-top-4 fade-in duration-300">
             
             {/* Subscription Status Card */}
-            <div className="bg-gradient-to-br from-gray-900 to-gray-800 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden">
+            <div className="bg-gradient-to-br from-gray-900 to-gray-800 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden border border-gray-700">
               <div className="absolute top-0 right-0 p-4 opacity-10">
                 <Crown size={100} />
               </div>
@@ -100,7 +100,7 @@ export default function Profile() {
             </div>
 
             {/* Seller Details */}
-            <div className="bg-card p-4 rounded-2xl border border-border/50 shadow-sm">
+            <div className="bg-card p-4 rounded-2xl border border-border shadow-sm">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Shop Info</h3>
                 <button 
@@ -161,7 +161,7 @@ export default function Profile() {
             </div>
 
             {/* Seller Actions */}
-            <div className="bg-card p-4 rounded-2xl border border-border/50 shadow-sm space-y-1">
+            <div className="bg-card p-4 rounded-2xl border border-border shadow-sm space-y-1">
               <Link href="/add-product">
                 <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">
                   <div className="flex items-center gap-3">
@@ -187,7 +187,7 @@ export default function Profile() {
           </div>
         )}
 
-        <div className="bg-card p-4 rounded-2xl border border-border/50 shadow-sm space-y-1">
+        <div className="bg-card p-4 rounded-2xl border border-border shadow-sm space-y-1">
           <h3 className="font-semibold text-sm text-muted-foreground mb-2 uppercase tracking-wider px-2">Settings</h3>
           
           <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">

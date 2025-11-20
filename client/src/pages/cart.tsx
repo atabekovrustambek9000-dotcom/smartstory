@@ -53,7 +53,7 @@ export default function Cart() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, x: -100 }}
-              className="flex gap-4 bg-card p-3 rounded-2xl border border-border/50 shadow-sm"
+              className="flex gap-4 bg-card p-3 rounded-2xl border border-border shadow-sm"
             >
               <div className="w-20 h-20 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
                 <img src={item.image} alt={item.name} className="w-full h-full object-cover" />

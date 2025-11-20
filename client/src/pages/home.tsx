@@ -72,7 +72,7 @@ export default function Home() {
           <Link key={product.id} href={`/product/${product.id}`}>
             <motion.div 
               whileTap={{ scale: 0.98 }}
-              className="bg-card rounded-2xl overflow-hidden shadow-sm border border-border/50 group cursor-pointer"
+              className="bg-card rounded-2xl overflow-hidden shadow-sm border border-border group cursor-pointer hover:shadow-md hover:border-primary/20 transition-all"
             >
               <div className="aspect-square relative bg-gray-100 overflow-hidden">
                 <img 
