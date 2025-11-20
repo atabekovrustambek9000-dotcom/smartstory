@@ -14,6 +14,8 @@ import Wishlist from "@/pages/wishlist";
 import Orders from "@/pages/orders";
 import Notifications from "@/pages/notifications";
 import AdminDashboard from "@/pages/admin";
+import BotChat from "@/pages/bot-chat"; // Import BotChat
+import Bubbles from "@/components/bubbles";
 
 function Router() {
   return (
@@ -27,6 +29,7 @@ function Router() {
       <Route path="/orders" component={Orders} />
       <Route path="/notifications" component={Notifications} />
       <Route path="/admin" component={AdminDashboard} />
+      <Route path="/bot-chat" component={BotChat} />
       <Route path="/product/:id" component={ProductDetail} />
       <Route component={NotFound} />
     </Switch>
@@ -39,7 +42,10 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <div className="min-h-screen bg-background max-w-md mx-auto border-x border-border/40 shadow-2xl relative overflow-hidden">
-          <Router />
+          <Bubbles />
+          <div className="relative z-10">
+            <Router />
+          </div>
         </div>
       </TooltipProvider>
     </QueryClientProvider>
