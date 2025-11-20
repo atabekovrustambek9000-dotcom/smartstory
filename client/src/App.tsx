@@ -7,12 +7,16 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import Cart from "@/pages/cart";
 import ProductDetail from "@/pages/product-detail";
+import Profile from "@/pages/profile";
+import AddProduct from "@/pages/add-product";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/cart" component={Cart} />
+      <Route path="/profile" component={Profile} />
+      <Route path="/add-product" component={AddProduct} />
       <Route path="/product/:id" component={ProductDetail} />
       <Route component={NotFound} />
     </Switch>
