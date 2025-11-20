@@ -1,18 +1,20 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { ArrowLeft, Check, X, Clock, Shield, Search, Filter, Store, Lock, KeyRound, ChevronRight, CreditCard, Settings } from "lucide-react";
+import { ArrowLeft, Check, X, Clock, Shield, Search, Filter, Store, Lock, KeyRound, ChevronRight, CreditCard, Settings, Key } from "lucide-react";
 import { useAdminStore } from "@/lib/admin-store";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminDashboard() {
-  const { requests, approveRequest, rejectRequest, adminCard, setAdminCard } = useAdminStore();
+  const { requests, approveRequest, rejectRequest, adminCard, setAdminCard, adminPin, setAdminPin } = useAdminStore();
   const { toast } = useToast();
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   
   // Settings Form State
   const [cardForm, setCardForm] = useState(adminCard);
+  const [pinForm, setPinForm] = useState({ current: "", new: "", confirm: "" });
+  const [activeTab, setActiveTab] = useState<'card' | 'security'>('card');
 
   // SECURITY: Admin Login State
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -25,8 +27,7 @@ export default function AdminDashboard() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simple frontend protection for mockup
-    if (pin === "7777") {
+    if (pin === adminPin) {
       setIsAuthenticated(true);
       toast({
         title: "Xush kelibsiz, Admin!",
@@ -62,11 +63,33 @@ export default function AdminDashboard() {
 
   const handleSaveSettings = (e: React.FormEvent) => {
     e.preventDefault();
-    setAdminCard(cardForm);
-    setIsSettingsOpen(false);
-    toast({
-      description: "To'lov ma'lumotlari yangilandi!",
-    });
+    
+    if (activeTab === 'card') {
+      setAdminCard(cardForm);
+      setIsSettingsOpen(false);
+      toast({
+        description: "To'lov ma'lumotlari yangilandi!",
+      });
+    } else {
+      // Change Password Logic
+      if (pinForm.current !== adminPin) {
+        toast({ variant: "destructive", description: "Joriy parol noto'g'ri!" });
+        return;
+      }
+      if (pinForm.new.length < 4) {
+        toast({ variant: "destructive", description: "Yangi parol kamida 4 ta raqam bo'lishi kerak." });
+        return;
+      }
+      if (pinForm.new !== pinForm.confirm) {
+        toast({ variant: "destructive", description: "Yangi parollar mos kelmadi." });
+        return;
+      }
+      
+      setAdminPin(pinForm.new);
+      setPinForm({ current: "", new: "", confirm: "" });
+      setIsSettingsOpen(false);
+      toast({ description: "Parol muvaffaqiyatli o'zgartirildi!" });
+    }
   };
 
   // If not authenticated, show Lock Screen
@@ -188,41 +211,96 @@ export default function AdminDashboard() {
             >
               <div className="bg-primary/5 p-5 border-b border-border flex justify-between items-center">
                 <h3 className="font-bold text-lg flex items-center gap-2">
-                  <CreditCard size={20} className="text-primary" />
-                  To'lov Sozlamalari
+                  <Settings size={20} className="text-primary" />
+                  Admin Sozlamalari
                 </h3>
                 <button onClick={() => setIsSettingsOpen(false)} className="p-2 hover:bg-secondary rounded-full">
                   <X size={20} />
                 </button>
               </div>
+              
+              {/* Tabs */}
+              <div className="flex border-b border-border p-2 gap-2">
+                <button 
+                  onClick={() => setActiveTab('card')}
+                  className={`flex-1 py-2 text-sm font-medium rounded-xl transition-colors ${activeTab === 'card' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:bg-secondary/50'}`}
+                >
+                  Karta Ma'lumotlari
+                </button>
+                <button 
+                  onClick={() => setActiveTab('security')}
+                  className={`flex-1 py-2 text-sm font-medium rounded-xl transition-colors ${activeTab === 'security' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:bg-secondary/50'}`}
+                >
+                  Xavfsizlik (PIN)
+                </button>
+              </div>
+
               <form onSubmit={handleSaveSettings} className="p-6 space-y-4">
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-muted-foreground uppercase">Karta Raqami</label>
-                  <input 
-                    value={cardForm.number}
-                    onChange={(e) => setCardForm({...cardForm, number: e.target.value})}
-                    className="w-full p-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none font-mono"
-                    placeholder="8600 0000 0000 0000"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-muted-foreground uppercase">Karta Egasi</label>
-                  <input 
-                    value={cardForm.holder}
-                    onChange={(e) => setCardForm({...cardForm, holder: e.target.value})}
-                    className="w-full p-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none"
-                    placeholder="ISM FAMILIYA"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-muted-foreground uppercase">Bank Nomi</label>
-                  <input 
-                    value={cardForm.bank}
-                    onChange={(e) => setCardForm({...cardForm, bank: e.target.value})}
-                    className="w-full p-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none"
-                    placeholder="Bank Nomi"
-                  />
-                </div>
+                {activeTab === 'card' ? (
+                  <>
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-muted-foreground uppercase">Karta Raqami</label>
+                      <input 
+                        value={cardForm.number}
+                        onChange={(e) => setCardForm({...cardForm, number: e.target.value})}
+                        className="w-full p-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none font-mono"
+                        placeholder="8600 0000 0000 0000"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-muted-foreground uppercase">Karta Egasi</label>
+                      <input 
+                        value={cardForm.holder}
+                        onChange={(e) => setCardForm({...cardForm, holder: e.target.value})}
+                        className="w-full p-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none"
+                        placeholder="ISM FAMILIYA"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-muted-foreground uppercase">Bank Nomi</label>
+                      <input 
+                        value={cardForm.bank}
+                        onChange={(e) => setCardForm({...cardForm, bank: e.target.value})}
+                        className="w-full p-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none"
+                        placeholder="Bank Nomi"
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-muted-foreground uppercase">Joriy Parol</label>
+                      <input 
+                        type="password"
+                        value={pinForm.current}
+                        onChange={(e) => setPinForm({...pinForm, current: e.target.value})}
+                        className="w-full p-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none"
+                        placeholder="****"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-muted-foreground uppercase">Yangi Parol</label>
+                      <input 
+                        type="password"
+                        value={pinForm.new}
+                        onChange={(e) => setPinForm({...pinForm, new: e.target.value})}
+                        className="w-full p-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none"
+                        placeholder="****"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-muted-foreground uppercase">Yangi Parolni Tasdiqlang</label>
+                      <input 
+                        type="password"
+                        value={pinForm.confirm}
+                        onChange={(e) => setPinForm({...pinForm, confirm: e.target.value})}
+                        className="w-full p-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none"
+                        placeholder="****"
+                      />
+                    </div>
+                  </>
+                )}
+
                 <button 
                   type="submit"
                   className="w-full bg-primary text-primary-foreground py-3 rounded-xl font-bold mt-2"

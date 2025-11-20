@@ -22,7 +22,9 @@ interface AdminStore {
   requests: PremiumRequest[];
   approvedShops: string[]; // Tasdiqlangan do'kon nomlari ro'yxati
   adminCard: AdminCard; // Admin card details
+  adminPin: string; // Admin PIN code
   setAdminCard: (card: Partial<AdminCard>) => void; // Function to update card details
+  setAdminPin: (pin: string) => void; // Function to update PIN
   addRequest: (request: Omit<PremiumRequest, 'id' | 'date' | 'status'>) => void;
   approveRequest: (id: string) => void;
   rejectRequest: (id: string) => void;
@@ -40,9 +42,14 @@ export const useAdminStore = create<AdminStore>()(
         holder: "YANGIYER ADMIN",
         bank: "Ipak Yuli Bank"
       },
+      adminPin: "7777", // Default PIN
 
       setAdminCard: (card) => set((state) => ({
         adminCard: { ...state.adminCard, ...card }
+      })),
+
+      setAdminPin: (pin) => set(() => ({
+        adminPin: pin
       })),
       
       addRequest: (req) => set((state) => ({
