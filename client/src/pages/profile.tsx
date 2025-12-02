@@ -21,7 +21,7 @@ export default function Profile() {
   const isShopPremium = useAdminStore(state => state.isShopPremium);
   const { shopName, description, phone, setShopInfo } = useShopStore();
 
-  // Check if current shop is premium
+  // Check if current shop is premium (has bought packages)
   const isPremium = isShopPremium(shopName);
 
   useEffect(() => {
@@ -183,16 +183,16 @@ export default function Profile() {
           <div className="space-y-4 animate-in slide-in-from-top-4 fade-in duration-300">
             
             {/* Subscription Status Card */}
-            <div className={`p-5 rounded-2xl shadow-lg relative overflow-hidden border backdrop-blur-md ${isPremium ? 'bg-gradient-to-br from-yellow-600/90 to-orange-700/90 border-yellow-500' : 'bg-gradient-to-br from-gray-900/90 to-gray-800/90 border-gray-700'} text-white`}>
+            <div className={`p-5 rounded-2xl shadow-lg relative overflow-hidden border backdrop-blur-md ${isPremium ? 'bg-gradient-to-br from-green-600/90 to-emerald-700/90 border-green-500' : 'bg-gradient-to-br from-gray-900/90 to-gray-800/90 border-gray-700'} text-white`}>
               <div className="absolute top-0 right-0 p-4 opacity-10">
-                <Crown size={100} />
+                <Package size={100} />
               </div>
               <div className="relative z-10">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 className="font-bold text-lg">{isPremium ? 'Premium Plan' : 'Free Plan'}</h3>
-                    <p className={`${isPremium ? 'text-yellow-100' : 'text-gray-400'} text-xs`}>
-                      {isPremium ? 'Unlimited access unlocked' : 'Basic seller account'}
+                    <h3 className="font-bold text-lg">{isPremium ? 'Paket Faol' : 'Bepul Limit'}</h3>
+                    <p className={`${isPremium ? 'text-green-100' : 'text-gray-400'} text-xs`}>
+                      {isPremium ? 'Qo\'shimcha e\'lonlar mavjud' : 'Boshlang\'ich limit'}
                     </p>
                   </div>
                   <span className="bg-white/20 px-2 py-1 rounded text-xs font-medium">Active</span>
@@ -200,28 +200,27 @@ export default function Profile() {
                 
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between text-sm">
-                    <span className={isPremium ? 'text-yellow-100' : 'text-gray-300'}>Listings Used</span>
+                    <span className={isPremium ? 'text-green-100' : 'text-gray-300'}>E'lonlar limiti</span>
                     <span className="font-bold">{listingsUsed} / {isPremium ? '∞' : '10'}</span>
                   </div>
-                  <div className={`h-2 ${isPremium ? 'bg-yellow-900/40' : 'bg-gray-700'} rounded-full overflow-hidden`}>
+                  <div className={`h-2 ${isPremium ? 'bg-green-900/40' : 'bg-gray-700'} rounded-full overflow-hidden`}>
                     <div 
                       className={`h-full ${isPremium ? 'bg-white' : 'bg-primary'} transition-all duration-500`} 
                       style={{ width: isPremium ? '100%' : `${(listingsUsed / 10) * 100}%` }} 
                     />
                   </div>
-                  <p className={`text-[10px] ${isPremium ? 'text-yellow-100' : 'text-gray-400'}`}>
-                    {isPremium ? 'You have unlimited listings.' : `You have ${10 - listingsUsed} free listings remaining.`}
+                  <p className={`text-[10px] ${isPremium ? 'text-green-100' : 'text-gray-400'}`}>
+                    {isPremium ? 'Sizda e\'lonlar uchun yetarli joy bor.' : `Sizda ${10 - listingsUsed} ta bepul joy qoldi.`}
                   </p>
                 </div>
 
-                {!isPremium && (
-                  <Link href="/premium">
-                    <button className="w-full bg-white text-black py-2.5 rounded-xl font-bold text-sm hover:bg-gray-100 transition-colors flex items-center justify-center gap-2">
-                      <Crown size={16} />
-                      Upgrade to Premium
-                    </button>
-                  </Link>
-                )}
+                {/* Always show Upgrade button to buy more packages */}
+                <Link href="/premium">
+                  <button className="w-full bg-white text-black py-2.5 rounded-xl font-bold text-sm hover:bg-gray-100 transition-colors flex items-center justify-center gap-2">
+                    <Plus size={16} />
+                    E'lonlar sotib olish
+                  </button>
+                </Link>
               </div>
             </div>
 
@@ -275,8 +274,8 @@ export default function Profile() {
                     <div className="flex items-center gap-2">
                       <p className="font-medium">{shopName}</p>
                       {isPremium && (
-                        <div className="bg-yellow-100 text-yellow-700 text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1">
-                          <Crown size={10} fill="currentColor" /> PRO
+                        <div className="bg-green-100 text-green-700 text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1">
+                          <CheckCircle2 size={10} fill="currentColor" /> VERIFIED
                         </div>
                       )}
                     </div>

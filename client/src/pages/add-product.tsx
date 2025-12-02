@@ -1,14 +1,17 @@
-import { ArrowLeft, Upload, DollarSign, AlertCircle, ShieldCheck, Loader2, Wand2, Image as ImageIcon, X, Link as LinkIcon, Bell, Send, Eye, Lock, CreditCard, Plus, Minus } from "lucide-react";
+import { ArrowLeft, Upload, DollarSign, AlertCircle, ShieldCheck, Loader2, Wand2, Image as ImageIcon, X, Link as LinkIcon, Bell, Send, Eye, Lock, CreditCard, Plus, Minus, CheckCircle2 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAdminStore } from "@/lib/admin-store";
+import { useShopStore } from "@/lib/shop-store";
 
 export default function AddProduct() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
-  const { listingPrice } = useAdminStore();
+  const { listingPrice, isShopPremium } = useAdminStore();
+  const { shopName } = useShopStore();
+  
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [imageLink, setImageLink] = useState("");
@@ -18,10 +21,14 @@ export default function AddProduct() {
   const [productName, setProductName] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   
-  // Mock limit check logic - Simulate user having 10 items already
+  // Mock limit check logic 
   const listingsUsed = 10; // Mock: User has used 10 listings
   const listingsLimit = 10;
-  const isOverLimit = listingsUsed >= listingsLimit;
+  
+  // Check if shop has bought packages (isPremium)
+  // If premium, the limit is lifted (or increased)
+  const hasPackages = isShopPremium(shopName);
+  const isOverLimit = !hasPackages && listingsUsed >= listingsLimit;
   
   // Listing Top-up State
   const [selectedPackage, setSelectedPackage] = useState(10); // 10, 20, 30, 40, 50
@@ -207,15 +214,27 @@ export default function AddProduct() {
         </div>
 
         {/* Limit Warning */}
-        <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 flex items-start gap-3">
-          <AlertCircle size={18} className="text-blue-600 mt-0.5 flex-shrink-0" />
-          <div>
-            <h4 className="text-sm font-semibold text-blue-900">Bepul e'lonlar limiti</h4>
-            <p className="text-xs text-blue-700 mt-0.5">
-              Sizda {listingsLimit - listingsUsed} ta bepul e'lon qoldi.
-            </p>
+        {hasPackages ? (
+          <div className="bg-green-50 border border-green-100 rounded-xl p-3 flex items-start gap-3">
+            <CheckCircle2 size={18} className="text-green-600 mt-0.5 flex-shrink-0" />
+            <div>
+              <h4 className="text-sm font-semibold text-green-900">Limit oshirilgan</h4>
+              <p className="text-xs text-green-700 mt-0.5">
+                Siz paket sotib olgansiz. E'lon joylashingiz mumkin.
+              </p>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 flex items-start gap-3">
+            <AlertCircle size={18} className="text-blue-600 mt-0.5 flex-shrink-0" />
+            <div>
+              <h4 className="text-sm font-semibold text-blue-900">Bepul e'lonlar limiti</h4>
+              <p className="text-xs text-blue-700 mt-0.5">
+                Sizda {listingsLimit - listingsUsed} ta bepul e'lon qoldi.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Image Upload Area */}
         <div className="space-y-2">
