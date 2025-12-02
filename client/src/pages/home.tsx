@@ -55,12 +55,12 @@ export default function Home() {
             </div>
             
             {/* Store Name */}
-            <div className="flex items-center gap-2">
-               <h1 className="text-3xl font-extrabold tracking-tight text-red-600 leading-none animate-pulse" style={{ fontFamily: "'Oxanium', sans-serif" }}>
-                LIVE
-              </h1>
-              <span className="text-xs font-bold text-primary tracking-[0.15em] uppercase bg-primary/10 px-2 py-1 rounded-md mt-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+            <div className="flex flex-col justify-center ml-1">
+               <h1 className="text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-500 to-blue-600 animate-gradient-x leading-tight" style={{ fontFamily: "'Outfit', sans-serif" }}>
                 Smart Store
+              </h1>
+              <span className="text-[10px] font-medium text-muted-foreground tracking-widest uppercase" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                Yangiyer Market
               </span>
             </div>
           </div>
