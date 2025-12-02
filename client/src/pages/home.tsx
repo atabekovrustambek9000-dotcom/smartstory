@@ -9,7 +9,7 @@ import { useCart } from "@/lib/cart-store";
 import { useWishlist } from "@/lib/wishlist-store";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-store";
-import logoImg from "@assets/stock_images/modern_tech_store_lo_cc77763e.jpg";
+import logoImg from "@assets/stock_images/3d_colorful_abstract_e664d34a.jpg";
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -56,7 +56,7 @@ export default function Home() {
             
             {/* Store Name */}
             <div className="flex items-center gap-2">
-               <h1 className="text-3xl font-extrabold tracking-tight text-red-600 leading-none" style={{ fontFamily: "'Outfit', sans-serif" }}>
+               <h1 className="text-3xl font-extrabold tracking-tight text-red-600 leading-none animate-pulse" style={{ fontFamily: "'Outfit', sans-serif" }}>
                 LIVE
               </h1>
               <span className="text-xs font-bold text-primary tracking-[0.15em] uppercase bg-primary/10 px-2 py-1 rounded-md mt-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
