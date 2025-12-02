@@ -9,7 +9,7 @@ import { useCart } from "@/lib/cart-store";
 import { useWishlist } from "@/lib/wishlist-store";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-store";
-import logoImg from "@assets/stock_images/3d_isometric_shop_st_60bcbd6a.jpg";
+import logoImg from "@assets/stock_images/electronics_phones_h_dabcd295.jpg";
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState("All");
