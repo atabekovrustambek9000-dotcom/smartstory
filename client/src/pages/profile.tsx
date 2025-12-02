@@ -57,16 +57,23 @@ export default function Profile() {
     }
   };
 
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const firstName = tgUser?.first_name || "Foydalanuvchi";
+  const lastName = tgUser?.last_name || "";
+  const username = tgUser?.username ? `@${tgUser.username}` : "";
+  const displayName = `${firstName} ${lastName}`.trim();
+  const initials = (firstName[0] || "F") + (lastName?.[0] || "");
+
   return (
     <div className="min-h-screen bg-transparent pb-20 transition-colors duration-300">
       <div className="bg-primary/5 backdrop-blur-sm pb-8 pt-12 px-6 rounded-b-[2rem]">
         <div className="flex flex-col items-center">
           <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mb-4 text-2xl font-bold text-primary relative backdrop-blur-md">
-            JD
+            {initials}
             <div className="absolute bottom-0 right-0 w-8 h-8 bg-green-500 border-4 border-background rounded-full"></div>
           </div>
-          <h2 className="text-xl font-bold">John Doe</h2>
-          <p className="text-muted-foreground text-sm">@johndoe</p>
+          <h2 className="text-xl font-bold">{displayName}</h2>
+          {username && <p className="text-muted-foreground text-sm">{username}</p>}
         </div>
       </div>
 

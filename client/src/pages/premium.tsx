@@ -90,10 +90,14 @@ export default function Premium() {
     }
 
     // Add request to admin store
+    const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    const fullName = tgUser ? `${tgUser.first_name} ${tgUser.last_name || ''}`.trim() : 'Foydalanuvchi';
+    const userId = tgUser?.id ? String(tgUser.id) : '7823';
+
     addRequest({
-      userId: '7823',
-      userName: 'John Doe', // Bu yerda profil egasining ismi bo'ladi
-      senderName: senderName, // Endi bu maydonda do'kon nomi saqlanadi
+      userId: userId,
+      userName: fullName, // Real Telegram user name
+      senderName: senderName, // Shop Name
       listingsCount: selectedPackage,
       amount: `$${calculatePrice()}`,
       // @ts-ignore - plan field is deprecated but kept for interface compatibility if needed temporarily

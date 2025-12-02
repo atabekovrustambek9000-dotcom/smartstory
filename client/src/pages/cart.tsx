@@ -19,9 +19,10 @@ export default function Cart() {
   const botUsername = useAdminStore(state => state.botConfig.username);
 
   // Mock User Info
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
   const [formData, setFormData] = useState({
-    name: "John Doe",
-    phone: "+998 90 123 45 67",
+    name: tgUser ? `${tgUser.first_name} ${tgUser.last_name || ''}`.trim() : "Foydalanuvchi",
+    phone: "+998",
     address: ""
   });
 

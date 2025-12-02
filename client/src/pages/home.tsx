@@ -18,6 +18,11 @@ export default function Home() {
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { toast } = useToast();
   const { t } = useLanguage();
+  
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const firstName = tgUser?.first_name || "Foydalanuvchi";
+  const lastName = tgUser?.last_name || "";
+  const initials = (firstName[0] || "F") + (lastName?.[0] || "");
 
   // Filtering Logic
   const filteredProducts = products.filter(p => {
@@ -72,7 +77,7 @@ export default function Home() {
             <Link href="/profile">
               <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-gray-100 to-gray-300 p-[2px] cursor-pointer">
                 <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
-                   <span className="text-primary font-bold text-xs">JD</span>
+                   <span className="text-primary font-bold text-xs">{initials}</span>
                 </div>
               </div>
             </Link>
