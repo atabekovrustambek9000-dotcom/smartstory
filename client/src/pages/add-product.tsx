@@ -1,4 +1,4 @@
-import { ArrowLeft, Upload, DollarSign, AlertCircle, ShieldCheck, Loader2, Wand2, Image as ImageIcon, X, Link as LinkIcon, Bell, Send } from "lucide-react";
+import { ArrowLeft, Upload, DollarSign, AlertCircle, ShieldCheck, Loader2, Wand2, Image as ImageIcon, X, Link as LinkIcon, Bell, Send, Eye } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useRef } from "react";
@@ -12,7 +12,8 @@ export default function AddProduct() {
   const [imageLink, setImageLink] = useState("");
   const [uploadMode, setUploadMode] = useState<'file' | 'link'>('file');
   const [isBackgroundBlurred, setIsBackgroundBlurred] = useState(false);
-  const [notifyUsers, setNotifyUsers] = useState(true); // New State for Notification
+  const [notifyUsers, setNotifyUsers] = useState(true); 
+  const [productName, setProductName] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Mock limit check
@@ -255,6 +256,8 @@ export default function AddProduct() {
             <label className="text-sm font-medium">Mahsulot nomi</label>
             <input 
               type="text" 
+              value={productName}
+              onChange={(e) => setProductName(e.target.value)}
               required
               placeholder="Masalan: Simsiz quloqchinlar"
               className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary focus:bg-background outline-none transition-all"
@@ -296,23 +299,57 @@ export default function AddProduct() {
             />
           </div>
           
-           {/* Bot Notification Toggle */}
-           <div 
-             onClick={() => setNotifyUsers(!notifyUsers)}
-             className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${notifyUsers ? 'bg-primary/5 border-primary/30' : 'bg-secondary/30 border-border'}`}
-           >
-             <div className="flex items-center gap-3">
-               <div className={`w-10 h-10 rounded-full flex items-center justify-center ${notifyUsers ? 'bg-primary/10 text-primary' : 'bg-secondary text-muted-foreground'}`}>
-                 <Send size={20} />
+           {/* Bot Notification Toggle & Preview */}
+           <div className="space-y-3">
+             <div 
+               onClick={() => setNotifyUsers(!notifyUsers)}
+               className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${notifyUsers ? 'bg-primary/5 border-primary/30' : 'bg-secondary/30 border-border'}`}
+             >
+               <div className="flex items-center gap-3">
+                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${notifyUsers ? 'bg-primary/10 text-primary' : 'bg-secondary text-muted-foreground'}`}>
+                   <Send size={20} />
+                 </div>
+                 <div>
+                   <h4 className="font-bold text-sm">Bot orqali yuborish</h4>
+                   <p className="text-xs text-muted-foreground">Barcha foydalanuvchilarga xabar boradi</p>
+                 </div>
                </div>
-               <div>
-                 <h4 className="font-bold text-sm">Bot orqali yuborish</h4>
-                 <p className="text-xs text-muted-foreground">Barcha foydalanuvchilarga xabar boradi</p>
+               <div className={`w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${notifyUsers ? 'bg-primary border-primary' : 'border-muted-foreground'}`}>
+                 {notifyUsers && <div className="w-2.5 h-2.5 bg-white rounded-full" />}
                </div>
              </div>
-             <div className={`w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${notifyUsers ? 'bg-primary border-primary' : 'border-muted-foreground'}`}>
-               {notifyUsers && <div className="w-2.5 h-2.5 bg-white rounded-full" />}
-             </div>
+
+             {/* Telegram Preview */}
+             <AnimatePresence>
+               {notifyUsers && (
+                 <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                 >
+                   <div className="bg-[#2A303C] p-3 rounded-xl border border-gray-700 relative max-w-[85%] mx-auto">
+                     <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-[#2A303C] px-2 text-[10px] text-gray-400 font-bold rounded border border-gray-700">Telegram Preview</div>
+                     
+                     {selectedImage ? (
+                        <img src={selectedImage} alt="Preview" className="w-full h-32 object-cover rounded-lg mb-2" />
+                     ) : (
+                        <div className="w-full h-32 bg-gray-700 rounded-lg mb-2 flex items-center justify-center text-gray-500 text-xs">Rasm yo'q</div>
+                     )}
+                     
+                     <div className="text-white text-xs mb-2">
+                        <b>{productName || "Mahsulot Nomi"}</b>
+                        <br />
+                        Yangi mahsulot qo'shildi! 🚀
+                     </div>
+
+                     <div className="bg-[#3E4856] hover:bg-[#4A5566] transition-colors text-white text-xs font-bold py-2 rounded-lg text-center cursor-pointer flex items-center justify-center gap-1.5">
+                       Start Bot 🤖
+                     </div>
+                   </div>
+                 </motion.div>
+               )}
+             </AnimatePresence>
            </div>
         </div>
 
