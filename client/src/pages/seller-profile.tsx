@@ -1,12 +1,13 @@
 import { useRoute, Link } from "wouter";
 import { ArrowLeft, MapPin, Phone, MessageCircle, Star, Store, ShoppingBag } from "lucide-react";
-import { products } from "@/lib/data";
+import { useProductStore } from "@/lib/product-store";
 import { motion } from "framer-motion";
 import BottomNav from "@/components/bottom-nav";
 
 export default function SellerProfile() {
   const [, params] = useRoute("/seller/:name");
   const sellerName = params ? decodeURIComponent(params.name) : "";
+  const { products } = useProductStore();
   
   // Get all products for this seller
   const sellerProducts = products.filter(p => p.sellerName === sellerName);

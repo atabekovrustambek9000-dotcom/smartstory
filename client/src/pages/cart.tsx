@@ -7,12 +7,13 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { useAdminStore } from "@/lib/admin-store";
 import { useUserStore } from "@/lib/user-store";
-import { products } from "@/lib/data";
+import { useProductStore } from "@/lib/product-store";
 
 export default function Cart() {
   const { items, incrementQuantity, decrementQuantity, removeFromCart, clearCart } = useCart();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { products } = useProductStore();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [selectedSeller, setSelectedSeller] = useState<string | null>(null);
   

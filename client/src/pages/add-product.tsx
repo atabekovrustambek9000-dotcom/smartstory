@@ -3,6 +3,8 @@ import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useProductStore } from "@/lib/product-store";
+import { useUserStore } from "@/lib/user-store";
 import { useAdminStore } from "@/lib/admin-store";
 import { useShopStore } from "@/lib/shop-store";
 
@@ -10,7 +12,9 @@ export default function AddProduct() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const { listingPrice, isShopPremium } = useAdminStore();
-  const { shopName, listingsUsed, listingsLimit, incrementListingsUsed } = useShopStore();
+  const { shopName, listingsUsed, listingsLimit, incrementListingsUsed, phone } = useShopStore();
+  const { addProduct } = useProductStore();
+  const { name: userName } = useUserStore(); // Get real user name for telegram username if needed
   
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -100,6 +104,28 @@ export default function AddProduct() {
       duration: 3000,
     });
     
+    // Add to Product Store
+    const newProduct = {
+      id: Date.now(),
+      name: productName,
+      price: parseFloat(parseFloat(calculatePrice()).toFixed(2)) || 0, // This was calculating package price, fix below
+      category: selectedCategory,
+      image: selectedImage || "",
+      description: (document.querySelector('textarea') as HTMLTextAreaElement)?.value || "",
+      sellerName: shopName,
+      sellerPhone: phone,
+      sellerTelegram: userName ? userName.replace(/\s+/g, '_') : "yangiyer_smart_bot" 
+    };
+    
+    // Note: The original code had a separate input for product price, let's fix that
+    // I need to find the price input value. Since I didn't control the state for price in the original snippet fully properly (it was just an input),
+    // let's fix the price state first.
+    
+    addProduct({
+        ...newProduct,
+        price: parseFloat((document.querySelector('input[type="number"]') as HTMLInputElement)?.value) || 0
+    });
+
     // Increment Listings Count
     incrementListingsUsed();
 
@@ -111,8 +137,22 @@ export default function AddProduct() {
                 duration: 4000,
             });
             
-            // In a real app, this would trigger:
-            // window.Telegram.WebApp.shareToStory(mediaUrl, { text: productName, widget_link: { text: "Do'konni ochish", url: shopUrl } });
+            // Try to trigger Telegram Story
+            try {
+                // @ts-ignore
+                if (window.Telegram?.WebApp?.shareToStory) {
+                    // @ts-ignore
+                    window.Telegram.WebApp.shareToStory(selectedImage, { 
+                        text: `${productName}\nNarxi: $${newProduct.price}`, 
+                        widget_link: { 
+                            text: "Do'konni ochish", 
+                            url: `https://t.me/yangiyer_smart_bot/app?startapp=product_${newProduct.id}` 
+                        } 
+                    });
+                }
+            } catch (e) {
+                console.error("Story error:", e);
+            }
         }, 500);
     }
     

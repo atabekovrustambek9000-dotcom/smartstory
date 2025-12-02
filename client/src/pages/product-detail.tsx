@@ -1,12 +1,13 @@
 import { useRoute, Link } from "wouter";
 import { ArrowLeft, ShoppingBag, Star, Share2, MessageCircle, Phone, Store, ChevronRight } from "lucide-react";
-import { products } from "@/lib/data";
+import { useProductStore } from "@/lib/product-store";
 import { useCart } from "@/lib/cart-store";
 import { useToast } from "@/hooks/use-toast";
 
 export default function ProductDetail() {
   const [, params] = useRoute("/product/:id");
   const id = params ? parseInt(params.id) : 0;
+  const { products } = useProductStore();
   const product = products.find((p) => p.id === id);
   const addToCart = useCart((state) => state.addToCart);
   const { toast } = useToast();
