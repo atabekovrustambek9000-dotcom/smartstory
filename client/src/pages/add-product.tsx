@@ -1,12 +1,14 @@
-import { ArrowLeft, Upload, DollarSign, AlertCircle, ShieldCheck, Loader2, Wand2, Image as ImageIcon, X, Link as LinkIcon, Bell, Send, Eye } from "lucide-react";
+import { ArrowLeft, Upload, DollarSign, AlertCircle, ShieldCheck, Loader2, Wand2, Image as ImageIcon, X, Link as LinkIcon, Bell, Send, Eye, Lock, CreditCard } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAdminStore } from "@/lib/admin-store";
 
 export default function AddProduct() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const { listingPrice } = useAdminStore();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [imageLink, setImageLink] = useState("");
@@ -16,10 +18,11 @@ export default function AddProduct() {
   const [productName, setProductName] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   
-  // Mock limit check
-  const listingsUsed = 3;
+  // Mock limit check logic - Simulate user having 10 items already
+  const listingsUsed = 10; // Mock: User has used 10 listings
   const listingsLimit = 10;
-  const remaining = listingsLimit - listingsUsed;
+  const isOverLimit = listingsUsed >= listingsLimit;
+  const nextLimit = listingsLimit + 10;
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -100,6 +103,54 @@ export default function AddProduct() {
     setTimeout(() => setLocation("/profile"), 1500);
   };
 
+  // If user is over limit, show payment required screen
+  if (isOverLimit) {
+    return (
+      <div className="min-h-screen bg-background pb-20 relative flex flex-col">
+        <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border px-4 h-14 flex items-center gap-4">
+          <Link href="/profile">
+            <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-secondary transition-colors">
+              <ArrowLeft size={20} />
+            </button>
+          </Link>
+          <h1 className="text-lg font-bold">Limit tugadi</h1>
+        </header>
+
+        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
+          <div className="w-24 h-24 bg-red-100 text-red-600 rounded-full flex items-center justify-center mb-6 animate-pulse">
+            <Lock size={40} />
+          </div>
+          
+          <h2 className="text-2xl font-bold mb-2">Bepul limit tugadi</h2>
+          <p className="text-muted-foreground mb-8">
+            Siz {listingsLimit} ta bepul e'lon joyladingiz. Keyingi 10 ta e'lon uchun to'lov qilishingiz kerak.
+          </p>
+
+          <div className="bg-card border border-border rounded-2xl p-6 w-full max-w-xs mb-8 shadow-sm">
+            <p className="text-sm text-muted-foreground mb-1">To'lov miqdori</p>
+            <div className="text-4xl font-extrabold text-primary flex items-center justify-center">
+              ${listingPrice}
+            </div>
+            <p className="text-xs text-green-600 font-bold mt-2 bg-green-100 py-1 px-2 rounded-full inline-block">
+              +10 ta qo'shimcha e'lon
+            </p>
+          </div>
+
+          <Link href="/premium">
+            <button className="w-full max-w-xs bg-primary text-primary-foreground py-4 rounded-xl font-bold shadow-lg shadow-primary/25 active:scale-95 transition-all flex items-center justify-center gap-2">
+              <CreditCard size={20} />
+              To'lov qilish
+            </button>
+          </Link>
+          
+          <p className="text-xs text-muted-foreground mt-4">
+            To'lovdan so'ng limit avtomatik oshiriladi.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background pb-20 relative">
       <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border px-4 h-14 flex items-center gap-4">
@@ -124,7 +175,7 @@ export default function AddProduct() {
           <div>
             <h4 className="text-sm font-semibold text-blue-900">Bepul e'lonlar limiti</h4>
             <p className="text-xs text-blue-700 mt-0.5">
-              Sizda {remaining} ta bepul e'lon qoldi.
+              Sizda {listingsLimit - listingsUsed} ta bepul e'lon qoldi.
             </p>
           </div>
         </div>

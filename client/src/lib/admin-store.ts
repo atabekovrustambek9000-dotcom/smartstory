@@ -30,6 +30,7 @@ interface AdminStore {
   adminCard: AdminCard; // Admin card details
   adminPin: string; // Admin PIN code
   botConfig: BotConfig; // Telegram Bot configuration
+  listingPrice: string; // Price for additional 10 listings
   
   // Security State
   loginAttempts: number;
@@ -38,6 +39,7 @@ interface AdminStore {
   setAdminCard: (card: Partial<AdminCard>) => void; // Function to update card details
   setAdminPin: (pin: string) => void; // Function to update PIN
   setBotConfig: (config: Partial<BotConfig>) => void; // Function to update Bot config
+  setListingPrice: (price: string) => void; // Function to update listing price
   
   // Security Actions
   recordFailedAttempt: () => void;
@@ -66,6 +68,7 @@ export const useAdminStore = create<AdminStore>()(
         token: "",
         chatId: ""
       },
+      listingPrice: "1.50", // Default price
       
       loginAttempts: 0,
       lockoutUntil: null,
@@ -80,6 +83,10 @@ export const useAdminStore = create<AdminStore>()(
 
       setBotConfig: (config) => set((state) => ({
         botConfig: { ...state.botConfig, ...config }
+      })),
+
+      setListingPrice: (price) => set(() => ({
+        listingPrice: price
       })),
 
       recordFailedAttempt: () => set((state) => {

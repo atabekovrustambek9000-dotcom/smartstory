@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { ArrowLeft, Check, X, Clock, Shield, Search, Filter, Store, Lock, KeyRound, ChevronRight, CreditCard, Settings, Key, AlertTriangle, MessageSquare } from "lucide-react";
+import { ArrowLeft, Check, X, Clock, Shield, Search, Filter, Store, Lock, KeyRound, ChevronRight, CreditCard, Settings, Key, AlertTriangle, MessageSquare, DollarSign } from "lucide-react";
 import { useAdminStore } from "@/lib/admin-store";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminDashboard() {
-  const { requests, approveRequest, rejectRequest, adminCard, setAdminCard, adminPin, setAdminPin, loginAttempts, lockoutUntil, recordFailedAttempt, resetSecurity, botConfig, setBotConfig } = useAdminStore();
+  const { requests, approveRequest, rejectRequest, adminCard, setAdminCard, adminPin, setAdminPin, loginAttempts, lockoutUntil, recordFailedAttempt, resetSecurity, botConfig, setBotConfig, listingPrice, setListingPrice } = useAdminStore();
   const { toast } = useToast();
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -15,7 +15,8 @@ export default function AdminDashboard() {
   const [cardForm, setCardForm] = useState(adminCard);
   const [pinForm, setPinForm] = useState({ current: "", new: "", confirm: "" });
   const [botForm, setBotForm] = useState(botConfig);
-  const [activeTab, setActiveTab] = useState<'card' | 'security' | 'bot'>('card');
+  const [priceForm, setPriceForm] = useState(listingPrice);
+  const [activeTab, setActiveTab] = useState<'card' | 'security' | 'bot' | 'pricing'>('card');
 
   // SECURITY: Admin Login State
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -117,6 +118,9 @@ export default function AdminDashboard() {
     } else if (activeTab === 'bot') {
       setBotConfig(botForm);
       toast({ description: "Bot sozlamalari saqlandi!" });
+    } else if (activeTab === 'pricing') {
+      setListingPrice(priceForm);
+      toast({ description: "Narxlar yangilandi!" });
     } else {
       // Change Password Logic
       if (pinForm.current !== adminPin) {
@@ -290,7 +294,13 @@ export default function AdminDashboard() {
                   onClick={() => setActiveTab('bot')}
                   className={`flex-1 py-2 px-3 text-xs font-medium rounded-xl transition-colors whitespace-nowrap ${activeTab === 'bot' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:bg-secondary/50'}`}
                 >
-                  Telegram Bot
+                  Bot
+                </button>
+                <button 
+                  onClick={() => setActiveTab('pricing')}
+                  className={`flex-1 py-2 px-3 text-xs font-medium rounded-xl transition-colors whitespace-nowrap ${activeTab === 'pricing' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:bg-secondary/50'}`}
+                >
+                  Narxlar
                 </button>
                 <button 
                   onClick={() => setActiveTab('security')}
@@ -369,6 +379,26 @@ export default function AdminDashboard() {
                         className="w-full p-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none font-mono text-xs"
                         placeholder="-1001234567890"
                       />
+                    </div>
+                  </>
+                ) : activeTab === 'pricing' ? (
+                  <>
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-muted-foreground uppercase">Qo'shimcha 10 ta e'lon narxi</label>
+                      <div className="relative">
+                        <DollarSign size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                        <input 
+                          value={priceForm}
+                          onChange={(e) => setPriceForm(e.target.value)}
+                          className="w-full pl-9 pr-4 py-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none font-bold text-lg"
+                          placeholder="1.50"
+                          type="number"
+                          step="0.01"
+                        />
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">
+                        Foydalanuvchi 10 ta bepul e'londan so'ng har 10 ta yangi e'lon uchun shu summani to'laydi.
+                      </p>
                     </div>
                   </>
                 ) : (
