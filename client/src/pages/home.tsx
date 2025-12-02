@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { Search, Plus, Heart, Bell, Store, ShoppingBag } from "lucide-react";
+import { Search, Plus, Heart, Bell, Store, ShoppingBag, Radio } from "lucide-react";
 import { products, categories } from "@/lib/data";
 import BottomNav from "@/components/bottom-nav";
 import Stories from "@/components/stories";
@@ -49,14 +49,14 @@ export default function Home() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             {/* Store Icon */}
-            <div className="w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary/30 text-white">
-              <ShoppingBag size={24} strokeWidth={2.5} />
+            <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-xl flex items-center justify-center shadow-lg shadow-red-500/30 text-white animate-pulse">
+              <Radio size={24} strokeWidth={2.5} />
             </div>
             
             {/* Store Name */}
             <div className="flex items-center gap-2">
-               <h1 className="text-3xl font-extrabold tracking-tight text-foreground leading-none" style={{ fontFamily: "'Outfit', sans-serif" }}>
-                Yangiyer
+               <h1 className="text-3xl font-extrabold tracking-tight text-red-600 leading-none" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                LIVE
               </h1>
               <span className="text-xs font-bold text-primary tracking-[0.15em] uppercase bg-primary/10 px-2 py-1 rounded-md mt-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                 Smart Store
