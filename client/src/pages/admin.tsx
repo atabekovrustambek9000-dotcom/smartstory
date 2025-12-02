@@ -18,6 +18,7 @@ export default function AdminDashboard() {
   const [priceForm, setPriceForm] = useState(listingPrice);
   const [telegramForm, setTelegramForm] = useState(adminTelegramId);
   const [activeTab, setActiveTab] = useState<'card' | 'security' | 'bot' | 'pricing' | 'contact'>('card');
+  const [viewImage, setViewImage] = useState<string | null>(null);
 
   // SECURITY: Admin Login State
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -258,6 +259,42 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Image Viewer Modal */}
+      <AnimatePresence>
+        {viewImage && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setViewImage(null)}
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4"
+            >
+               <motion.div 
+                 initial={{ opacity: 0, scale: 0.9 }}
+                 animate={{ opacity: 1, scale: 1 }}
+                 exit={{ opacity: 0, scale: 0.9 }}
+                 className="bg-background p-2 rounded-2xl max-w-sm w-full relative"
+                 onClick={(e) => e.stopPropagation()}
+               >
+                 <button 
+                   onClick={() => setViewImage(null)}
+                   className="absolute -top-4 -right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center text-black font-bold shadow-lg"
+                 >
+                   <X size={16} />
+                 </button>
+                 <img src={viewImage} alt="Chek" className="w-full rounded-xl" />
+                 <div className="mt-2 text-center">
+                   <a href={viewImage} download="check.png" className="text-xs text-primary font-medium hover:underline">
+                     Yuklab olish
+                   </a>
+                 </div>
+               </motion.div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Settings Modal */}
       <AnimatePresence>
@@ -534,14 +571,26 @@ export default function AdminDashboard() {
                   </div>
 
                   {/* Shop Info */}
-                  <div className="bg-secondary/30 p-2 rounded-lg mb-3 border border-border/50 flex items-center gap-2">
-                    <div className="bg-background p-1.5 rounded-md shadow-sm text-muted-foreground">
-                      <Store size={14} />
+                  <div className="bg-secondary/30 p-2 rounded-lg mb-3 border border-border/50 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <div className="bg-background p-1.5 rounded-md shadow-sm text-muted-foreground">
+                        <Store size={14} />
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Do'kon Nomi</p>
+                        <p className="text-xs font-bold">{req.senderName || "Noma'lum"}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Do'kon Nomi</p>
-                      <p className="text-xs font-bold">{req.senderName || "Noma'lum"}</p>
-                    </div>
+                    
+                    {req.checkImage && (
+                      <button 
+                        onClick={() => setViewImage(req.checkImage!)}
+                        className="px-3 py-1.5 bg-blue-50 text-blue-600 text-[10px] font-bold rounded-md hover:bg-blue-100 transition-colors flex items-center gap-1"
+                      >
+                        <CreditCard size={12} />
+                        Chekni ko'rish
+                      </button>
+                    )}
                   </div>
 
                   <div className="flex items-center gap-2 mb-4">

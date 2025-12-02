@@ -8,6 +8,7 @@ export interface PremiumRequest {
   senderName: string; // Do'kon nomi
   listingsCount: number; // Sotib olinayotgan e'lonlar soni
   amount: string;
+  checkImage?: string; // Base64 or URL of the payment receipt
   date: string;
   status: 'pending' | 'approved' | 'rejected';
 }

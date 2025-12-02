@@ -103,14 +103,9 @@ export default function Premium() {
     setIsPaymentModalOpen(false);
     setCheckImage(null);
     
-    // Send Check to Telegram (Simulated via link)
-    setTimeout(() => {
-       handleSendToTelegram();
-    }, 500);
-
     toast({
-      title: "So'rov yuborildi!",
-      description: "Chekni adminga yuboring. To'lov tasdiqlanishini kuting.",
+      title: "So'rov yuborildi! 🚀",
+      description: "Chek va ma'lumotlar Adminga avtomatik yuborildi. Tasdiqlashni kuting.",
       duration: 4000,
     });
   };
