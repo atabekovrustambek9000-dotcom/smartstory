@@ -9,7 +9,7 @@ import { useCart } from "@/lib/cart-store";
 import { useWishlist } from "@/lib/wishlist-store";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-store";
-import logoImg from "@assets/stock_images/flat_vector_app_icon_ed9003fe.jpg";
+import logoImg from "@assets/stock_images/shopping_bag_logo_ic_3d3f01c4.jpg";
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState("All");
