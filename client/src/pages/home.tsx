@@ -59,9 +59,6 @@ export default function Home() {
                <h1 className="text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-500 to-blue-600 animate-gradient-x leading-tight" style={{ fontFamily: "'Outfit', sans-serif" }}>
                 Smart Store
               </h1>
-              <span className="text-[10px] font-medium text-muted-foreground tracking-widest uppercase" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                Yangiyer Market
-              </span>
             </div>
           </div>
 
