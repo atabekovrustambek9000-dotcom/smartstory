@@ -1,4 +1,4 @@
-import { ArrowLeft, Upload, DollarSign, AlertCircle, ShieldCheck, Loader2, Wand2, Image as ImageIcon, X, Link as LinkIcon, Bell, Send, Eye, Lock, CreditCard, Plus, Minus, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Upload, DollarSign, AlertCircle, ShieldCheck, Loader2, Wand2, Image as ImageIcon, X, Link as LinkIcon, Bell, Send, Eye, Lock, CreditCard, Plus, Minus, CheckCircle2, History } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useRef } from "react";
@@ -103,8 +103,8 @@ export default function AddProduct() {
     if (notifyUsers) {
         setTimeout(() => {
             toast({
-                title: "Bot Xabarnomasi",
-                description: "Mahsulot bot foydalanuvchilariga yuborildi 🚀",
+                title: "Story Joylandi ✅",
+                description: "Mahsulot kontaktlaringizga story sifatida yuborildi",
             });
         }, 500);
     }
@@ -406,27 +406,27 @@ export default function AddProduct() {
             />
           </div>
           
-           {/* Bot Notification Toggle & Preview */}
+           {/* Bot Notification/Story Toggle & Preview */}
            <div className="space-y-3">
              <div 
                onClick={() => setNotifyUsers(!notifyUsers)}
-               className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${notifyUsers ? 'bg-primary/5 border-primary/30' : 'bg-secondary/30 border-border'}`}
+               className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${notifyUsers ? 'bg-gradient-to-r from-pink-500/10 to-purple-500/10 border-pink-500/30' : 'bg-secondary/30 border-border'}`}
              >
                <div className="flex items-center gap-3">
-                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${notifyUsers ? 'bg-primary/10 text-primary' : 'bg-secondary text-muted-foreground'}`}>
-                   <Send size={20} />
+                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${notifyUsers ? 'bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 text-white' : 'bg-secondary text-muted-foreground'}`}>
+                   <History size={20} strokeWidth={2.5} />
                  </div>
                  <div>
-                   <h4 className="font-bold text-sm">Bot orqali yuborish</h4>
-                   <p className="text-xs text-muted-foreground">Barcha foydalanuvchilarga xabar boradi</p>
+                   <h4 className="font-bold text-sm">Kontaktlarga Story joylash</h4>
+                   <p className="text-xs text-muted-foreground">Mahsulot kontaktlaringizga ko'rinadi</p>
                  </div>
                </div>
-               <div className={`w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${notifyUsers ? 'bg-primary border-primary' : 'border-muted-foreground'}`}>
+               <div className={`w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${notifyUsers ? 'bg-pink-500 border-pink-500' : 'border-muted-foreground'}`}>
                  {notifyUsers && <div className="w-2.5 h-2.5 bg-white rounded-full" />}
                </div>
              </div>
 
-             {/* Telegram Preview */}
+             {/* Story Preview */}
              <AnimatePresence>
                {notifyUsers && (
                  <motion.div
@@ -435,25 +435,34 @@ export default function AddProduct() {
                     exit={{ height: 0, opacity: 0 }}
                     className="overflow-hidden"
                  >
-                   <div className="bg-[#2A303C] p-3 rounded-xl border border-gray-700 relative max-w-[85%] mx-auto">
-                     <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-[#2A303C] px-2 text-[10px] text-gray-400 font-bold rounded border border-gray-700">Telegram Preview</div>
-                     
-                     {selectedImage ? (
-                        <img src={selectedImage} alt="Preview" className="w-full h-32 object-cover rounded-lg mb-2" />
-                     ) : (
-                        <div className="w-full h-32 bg-gray-700 rounded-lg mb-2 flex items-center justify-center text-gray-500 text-xs">Rasm yo'q</div>
-                     )}
-                     
-                     <div className="text-white text-xs mb-2">
-                        <b>{productName || "Mahsulot Nomi"}</b>
-                        <br />
-                        Yangi mahsulot qo'shildi! 🚀
-                     </div>
-
-                     <div className="bg-[#3E4856] hover:bg-[#4A5566] transition-colors text-white text-xs font-bold py-2 rounded-lg text-center cursor-pointer flex items-center justify-center gap-1.5">
-                       Start Bot 🤖
+                   <div className="flex justify-center py-2">
+                     <div className="w-[120px] aspect-[9/16] rounded-xl overflow-hidden relative border-2 border-white shadow-lg ring-2 ring-pink-500 ring-offset-2 ring-offset-background">
+                        {selectedImage ? (
+                          <img src={selectedImage} className="w-full h-full object-cover" alt="Story" />
+                        ) : (
+                          <div className="w-full h-full bg-gray-800 flex items-center justify-center text-gray-500 text-[10px]">Rasm yo'q</div>
+                        )}
+                        
+                        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60 flex flex-col justify-between p-2">
+                           <div className="flex items-center gap-1">
+                              <div className="w-4 h-4 rounded-full bg-white/20 backdrop-blur-sm"></div>
+                              <div className="h-1.5 w-10 bg-white/20 rounded-full backdrop-blur-sm"></div>
+                           </div>
+                           
+                           <div className="text-center">
+                              <p className="text-white font-bold text-[8px] line-clamp-2 mb-1 drop-shadow-md">
+                                {productName || "Mahsulot Nomi"}
+                              </p>
+                              <div className="bg-white text-black text-[8px] font-bold py-0.5 px-2 rounded-full inline-block">
+                                Ko'rish
+                              </div>
+                           </div>
+                        </div>
                      </div>
                    </div>
+                   <p className="text-center text-[10px] text-muted-foreground mt-1">
+                     Story oldindan ko'rinishi
+                   </p>
                  </motion.div>
                )}
              </AnimatePresence>
