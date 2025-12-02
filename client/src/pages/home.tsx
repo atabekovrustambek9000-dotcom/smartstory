@@ -9,7 +9,6 @@ import { useCart } from "@/lib/cart-store";
 import { useWishlist } from "@/lib/wishlist-store";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-store";
-import logoImg from "@assets/stock_images/shopping_bag_logo_ic_3d3f01c4.jpg";
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -49,9 +48,9 @@ export default function Home() {
       <header className="sticky top-0 z-10 bg-background/70 backdrop-blur-lg border-b border-border/50 px-4 py-3">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            {/* Store Logo - Animated */}
-            <div className="w-12 h-12 rounded-xl overflow-hidden shadow-lg shadow-primary/20 border border-border/50 animate-bounce-slow">
-              <img src={logoImg} alt="Logo" className="w-full h-full object-cover" />
+            {/* Store Logo - Animated Icon */}
+            <div className="w-12 h-12 rounded-xl overflow-hidden shadow-lg shadow-primary/30 border border-border/50 animate-bounce-slow bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-white">
+              <ShoppingBag size={24} strokeWidth={2.5} />
             </div>
             
             {/* Store Name */}
