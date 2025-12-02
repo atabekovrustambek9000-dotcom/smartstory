@@ -1,4 +1,4 @@
-import { ArrowLeft, Upload, DollarSign, AlertCircle, ShieldCheck, Loader2, Wand2, Image as ImageIcon, X, Link as LinkIcon, Bell, Send, Eye, Lock, CreditCard, Plus, Minus, CheckCircle2, History } from "lucide-react";
+import { ArrowLeft, Upload, DollarSign, AlertCircle, ShieldCheck, Loader2, Wand2, Image as ImageIcon, X, Link as LinkIcon, Bell, Send, Eye, Lock, CreditCard, Plus, Minus, CheckCircle2, History, ChevronRight } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useRef } from "react";
@@ -19,6 +19,10 @@ export default function AddProduct() {
   const [isBackgroundBlurred, setIsBackgroundBlurred] = useState(false);
   const [notifyUsers, setNotifyUsers] = useState(true); 
   const [productName, setProductName] = useState("");
+  const [categories, setCategories] = useState(['Elektronika', 'Kiyim-kechak', "Uy-ro'zg'or", "Go'zallik", "Aksessuarlar", "Bolalar uchun"]);
+  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Mock limit check logic 
@@ -387,12 +391,61 @@ export default function AddProduct() {
             
             <div className="space-y-2">
               <label className="text-sm font-medium">Kategoriya</label>
-              <select className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary focus:bg-background outline-none transition-all appearance-none">
-                <option>Elektronika</option>
-                <option>Kiyim-kechak</option>
-                <option>Uy-ro'zg'or</option>
-                <option>Go'zallik</option>
-              </select>
+              {isCreatingCategory ? (
+                <div className="flex gap-2">
+                  <input 
+                    type="text"
+                    value={newCategoryName}
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    placeholder="Yangi kategoriya nomi..."
+                    className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary focus:bg-background outline-none transition-all"
+                    autoFocus
+                  />
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      if (newCategoryName.trim()) {
+                        setCategories([...categories, newCategoryName]);
+                        setSelectedCategory(newCategoryName);
+                        setNewCategoryName("");
+                      }
+                      setIsCreatingCategory(false);
+                    }}
+                    className="bg-primary text-primary-foreground px-4 rounded-xl font-bold text-xs"
+                  >
+                    OK
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => setIsCreatingCategory(false)}
+                    className="bg-secondary text-muted-foreground px-3 rounded-xl"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+              ) : (
+                <div className="relative">
+                   <select 
+                    value={selectedCategory}
+                    onChange={(e) => {
+                      if (e.target.value === 'NEW_CATEGORY') {
+                        setIsCreatingCategory(true);
+                      } else {
+                        setSelectedCategory(e.target.value);
+                      }
+                    }}
+                    className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary focus:bg-background outline-none transition-all appearance-none"
+                  >
+                    {categories.map(cat => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                    <option value="NEW_CATEGORY" className="font-bold text-primary">+ Yangi kategoriya...</option>
+                  </select>
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                    <ChevronRight size={16} className="rotate-90" />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -453,8 +506,8 @@ export default function AddProduct() {
                               <p className="text-white font-bold text-[8px] line-clamp-2 mb-1 drop-shadow-md">
                                 {productName || "Mahsulot Nomi"}
                               </p>
-                              <div className="bg-white text-black text-[8px] font-bold py-0.5 px-2 rounded-full inline-block">
-                                Ko'rish
+                              <div className="bg-white text-black text-[8px] font-bold py-0.5 px-2 rounded-full inline-block whitespace-nowrap">
+                                Do'konni ochish
                               </div>
                            </div>
                         </div>
