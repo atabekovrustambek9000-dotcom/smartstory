@@ -9,7 +9,7 @@ import { useCart } from "@/lib/cart-store";
 import { useWishlist } from "@/lib/wishlist-store";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-store";
-import logoImg from "@assets/stock_images/3d_colorful_abstract_e664d34a.jpg";
+import logoImg from "@assets/stock_images/3d_isometric_shop_st_60bcbd6a.jpg";
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -49,14 +49,14 @@ export default function Home() {
       <header className="sticky top-0 z-10 bg-background/70 backdrop-blur-lg border-b border-border/50 px-4 py-3">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            {/* Store Logo */}
-            <div className="w-12 h-12 rounded-xl overflow-hidden shadow-lg shadow-primary/20 border border-border/50">
+            {/* Store Logo - Animated */}
+            <div className="w-12 h-12 rounded-xl overflow-hidden shadow-lg shadow-primary/20 border border-border/50 animate-bounce-slow">
               <img src={logoImg} alt="Logo" className="w-full h-full object-cover" />
             </div>
             
             {/* Store Name */}
             <div className="flex items-center gap-2">
-               <h1 className="text-3xl font-extrabold tracking-tight text-red-600 leading-none animate-pulse" style={{ fontFamily: "'Outfit', sans-serif" }}>
+               <h1 className="text-3xl font-extrabold tracking-tight text-red-600 leading-none animate-pulse" style={{ fontFamily: "'Oxanium', sans-serif" }}>
                 LIVE
               </h1>
               <span className="text-xs font-bold text-primary tracking-[0.15em] uppercase bg-primary/10 px-2 py-1 rounded-md mt-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
