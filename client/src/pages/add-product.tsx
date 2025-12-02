@@ -1,4 +1,4 @@
-import { ArrowLeft, Upload, DollarSign, AlertCircle, ShieldCheck, Loader2, Wand2, Image as ImageIcon, X, Link as LinkIcon } from "lucide-react";
+import { ArrowLeft, Upload, DollarSign, AlertCircle, ShieldCheck, Loader2, Wand2, Image as ImageIcon, X, Link as LinkIcon, Bell, Send } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useRef } from "react";
@@ -12,6 +12,7 @@ export default function AddProduct() {
   const [imageLink, setImageLink] = useState("");
   const [uploadMode, setUploadMode] = useState<'file' | 'link'>('file');
   const [isBackgroundBlurred, setIsBackgroundBlurred] = useState(false);
+  const [notifyUsers, setNotifyUsers] = useState(true); // New State for Notification
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Mock limit check
@@ -86,7 +87,16 @@ export default function AddProduct() {
       duration: 3000,
     });
     
-    setTimeout(() => setLocation("/profile"), 1000);
+    if (notifyUsers) {
+        setTimeout(() => {
+            toast({
+                title: "Bot Xabarnomasi",
+                description: "Mahsulot bot foydalanuvchilariga yuborildi 🚀",
+            });
+        }, 500);
+    }
+    
+    setTimeout(() => setLocation("/profile"), 1500);
   };
 
   return (
@@ -285,6 +295,25 @@ export default function AddProduct() {
               className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary focus:bg-background outline-none transition-all resize-none"
             />
           </div>
+          
+           {/* Bot Notification Toggle */}
+           <div 
+             onClick={() => setNotifyUsers(!notifyUsers)}
+             className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${notifyUsers ? 'bg-primary/5 border-primary/30' : 'bg-secondary/30 border-border'}`}
+           >
+             <div className="flex items-center gap-3">
+               <div className={`w-10 h-10 rounded-full flex items-center justify-center ${notifyUsers ? 'bg-primary/10 text-primary' : 'bg-secondary text-muted-foreground'}`}>
+                 <Send size={20} />
+               </div>
+               <div>
+                 <h4 className="font-bold text-sm">Bot orqali yuborish</h4>
+                 <p className="text-xs text-muted-foreground">Barcha foydalanuvchilarga xabar boradi</p>
+               </div>
+             </div>
+             <div className={`w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${notifyUsers ? 'bg-primary border-primary' : 'border-muted-foreground'}`}>
+               {notifyUsers && <div className="w-2.5 h-2.5 bg-white rounded-full" />}
+             </div>
+           </div>
         </div>
 
         <button 
