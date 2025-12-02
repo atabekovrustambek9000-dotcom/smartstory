@@ -1,4 +1,4 @@
-import { ArrowLeft, Check, Crown, Star, Zap, CreditCard, Copy, X, ShieldCheck, Store } from "lucide-react";
+import { ArrowLeft, Check, Crown, Star, Zap, CreditCard, Copy, X, ShieldCheck, Store, ShoppingBag } from "lucide-react";
 import { Link } from "wouter";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -7,11 +7,11 @@ import { useAdminStore } from "@/lib/admin-store";
 import { useShopStore } from "@/lib/shop-store";
 
 export default function Premium() {
-  const [selectedPlan, setSelectedPlan] = useState<"monthly" | "yearly">("monthly");
+  const [selectedPackage, setSelectedPackage] = useState(10);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [senderName, setSenderName] = useState("");
   const { toast } = useToast();
-  const { addRequest, adminCard } = useAdminStore();
+  const { addRequest, adminCard, listingPrice } = useAdminStore();
   const { shopName } = useShopStore();
 
   // Auto-fill shop name
@@ -33,6 +33,13 @@ export default function Premium() {
     });
   };
 
+  // Calculate Price
+  const calculatePrice = () => {
+    const unitPrice = parseFloat(listingPrice);
+    const multiplier = selectedPackage / 10;
+    return (unitPrice * multiplier).toFixed(2);
+  };
+
   const handleConfirmPayment = () => {
     if (!senderName.trim()) {
       toast({
@@ -47,8 +54,10 @@ export default function Premium() {
       userId: '7823',
       userName: 'John Doe', // Bu yerda profil egasining ismi bo'ladi
       senderName: senderName, // Endi bu maydonda do'kon nomi saqlanadi
-      plan: selectedPlan,
-      amount: selectedPlan === "monthly" ? "$1.50" : "$13.00"
+      listingsCount: selectedPackage,
+      amount: `$${calculatePrice()}`,
+      // @ts-ignore - plan field is deprecated but kept for interface compatibility if needed temporarily
+      plan: 'monthly' 
     });
 
     setIsPaymentModalOpen(false);
@@ -64,7 +73,7 @@ export default function Premium() {
       {/* Header */}
       <div className="bg-gray-900 text-white pb-10 pt-6 px-6 rounded-b-[2.5rem] relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20">
-          <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-yellow-500 rounded-full blur-[80px]"></div>
+          <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-blue-500 rounded-full blur-[80px]"></div>
           <div className="absolute bottom-[-20%] left-[-10%] w-64 h-64 bg-purple-600 rounded-full blur-[80px]"></div>
         </div>
         
@@ -76,87 +85,82 @@ export default function Premium() {
           </Link>
           
           <div className="flex flex-col items-center text-center">
-            <div className="w-20 h-20 bg-gradient-to-tr from-yellow-300 to-yellow-600 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-500/30 mb-6 rotate-3">
-              <Crown size={40} className="text-white" strokeWidth={2.5} />
+            <div className="w-20 h-20 bg-gradient-to-tr from-blue-400 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 mb-6 rotate-3">
+              <ShoppingBag size={40} className="text-white" strokeWidth={2.5} />
             </div>
-            <h1 className="text-3xl font-bold mb-2">Premium-ga o'tish</h1>
+            <h1 className="text-3xl font-bold mb-2">E'lonlar olish</h1>
             <p className="text-gray-300 text-sm max-w-[260px]">
-              Cheksiz imkoniyatlar va ko'proq xaridorlarga ega bo'ling.
+              Do'koningizni rivojlantirish uchun qo'shimcha e'lonlar paketini tanlang.
             </p>
           </div>
         </div>
       </div>
 
       <div className="px-6 -mt-8 relative z-20 space-y-6">
-        {/* Plan Switcher */}
-        <div className="bg-white p-1.5 rounded-xl shadow-lg flex relative">
-          <div 
-            className={`absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-gray-900 rounded-lg transition-all duration-300 ${selectedPlan === 'monthly' ? 'left-1.5' : 'left-[calc(50%+3px)]'}`}
-          />
-          <button 
-            onClick={() => setSelectedPlan("monthly")}
-            className={`flex-1 py-2.5 text-sm font-bold z-10 transition-colors ${selectedPlan === "monthly" ? "text-white" : "text-gray-500"}`}
-          >
-            Oylik
-          </button>
-          <button 
-            onClick={() => setSelectedPlan("yearly")}
-            className={`flex-1 py-2.5 text-sm font-bold z-10 transition-colors ${selectedPlan === "yearly" ? "text-white" : "text-gray-500"}`}
-          >
-            Yillik <span className="text-[9px] bg-green-500 text-white px-1.5 py-0.5 rounded ml-1">-20%</span>
-          </button>
+        
+        {/* Package Selection */}
+        <div className="bg-card border border-border rounded-2xl p-6 shadow-lg">
+            <h3 className="font-bold text-center mb-4 uppercase text-xs text-muted-foreground tracking-wider">
+                Qo'shimcha E'lonlar Soni
+            </h3>
+            
+            <div className="grid grid-cols-5 gap-2 mb-6">
+              {[10, 20, 30, 40, 50].map((count) => (
+                <button
+                  key={count}
+                  onClick={() => setSelectedPackage(count)}
+                  className={`aspect-square rounded-xl flex flex-col items-center justify-center text-xs font-bold transition-all border-2 ${
+                    selectedPackage === count 
+                      ? "bg-primary border-primary text-white shadow-lg shadow-primary/30 scale-110 z-10" 
+                      : "bg-secondary/50 border-transparent text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  }`}
+                >
+                  <span>+{count}</span>
+                </button>
+              ))}
+            </div>
+
+            <div className="flex flex-col items-center justify-center p-4 bg-secondary/30 rounded-xl border border-border/50">
+                <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Jami To'lov</p>
+                <div className="flex items-end gap-1 text-foreground">
+                    <span className="text-4xl font-extrabold tracking-tighter">${calculatePrice()}</span>
+                    <span className="text-sm font-bold mb-1.5 opacity-70">USD</span>
+                </div>
+                <div className="mt-2 text-[10px] text-center text-green-600 bg-green-50 dark:bg-green-900/20 py-1 px-2 rounded-md">
+                    {selectedPackage} ta yangi e'lon qo'shiladi
+                </div>
+            </div>
         </div>
 
         {/* Features */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-4 bg-card p-4 rounded-2xl border border-border/50 shadow-sm">
-            <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
-              <Zap size={20} fill="currentColor" />
+        <div className="space-y-3 opacity-80">
+          <div className="flex items-center gap-3 px-2">
+            <div className="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center flex-shrink-0">
+              <Check size={14} />
             </div>
-            <div>
-              <h3 className="font-bold text-sm">Cheksiz E'lonlar</h3>
-              <p className="text-xs text-muted-foreground">Istaganingizcha mahsulot joylashtiring.</p>
-            </div>
+            <p className="text-xs text-muted-foreground">E'lonlar muddatsiz saqlanadi</p>
           </div>
-
-          <div className="flex items-center gap-4 bg-card p-4 rounded-2xl border border-border/50 shadow-sm">
-            <div className="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center flex-shrink-0">
-              <Star size={20} fill="currentColor" />
+          <div className="flex items-center gap-3 px-2">
+             <div className="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center flex-shrink-0">
+              <Check size={14} />
             </div>
-            <div>
-              <h3 className="font-bold text-sm">Top Do'kon</h3>
-              <p className="text-xs text-muted-foreground">Qidiruv natijalarida eng yuqorida turing.</p>
-            </div>
+            <p className="text-xs text-muted-foreground">Bot orqali xabarnoma yuborish</p>
           </div>
-
-          <div className="flex items-center gap-4 bg-card p-4 rounded-2xl border border-border/50 shadow-sm">
-            <div className="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center flex-shrink-0">
-              <Check size={20} />
+          <div className="flex items-center gap-3 px-2">
+             <div className="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center flex-shrink-0">
+              <Check size={14} />
             </div>
-            <div>
-              <h3 className="font-bold text-sm">0% Komissiya</h3>
-              <p className="text-xs text-muted-foreground">Sotuvdan tushgan pul 100% sizniki.</p>
-            </div>
+            <p className="text-xs text-muted-foreground">Tezkor moderatsiya</p>
           </div>
         </div>
 
-        {/* Price and CTA */}
-        <div className="pt-4">
-          <div className="flex flex-col items-center mb-6">
-            <div className="text-3xl font-bold text-foreground">
-              {selectedPlan === "monthly" ? "$1.50" : "$13.00"}
-              <span className="text-sm text-muted-foreground font-normal">
-                /{selectedPlan === "monthly" ? "oy" : "yil"}
-              </span>
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">Istalgan vaqtda bekor qilish mumkin.</p>
-          </div>
-
+        {/* CTA */}
+        <div className="pt-2">
           <button 
             onClick={handleSubscribe}
-            className="w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white py-4 rounded-2xl font-bold shadow-xl shadow-gray-900/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+            className="w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold shadow-xl shadow-primary/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
           >
-            Obuna bo'lish
+            Sotib olish
             <ArrowLeft className="rotate-180" size={20} />
           </button>
         </div>
@@ -187,14 +191,17 @@ export default function Premium() {
                     <span className="font-bold text-lg">To'lov qilish</span>
                  </div>
                  <button onClick={() => setIsPaymentModalOpen(false)} className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-muted-foreground">
-                    <X size={18} />
+                   <X size={18} />
                  </button>
               </div>
 
               <div className="p-6 space-y-6">
                 <div className="text-center">
                   <p className="text-muted-foreground text-sm mb-1">Jami summa</p>
-                  <h2 className="text-4xl font-bold text-foreground">{selectedPlan === "monthly" ? "$1.50" : "$13.00"}</h2>
+                  <h2 className="text-4xl font-bold text-foreground">${calculatePrice()}</h2>
+                  <span className="text-xs font-medium bg-secondary px-2 py-1 rounded mt-2 inline-block">
+                    +{selectedPackage} ta e'lon uchun
+                  </span>
                 </div>
 
                 <div className="bg-secondary/30 p-4 rounded-2xl border border-border/50 space-y-4">
