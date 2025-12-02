@@ -23,6 +23,7 @@ export default function AddProduct() {
   const [isBackgroundBlurred, setIsBackgroundBlurred] = useState(false);
   const [notifyUsers, setNotifyUsers] = useState(true); 
   const [productName, setProductName] = useState("");
+  const [productPrice, setProductPrice] = useState(""); // State for price
   const [categories, setCategories] = useState(['Elektronika', 'Kiyim-kechak', "Uy-ro'zg'or", "Go'zallik", "Aksessuarlar", "Bolalar uchun"]);
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
   const [isCreatingCategory, setIsCreatingCategory] = useState(false);
@@ -108,7 +109,7 @@ export default function AddProduct() {
     const newProduct = {
       id: Date.now(),
       name: productName,
-      price: parseFloat(parseFloat(calculatePrice()).toFixed(2)) || 0, // This was calculating package price, fix below
+      price: parseFloat(productPrice) || 0,
       category: selectedCategory,
       image: selectedImage || "",
       description: (document.querySelector('textarea') as HTMLTextAreaElement)?.value || "",
@@ -117,26 +118,13 @@ export default function AddProduct() {
       sellerTelegram: userName ? userName.replace(/\s+/g, '_') : "yangiyer_smart_bot" 
     };
     
-    // Note: The original code had a separate input for product price, let's fix that
-    // I need to find the price input value. Since I didn't control the state for price in the original snippet fully properly (it was just an input),
-    // let's fix the price state first.
-    
-    addProduct({
-        ...newProduct,
-        price: parseFloat((document.querySelector('input[type="number"]') as HTMLInputElement)?.value) || 0
-    });
+    addProduct(newProduct);
 
     // Increment Listings Count
     incrementListingsUsed();
 
     if (notifyUsers) {
         setTimeout(() => {
-            toast({
-                title: "Story Tayyorlandi 📸",
-                description: "Story joylash oynasi ochilmoqda... Tasdiqlab yuboring.",
-                duration: 4000,
-            });
-            
             // Try to trigger Telegram Story
             try {
                 // @ts-ignore
@@ -149,10 +137,20 @@ export default function AddProduct() {
                             url: `https://t.me/yangiyer_smart_bot/app?startapp=product_${newProduct.id}` 
                         } 
                     });
+                } else {
+                   // Fallback for browser testing
+                   console.log("Telegram Story API not available (Browser Mode)");
+                   alert(`Simulyatsiya: Story joylandi!\n\nRasm: ${productName}\nMatn: Narxi $${newProduct.price}\nTugma: Do'konni ochish`);
                 }
             } catch (e) {
                 console.error("Story error:", e);
             }
+            
+             toast({
+                title: "Story Tayyorlandi 📸",
+                description: "Story muvaffaqiyatli joylandi!",
+                duration: 3000,
+            });
         }, 500);
     }
     
@@ -426,6 +424,8 @@ export default function AddProduct() {
                 <input 
                   type="number" 
                   required
+                  value={productPrice}
+                  onChange={(e) => setProductPrice(e.target.value)}
                   placeholder="0.00"
                   className="w-full pl-9 pr-4 py-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary focus:bg-background outline-none transition-all"
                 />

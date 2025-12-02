@@ -18,7 +18,7 @@ export const useShopStore = create<ShopStore>()(
       shopName: "Tech Haven", // Default name
       description: "Best gadgets in town!",
       phone: "+998 90 123 45 67",
-      listingsUsed: 3, // Mock initial usage
+      listingsUsed: 0, // Initial usage
       listingsLimit: 10, // Initial free limit
       
       setShopInfo: (info) => set((state) => ({ ...state, ...info })),
