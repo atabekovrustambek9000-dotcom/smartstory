@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { ArrowLeft, Check, X, Clock, Shield, Search, Filter, Store, Lock, KeyRound, ChevronRight, CreditCard, Settings, Key, AlertTriangle, MessageSquare, DollarSign } from "lucide-react";
+import { ArrowLeft, Check, X, Clock, Shield, Search, Filter, Store, Lock, KeyRound, ChevronRight, CreditCard, Settings, Key, AlertTriangle, MessageSquare, DollarSign, User } from "lucide-react";
 import { useAdminStore } from "@/lib/admin-store";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminDashboard() {
-  const { requests, approveRequest, rejectRequest, adminCard, setAdminCard, adminPin, setAdminPin, loginAttempts, lockoutUntil, recordFailedAttempt, resetSecurity, botConfig, setBotConfig, listingPrice, setListingPrice } = useAdminStore();
+  const { requests, approveRequest, rejectRequest, adminCard, setAdminCard, adminPin, setAdminPin, loginAttempts, lockoutUntil, recordFailedAttempt, resetSecurity, botConfig, setBotConfig, listingPrice, setListingPrice, adminTelegramId, setAdminTelegramId } = useAdminStore();
   const { toast } = useToast();
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -16,7 +16,8 @@ export default function AdminDashboard() {
   const [pinForm, setPinForm] = useState({ current: "", new: "", confirm: "" });
   const [botForm, setBotForm] = useState(botConfig);
   const [priceForm, setPriceForm] = useState(listingPrice);
-  const [activeTab, setActiveTab] = useState<'card' | 'security' | 'bot' | 'pricing'>('card');
+  const [telegramForm, setTelegramForm] = useState(adminTelegramId);
+  const [activeTab, setActiveTab] = useState<'card' | 'security' | 'bot' | 'pricing' | 'contact'>('card');
 
   // SECURITY: Admin Login State
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -121,6 +122,9 @@ export default function AdminDashboard() {
     } else if (activeTab === 'pricing') {
       setListingPrice(priceForm);
       toast({ description: "Narxlar yangilandi!" });
+    } else if (activeTab === 'contact') {
+      setAdminTelegramId(telegramForm);
+      toast({ description: "Telegram kontakt yangilandi!" });
     } else {
       // Change Password Logic
       if (pinForm.current !== adminPin) {
@@ -303,6 +307,12 @@ export default function AdminDashboard() {
                   Narxlar
                 </button>
                 <button 
+                  onClick={() => setActiveTab('contact')}
+                  className={`flex-1 py-2 px-3 text-xs font-medium rounded-xl transition-colors whitespace-nowrap ${activeTab === 'contact' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:bg-secondary/50'}`}
+                >
+                  Kontakt
+                </button>
+                <button 
                   onClick={() => setActiveTab('security')}
                   className={`flex-1 py-2 px-3 text-xs font-medium rounded-xl transition-colors whitespace-nowrap ${activeTab === 'security' ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:bg-secondary/50'}`}
                 >
@@ -398,6 +408,24 @@ export default function AdminDashboard() {
                       </div>
                       <p className="text-[10px] text-muted-foreground">
                         Foydalanuvchi 10 ta bepul e'londan so'ng har 10 ta yangi e'lon uchun shu summani to'laydi.
+                      </p>
+                    </div>
+                  </>
+                ) : activeTab === 'contact' ? (
+                  <>
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-muted-foreground uppercase">Admin Telegram ID</label>
+                      <div className="flex items-center bg-secondary/50 rounded-xl border border-transparent focus-within:border-primary overflow-hidden">
+                        <span className="pl-3 text-muted-foreground">@</span>
+                        <input 
+                          value={telegramForm}
+                          onChange={(e) => setTelegramForm(e.target.value)}
+                          className="w-full p-3 bg-transparent outline-none"
+                          placeholder="admin_username"
+                        />
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">
+                        Foydalanuvchilar chekni shu profilga yuborishadi.
                       </p>
                     </div>
                   </>

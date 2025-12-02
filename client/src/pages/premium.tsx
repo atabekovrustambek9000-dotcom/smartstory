@@ -1,6 +1,6 @@
-import { ArrowLeft, Check, Crown, Star, Zap, CreditCard, Copy, X, ShieldCheck, Store, ShoppingBag } from "lucide-react";
+import { ArrowLeft, Check, Crown, Star, Zap, CreditCard, Copy, X, ShieldCheck, Store, ShoppingBag, Upload, Image as ImageIcon, Send } from "lucide-react";
 import { Link } from "wouter";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAdminStore } from "@/lib/admin-store";
@@ -10,8 +10,11 @@ export default function Premium() {
   const [selectedPackage, setSelectedPackage] = useState(10);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [senderName, setSenderName] = useState("");
+  const [checkImage, setCheckImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
   const { toast } = useToast();
-  const { addRequest, adminCard, listingPrice } = useAdminStore();
+  const { addRequest, adminCard, listingPrice, adminTelegramId } = useAdminStore();
   const { shopName } = useShopStore();
 
   // Auto-fill shop name
@@ -40,6 +43,35 @@ export default function Premium() {
     return (unitPrice * multiplier).toFixed(2);
   };
 
+  const handleCheckUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setCheckImage(imageUrl);
+      toast({
+        description: "To'lov cheki yuklandi",
+      });
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleSendToTelegram = () => {
+    if (!adminTelegramId) {
+       toast({ variant: "destructive", description: "Admin Telegram manzili sozlanmagan" });
+       return;
+    }
+    const tgUrl = `https://t.me/${adminTelegramId.replace('@', '')}`;
+    window.open(tgUrl, '_blank');
+    
+    toast({
+        description: "Telegram ochilmoqda. Chekni yuboring.",
+        duration: 3000
+    });
+  };
+
   const handleConfirmPayment = () => {
     if (!senderName.trim()) {
       toast({
@@ -47,6 +79,14 @@ export default function Premium() {
         description: "Iltimos, do'koningiz nomini kiriting",
       });
       return;
+    }
+    
+    if (!checkImage) {
+        toast({
+            variant: "destructive",
+            description: "Iltimos, to'lov chekini yuklang",
+        });
+        return;
     }
 
     // Add request to admin store
@@ -61,10 +101,17 @@ export default function Premium() {
     });
 
     setIsPaymentModalOpen(false);
+    setCheckImage(null);
+    
+    // Send Check to Telegram (Simulated via link)
+    setTimeout(() => {
+       handleSendToTelegram();
+    }, 500);
+
     toast({
       title: "So'rov yuborildi!",
-      description: "Admin tasdiqlashini kuting. To'lovingiz tekshirilmoqda.",
-      duration: 3000,
+      description: "Chekni adminga yuboring. To'lov tasdiqlanishini kuting.",
+      duration: 4000,
     });
   };
 
@@ -233,12 +280,9 @@ export default function Premium() {
                       </div>
                     </div>
                   </div>
-
-                  <div className="text-xs text-center text-muted-foreground bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-300 p-3 rounded-lg">
-                    Izohda <strong>Shop ID: #7823</strong> ni yozib qoldiring.
-                  </div>
                 </div>
 
+                {/* Shop Name Input */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium ml-1">Do'koningiz nomi</label>
                   <div className="relative">
@@ -250,16 +294,55 @@ export default function Premium() {
                       className="w-full pl-10 pr-4 py-3 rounded-xl bg-secondary/50 border border-transparent focus:border-primary outline-none"
                     />
                   </div>
-                  <p className="text-[10px] text-muted-foreground ml-1">
-                    To'lovni tasdiqlashimiz uchun do'koningiz nomini kiriting.
-                  </p>
+                </div>
+
+                {/* Check Upload Area */}
+                <div className="space-y-2">
+                   <label className="text-sm font-medium ml-1">To'lov cheki (Skrinshot)</label>
+                   <input 
+                      type="file" 
+                      ref={fileInputRef} 
+                      className="hidden" 
+                      accept="image/*" 
+                      onChange={handleCheckUpload}
+                    />
+                   
+                   <div 
+                     onClick={triggerFileInput}
+                     className={`border-2 border-dashed border-border rounded-xl h-32 flex flex-col items-center justify-center text-muted-foreground bg-secondary/20 relative overflow-hidden transition-all cursor-pointer hover:bg-secondary/40 ${checkImage ? 'border-primary/50' : ''}`}
+                   >
+                      {checkImage ? (
+                        <div className="relative w-full h-full group">
+                           <img src={checkImage} alt="Chek" className="w-full h-full object-cover" />
+                           <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                              <div className="bg-white/20 backdrop-blur-md p-2 rounded-full text-white">
+                                <Upload size={20} />
+                              </div>
+                           </div>
+                           <div className="absolute top-2 right-2 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded-md flex items-center gap-1">
+                              <Check size={10} /> Yuklandi
+                           </div>
+                        </div>
+                      ) : (
+                        <>
+                           <div className="w-10 h-10 rounded-full bg-background shadow-sm flex items-center justify-center mb-2">
+                             <Upload size={18} className="text-primary" />
+                           </div>
+                           <span className="text-xs font-medium">Chekni yuklash</span>
+                        </>
+                      )}
+                   </div>
+                   <p className="text-[10px] text-muted-foreground ml-1">
+                     To'lovni tasdiqlash uchun chekni yuklash majburiy.
+                   </p>
                 </div>
 
                 <button 
                   onClick={handleConfirmPayment}
-                  className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold shadow-lg shadow-primary/20 active:scale-[0.98] transition-all"
+                  className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold shadow-lg shadow-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                 >
-                  To'lov qildim
+                  <Send size={18} />
+                  Tasdiqlash va Yuborish
                 </button>
               </div>
             </motion.div>

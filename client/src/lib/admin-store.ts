@@ -31,6 +31,7 @@ interface AdminStore {
   adminPin: string; // Admin PIN code
   botConfig: BotConfig; // Telegram Bot configuration
   listingPrice: string; // Price for additional 10 listings
+  adminTelegramId: string; // Admin Telegram ID or Username for contact
   
   // Security State
   loginAttempts: number;
@@ -40,6 +41,7 @@ interface AdminStore {
   setAdminPin: (pin: string) => void; // Function to update PIN
   setBotConfig: (config: Partial<BotConfig>) => void; // Function to update Bot config
   setListingPrice: (price: string) => void; // Function to update listing price
+  setAdminTelegramId: (id: string) => void; // Function to update Admin Telegram ID
   
   // Security Actions
   recordFailedAttempt: () => void;
@@ -69,6 +71,7 @@ export const useAdminStore = create<AdminStore>()(
         chatId: ""
       },
       listingPrice: "1.50", // Default price
+      adminTelegramId: "yangiyer_admin", // Default Admin Telegram
       
       loginAttempts: 0,
       lockoutUntil: null,
@@ -87,6 +90,10 @@ export const useAdminStore = create<AdminStore>()(
 
       setListingPrice: (price) => set(() => ({
         listingPrice: price
+      })),
+
+      setAdminTelegramId: (id) => set(() => ({
+        adminTelegramId: id
       })),
 
       recordFailedAttempt: () => set((state) => {
