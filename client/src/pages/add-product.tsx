@@ -470,7 +470,7 @@ export default function AddProduct() {
                  </div>
                  <div>
                    <h4 className="font-bold text-sm">Kontaktlarga Story joylash</h4>
-                   <p className="text-xs text-muted-foreground">Mahsulot kontaktlaringizga ko'rinadi</p>
+                   <p className="text-xs text-muted-foreground">"Do'konni ochish" tugmasi bilan</p>
                  </div>
                </div>
                <div className={`w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${notifyUsers ? 'bg-pink-500 border-pink-500' : 'border-muted-foreground'}`}>
