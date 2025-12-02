@@ -9,6 +9,7 @@ import { useCart } from "@/lib/cart-store";
 import { useWishlist } from "@/lib/wishlist-store";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-store";
+import logoImg from "@assets/stock_images/shopping_bag_logo_ic_3d3f01c4.jpg";
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -49,13 +50,13 @@ export default function Home() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             {/* Store Logo - Animated Icon */}
-            <div className="w-12 h-12 rounded-xl overflow-hidden shadow-lg shadow-primary/30 border border-border/50 animate-bounce-slow bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-white">
-              <ShoppingBag size={24} strokeWidth={2.5} />
+            <div className="w-14 h-14 rounded-xl overflow-hidden shadow-lg shadow-primary/30 border border-border/50 animate-bounce-slow bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center text-white">
+              <ShoppingBag size={28} strokeWidth={2.5} />
             </div>
             
             {/* Store Name */}
             <div className="flex flex-col justify-center ml-1">
-               <h1 className="text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-500 to-blue-600 animate-gradient-x leading-tight" style={{ fontFamily: "'Outfit', sans-serif" }}>
+               <h1 className="text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 animate-gradient-x leading-none drop-shadow-sm" style={{ fontFamily: "'Outfit', sans-serif" }}>
                 Smart Store
               </h1>
             </div>
