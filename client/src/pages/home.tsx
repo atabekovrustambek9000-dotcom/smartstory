@@ -100,9 +100,6 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Stories */}
-      <Stories />
-
       {/* Categories */}
       <div className="py-2 overflow-x-auto hide-scrollbar">
         <div className="flex px-4 gap-2 w-max">

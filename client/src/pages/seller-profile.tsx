@@ -1,20 +1,40 @@
 import { useRoute, Link } from "wouter";
-import { ArrowLeft, MapPin, Phone, MessageCircle, Star, Store, ShoppingBag } from "lucide-react";
+import { ArrowLeft, MapPin, Phone, MessageCircle, Star, Store, ShoppingBag, Trash2 } from "lucide-react";
 import { useProductStore } from "@/lib/product-store";
 import { products as staticProducts } from "@/lib/data";
 import { motion } from "framer-motion";
 import BottomNav from "@/components/bottom-nav";
+import { useToast } from "@/hooks/use-toast";
+import { useUserStore } from "@/lib/user-store";
 
 export default function SellerProfile() {
   const [, params] = useRoute("/seller/:name");
   const sellerName = params ? decodeURIComponent(params.name) : "";
-  const { products: storedProducts } = useProductStore();
+  const { products: storedProducts, deleteProduct } = useProductStore();
+  const { toast } = useToast();
+  const { name: currentUserName } = useUserStore();
   
   // Merge products
   const allProducts = [...storedProducts, ...staticProducts];
   
   // Get all products for this seller
   const sellerProducts = allProducts.filter(p => p.sellerName === sellerName);
+  
+  // Check if this is the current user's profile
+  // We compare the seller name with the stored user name (or shop name if we had it in user store)
+  // Assuming sellerName matches user name for now as per Welcome screen logic
+  const isMyProfile = currentUserName && sellerName.includes(currentUserName);
+
+  const handleDelete = (e: React.MouseEvent, id: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (confirm("Rostdan ham bu mahsulotni o'chirmoqchimisiz?")) {
+        deleteProduct(id);
+        toast({
+            description: "Mahsulot o'chirildi",
+        });
+    }
+  };
   
   // Get seller info from the first product found (mock data limitation)
   const sellerInfo = sellerProducts[0] || {
@@ -105,9 +125,19 @@ export default function SellerProfile() {
                     <h3 className="font-bold text-sm leading-tight mb-1.5 line-clamp-2 h-9">{product.name}</h3>
                     <div className="flex items-center justify-between">
                       <div className="text-primary font-extrabold">${product.price}</div>
-                      <div className="w-7 h-7 bg-secondary rounded-lg flex items-center justify-center text-primary">
-                        <ShoppingBag size={14} />
-                      </div>
+                      
+                      {isMyProfile ? (
+                        <button 
+                            onClick={(e) => handleDelete(e, product.id)}
+                            className="w-7 h-7 bg-red-100 rounded-lg flex items-center justify-center text-red-500 hover:bg-red-200 transition-colors"
+                        >
+                            <Trash2 size={14} />
+                        </button>
+                      ) : (
+                        <div className="w-7 h-7 bg-secondary rounded-lg flex items-center justify-center text-primary">
+                            <ShoppingBag size={14} />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </motion.div>

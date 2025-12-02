@@ -338,16 +338,6 @@ export default function Profile() {
             <ChevronRight size={16} className="text-muted-foreground" />
           </div>
           
-          <a href="https://t.me/+SRrwcY8nqVY3OTBi" target="_blank" rel="noopener noreferrer">
-            <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">
-              <div className="flex items-center gap-3">
-                <MessageCircle size={18} className="text-blue-500" />
-                <span className="font-medium">Rasmiy Kanalga Qo'shilish</span>
-              </div>
-              <ChevronRight size={16} className="text-muted-foreground" />
-            </div>
-          </a>
-          
           <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors text-destructive" onClick={logout}>
             <div className="flex items-center gap-3">
               <LogOut size={18} />

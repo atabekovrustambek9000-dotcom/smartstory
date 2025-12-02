@@ -123,38 +123,38 @@ export default function AddProduct() {
     // Increment Listings Count
     incrementListingsUsed();
 
-    if (notifyUsers) {
-        setTimeout(() => {
-            // Try to trigger Telegram Story
-            try {
+    // Immediate Story Posting without extra toast
+    setTimeout(() => {
+        // Try to trigger Telegram Story
+        try {
+            // @ts-ignore
+            if (window.Telegram?.WebApp?.shareToStory) {
                 // @ts-ignore
-                if (window.Telegram?.WebApp?.shareToStory) {
-                    // @ts-ignore
-                    window.Telegram.WebApp.shareToStory(selectedImage, { 
-                        text: `${productName}\nNarxi: $${newProduct.price}`, 
-                        widget_link: { 
-                            text: "Do'konni ochish", 
-                            url: `https://t.me/yangiyer_smart_bot/app?startapp=product_${newProduct.id}` 
-                        } 
-                    });
-                } else {
-                   // Fallback for browser testing
-                   console.log("Telegram Story API not available (Browser Mode)");
-                   alert(`Simulyatsiya: Story joylandi!\n\nRasm: ${productName}\nMatn: Narxi $${newProduct.price}\nTugma: Do'konni ochish`);
-                }
-            } catch (e) {
-                console.error("Story error:", e);
+                window.Telegram.WebApp.shareToStory(selectedImage, { 
+                    text: `${productName}\nNarxi: $${newProduct.price}`, 
+                    widget_link: { 
+                        text: "Do'konni ochish", 
+                        url: `https://t.me/yangiyer_smart_bot/app?startapp=product_${newProduct.id}` 
+                    } 
+                });
+            } else {
+               // Fallback for browser testing
+               console.log("Telegram Story API not available (Browser Mode)");
+               alert(`Simulyatsiya: Story joylandi!\n\nRasm: ${productName}\nMatn: Narxi $${newProduct.price}\nTugma: Do'konni ochish`);
             }
-            
-             toast({
-                title: "Story Tayyorlandi 📸",
-                description: "Story muvaffaqiyatli joylandi!",
-                duration: 3000,
-            });
-        }, 500);
-    }
-    
-    setTimeout(() => setLocation("/profile"), 1500);
+        } catch (e) {
+            console.error("Story error:", e);
+        }
+        
+         toast({
+            title: "Story Tayyorlandi 📸",
+            description: "Story muvaffaqiyatli joylandi!",
+            duration: 3000,
+        });
+        
+        // Navigate to profile after story action initiated
+        setTimeout(() => setLocation("/profile"), 1000);
+    }, 100);
   };
 
   // Calculate Price
