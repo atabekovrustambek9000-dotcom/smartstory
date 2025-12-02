@@ -9,6 +9,7 @@ import { useCart } from "@/lib/cart-store";
 import { useWishlist } from "@/lib/wishlist-store";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-store";
+import logoImg from "@assets/stock_images/modern_abstract_tech_ee87a141.jpg";
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -48,9 +49,9 @@ export default function Home() {
       <header className="sticky top-0 z-10 bg-background/70 backdrop-blur-lg border-b border-border/50 px-4 py-3">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            {/* Store Icon */}
-            <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-xl flex items-center justify-center shadow-lg shadow-red-500/30 text-white animate-pulse">
-              <Radio size={24} strokeWidth={2.5} />
+            {/* Store Logo */}
+            <div className="w-12 h-12 rounded-xl overflow-hidden shadow-lg shadow-primary/20 border border-border/50">
+              <img src={logoImg} alt="Logo" className="w-full h-full object-cover" />
             </div>
             
             {/* Store Name */}
