@@ -1,4 +1,4 @@
-import { ArrowLeft, Upload, DollarSign, AlertCircle, ShieldCheck, Loader2, Wand2, Image as ImageIcon, X, Link as LinkIcon, Bell, Send, Eye, Lock, CreditCard } from "lucide-react";
+import { ArrowLeft, Upload, DollarSign, AlertCircle, ShieldCheck, Loader2, Wand2, Image as ImageIcon, X, Link as LinkIcon, Bell, Send, Eye, Lock, CreditCard, Plus, Minus } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useRef } from "react";
@@ -22,7 +22,9 @@ export default function AddProduct() {
   const listingsUsed = 10; // Mock: User has used 10 listings
   const listingsLimit = 10;
   const isOverLimit = listingsUsed >= listingsLimit;
-  const nextLimit = listingsLimit + 10;
+  
+  // Listing Top-up State
+  const [selectedPackage, setSelectedPackage] = useState(10); // 10, 20, 30, 40, 50
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -103,6 +105,14 @@ export default function AddProduct() {
     setTimeout(() => setLocation("/profile"), 1500);
   };
 
+  // Calculate Price
+  const calculatePrice = () => {
+    const unitPrice = parseFloat(listingPrice);
+    // Price per 10 units
+    const multiplier = selectedPackage / 10;
+    return (unitPrice * multiplier).toFixed(2);
+  };
+
   // If user is over limit, show payment required screen
   if (isOverLimit) {
     return (
@@ -117,34 +127,61 @@ export default function AddProduct() {
         </header>
 
         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-          <div className="w-24 h-24 bg-red-100 text-red-600 rounded-full flex items-center justify-center mb-6 animate-pulse">
-            <Lock size={40} />
+          <div className="w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center mb-4 animate-pulse">
+            <Lock size={32} />
           </div>
           
           <h2 className="text-2xl font-bold mb-2">Bepul limit tugadi</h2>
-          <p className="text-muted-foreground mb-8">
-            Siz {listingsLimit} ta bepul e'lon joyladingiz. Keyingi 10 ta e'lon uchun to'lov qilishingiz kerak.
+          <p className="text-muted-foreground mb-8 text-sm max-w-xs mx-auto">
+            Siz {listingsLimit} ta bepul e'lon joyladingiz. Davom etish uchun qo'shimcha paket sotib oling.
           </p>
 
-          <div className="bg-card border border-border rounded-2xl p-6 w-full max-w-xs mb-8 shadow-sm">
-            <p className="text-sm text-muted-foreground mb-1">To'lov miqdori</p>
-            <div className="text-4xl font-extrabold text-primary flex items-center justify-center">
-              ${listingPrice}
+          {/* Package Selector */}
+          <div className="w-full max-w-xs mb-8">
+            <label className="text-xs font-bold text-muted-foreground uppercase mb-3 block tracking-wider">
+              Qo'shimcha E'lonlar Soni
+            </label>
+            
+            <div className="grid grid-cols-5 gap-2 mb-6">
+              {[10, 20, 30, 40, 50].map((count) => (
+                <button
+                  key={count}
+                  onClick={() => setSelectedPackage(count)}
+                  className={`aspect-square rounded-xl flex flex-col items-center justify-center text-xs font-bold transition-all border-2 ${
+                    selectedPackage === count 
+                      ? "bg-primary border-primary text-white shadow-lg shadow-primary/30 scale-105" 
+                      : "bg-card border-border text-muted-foreground hover:border-primary/50"
+                  }`}
+                >
+                  <span>+{count}</span>
+                </button>
+              ))}
             </div>
-            <p className="text-xs text-green-600 font-bold mt-2 bg-green-100 py-1 px-2 rounded-full inline-block">
-              +10 ta qo'shimcha e'lon
-            </p>
+
+            <div className="bg-card border border-border rounded-2xl p-5 shadow-sm relative overflow-hidden">
+              <div className="absolute top-0 right-0 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-bl-xl">
+                TANLANGAN
+              </div>
+              <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Jami To'lov</p>
+              <div className="flex items-end justify-center gap-1 text-primary">
+                 <span className="text-4xl font-extrabold tracking-tighter">${calculatePrice()}</span>
+                 <span className="text-sm font-bold mb-1.5 opacity-70">USD</span>
+              </div>
+              <div className="mt-3 text-xs font-medium text-center text-green-600 bg-green-50 py-1.5 px-3 rounded-lg">
+                {selectedPackage} ta yangi e'lon qo'shiladi
+              </div>
+            </div>
           </div>
 
           <Link href="/premium">
             <button className="w-full max-w-xs bg-primary text-primary-foreground py-4 rounded-xl font-bold shadow-lg shadow-primary/25 active:scale-95 transition-all flex items-center justify-center gap-2">
               <CreditCard size={20} />
-              To'lov qilish
+              To'lovga o'tish
             </button>
           </Link>
           
-          <p className="text-xs text-muted-foreground mt-4">
-            To'lovdan so'ng limit avtomatik oshiriladi.
+          <p className="text-[10px] text-muted-foreground mt-4 max-w-[200px] mx-auto leading-tight">
+            To'lov admin tomonidan tasdiqlangandan so'ng limit avtomatik oshiriladi.
           </p>
         </div>
       </div>

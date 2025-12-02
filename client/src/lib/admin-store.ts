@@ -6,7 +6,7 @@ export interface PremiumRequest {
   userId: string;
   userName: string;
   senderName: string; // Do'kon nomi
-  plan: 'monthly' | 'yearly';
+  listingsCount: number; // Sotib olinayotgan e'lonlar soni
   amount: string;
   date: string;
   status: 'pending' | 'approved' | 'rejected';

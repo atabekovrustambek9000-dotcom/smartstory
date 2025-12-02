@@ -518,7 +518,7 @@ export default function AdminDashboard() {
 
                   <div className="flex items-center gap-2 mb-4">
                     <span className="text-xs bg-secondary px-2 py-1 rounded-md font-medium uppercase">
-                      {req.plan === 'monthly' ? 'Oylik' : 'Yillik'} Reja
+                      {req.listingsCount} ta e'lon
                     </span>
                     {req.status === 'pending' && (
                       <span className="text-xs text-yellow-600 bg-yellow-100 px-2 py-1 rounded-md font-medium flex items-center gap-1">
