@@ -10,7 +10,7 @@ export default function AddProduct() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const { listingPrice, isShopPremium } = useAdminStore();
-  const { shopName } = useShopStore();
+  const { shopName, listingsUsed, listingsLimit, incrementListingsUsed } = useShopStore();
   
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -24,10 +24,6 @@ export default function AddProduct() {
   const [isCreatingCategory, setIsCreatingCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  // Mock limit check logic 
-  const listingsUsed = 10; // Mock: User has used 10 listings
-  const listingsLimit = 10;
   
   // Check if shop has bought packages (isPremium)
   // If premium, the limit is lifted (or increased)
@@ -104,6 +100,9 @@ export default function AddProduct() {
       duration: 3000,
     });
     
+    // Increment Listings Count
+    incrementListingsUsed();
+
     if (notifyUsers) {
         setTimeout(() => {
             toast({

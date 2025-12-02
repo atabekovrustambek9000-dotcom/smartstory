@@ -9,7 +9,6 @@ import { useShopStore } from "@/lib/shop-store";
 
 export default function Profile() {
   const [isSeller, setIsSeller] = useState(false); // Local toggle for view mode
-  const [listingsUsed, setListingsUsed] = useState(3);
   const [isEditing, setIsEditing] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   
@@ -18,11 +17,9 @@ export default function Profile() {
   
   // Stores
   const pendingCount = useAdminStore(state => state.pendingCount());
-  const isShopPremium = useAdminStore(state => state.isShopPremium);
-  const { shopName, description, phone, setShopInfo } = useShopStore();
+  const { shopName, description, phone, setShopInfo, listingsUsed, listingsLimit } = useShopStore();
 
-  // Check if current shop is premium (has bought packages)
-  const isPremium = isShopPremium(shopName);
+  const hasBoughtPackage = listingsLimit > 10;
 
   useEffect(() => {
     // Check initial theme
@@ -183,16 +180,16 @@ export default function Profile() {
           <div className="space-y-4 animate-in slide-in-from-top-4 fade-in duration-300">
             
             {/* Subscription Status Card */}
-            <div className={`p-5 rounded-2xl shadow-lg relative overflow-hidden border backdrop-blur-md ${isPremium ? 'bg-gradient-to-br from-green-600/90 to-emerald-700/90 border-green-500' : 'bg-gradient-to-br from-gray-900/90 to-gray-800/90 border-gray-700'} text-white`}>
+            <div className={`p-5 rounded-2xl shadow-lg relative overflow-hidden border backdrop-blur-md ${hasBoughtPackage ? 'bg-gradient-to-br from-green-600/90 to-emerald-700/90 border-green-500' : 'bg-gradient-to-br from-gray-900/90 to-gray-800/90 border-gray-700'} text-white`}>
               <div className="absolute top-0 right-0 p-4 opacity-10">
                 <Package size={100} />
               </div>
               <div className="relative z-10">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 className="font-bold text-lg">{isPremium ? 'Paket Faol' : 'Bepul Limit'}</h3>
-                    <p className={`${isPremium ? 'text-green-100' : 'text-gray-400'} text-xs`}>
-                      {isPremium ? 'Pullik paket ishlatilmoqda' : 'Boshlang\'ich limit'}
+                    <h3 className="font-bold text-lg">{hasBoughtPackage ? 'Paket Faol' : 'Bepul Limit'}</h3>
+                    <p className={`${hasBoughtPackage ? 'text-green-100' : 'text-gray-400'} text-xs`}>
+                      {hasBoughtPackage ? 'Qo\'shimcha paket aktivlashtirilgan' : 'Boshlang\'ich bepul limit'}
                     </p>
                   </div>
                   <span className="bg-white/20 px-2 py-1 rounded text-xs font-medium">Active</span>
@@ -200,17 +197,19 @@ export default function Profile() {
                 
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between text-sm">
-                    <span className={isPremium ? 'text-green-100' : 'text-gray-300'}>E'lonlar limiti</span>
-                    <span className="font-bold">{listingsUsed} {isPremium ? 'ta e\'lon' : '/ 10'}</span>
+                    <span className={hasBoughtPackage ? 'text-green-100' : 'text-gray-300'}>E'lonlar limiti</span>
+                    <span className="font-bold">{listingsUsed} / {listingsLimit}</span>
                   </div>
-                  <div className={`h-2 ${isPremium ? 'bg-green-900/40' : 'bg-gray-700'} rounded-full overflow-hidden`}>
+                  <div className={`h-2 ${hasBoughtPackage ? 'bg-green-900/40' : 'bg-gray-700'} rounded-full overflow-hidden`}>
                     <div 
-                      className={`h-full ${isPremium ? 'bg-white' : 'bg-primary'} transition-all duration-500`} 
-                      style={{ width: isPremium ? '75%' : `${(listingsUsed / 10) * 100}%` }} 
+                      className={`h-full ${hasBoughtPackage ? 'bg-white' : 'bg-primary'} transition-all duration-500`} 
+                      style={{ width: `${Math.min((listingsUsed / listingsLimit) * 100, 100)}%` }} 
                     />
                   </div>
-                  <p className={`text-[10px] ${isPremium ? 'text-green-100' : 'text-gray-400'}`}>
-                    {isPremium ? 'Siz sotib olgan paketdan foydalanmoqdasiz.' : `Sizda ${10 - listingsUsed} ta bepul joy qoldi.`}
+                  <p className={`text-[10px] ${hasBoughtPackage ? 'text-green-100' : 'text-gray-400'}`}>
+                    {listingsLimit - listingsUsed > 0 
+                      ? `Sizda yana ${listingsLimit - listingsUsed} ta e'lon joyi bor.` 
+                      : "Limit tugadi. Yangi paket sotib oling."}
                   </p>
                 </div>
 
@@ -273,7 +272,7 @@ export default function Profile() {
                     <p className="text-xs text-muted-foreground">Shop Name</p>
                     <div className="flex items-center gap-2">
                       <p className="font-medium">{shopName}</p>
-                      {isPremium && (
+                      {hasBoughtPackage && (
                         <div className="bg-green-100 text-green-700 text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1">
                           <CheckCircle2 size={10} fill="currentColor" /> VERIFIED
                         </div>
@@ -314,7 +313,7 @@ export default function Profile() {
                   <span className="font-medium">My Products</span>
                 </div>
                 <span className="text-xs font-bold bg-secondary px-2 py-1 rounded-md">
-                  {listingsUsed} {isPremium ? '' : '/ 10'}
+                  {listingsUsed} / {listingsLimit}
                 </span>
               </div>
             </div>

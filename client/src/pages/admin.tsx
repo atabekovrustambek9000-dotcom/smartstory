@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { ArrowLeft, Check, X, Clock, Shield, Search, Filter, Store, Lock, KeyRound, ChevronRight, CreditCard, Settings, Key, AlertTriangle, MessageSquare, DollarSign, User } from "lucide-react";
 import { useAdminStore } from "@/lib/admin-store";
+import { useShopStore } from "@/lib/shop-store";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminDashboard() {
   const { requests, approveRequest, rejectRequest, adminCard, setAdminCard, adminPin, setAdminPin, loginAttempts, lockoutUntil, recordFailedAttempt, resetSecurity, botConfig, setBotConfig, listingPrice, setListingPrice, adminTelegramId, setAdminTelegramId } = useAdminStore();
+  const { addListingsLimit } = useShopStore();
   const { toast } = useToast();
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -94,11 +96,12 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleApprove = (id: string, name: string) => {
+  const handleApprove = (id: string, name: string, count: number) => {
     approveRequest(id);
+    addListingsLimit(count);
     toast({
       title: "Tasdiqlandi ✅",
-      description: `${name} uchun Premium aktivlashtirildi.`,
+      description: `${name} uchun Premium aktivlashtirildi. +${count} e'lon qo'shildi.`,
     });
   };
 
@@ -623,7 +626,7 @@ export default function AdminDashboard() {
                         <X size={14} /> Rad etish
                       </button>
                       <button 
-                        onClick={() => handleApprove(req.id, req.userName)}
+                        onClick={() => handleApprove(req.id, req.userName, req.listingsCount)}
                         className="flex-1 py-2.5 bg-green-50 text-green-600 rounded-xl text-xs font-bold hover:bg-green-100 transition-colors flex items-center justify-center gap-1"
                       >
                         <Check size={14} /> Tasdiqlash
