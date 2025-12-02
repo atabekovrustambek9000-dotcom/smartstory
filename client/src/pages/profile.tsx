@@ -192,7 +192,7 @@ export default function Profile() {
                   <div>
                     <h3 className="font-bold text-lg">{isPremium ? 'Paket Faol' : 'Bepul Limit'}</h3>
                     <p className={`${isPremium ? 'text-green-100' : 'text-gray-400'} text-xs`}>
-                      {isPremium ? 'Qo\'shimcha e\'lonlar mavjud' : 'Boshlang\'ich limit'}
+                      {isPremium ? 'Pullik paket ishlatilmoqda' : 'Boshlang\'ich limit'}
                     </p>
                   </div>
                   <span className="bg-white/20 px-2 py-1 rounded text-xs font-medium">Active</span>
@@ -201,16 +201,16 @@ export default function Profile() {
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between text-sm">
                     <span className={isPremium ? 'text-green-100' : 'text-gray-300'}>E'lonlar limiti</span>
-                    <span className="font-bold">{listingsUsed} / {isPremium ? '∞' : '10'}</span>
+                    <span className="font-bold">{listingsUsed} {isPremium ? 'ta e\'lon' : '/ 10'}</span>
                   </div>
                   <div className={`h-2 ${isPremium ? 'bg-green-900/40' : 'bg-gray-700'} rounded-full overflow-hidden`}>
                     <div 
                       className={`h-full ${isPremium ? 'bg-white' : 'bg-primary'} transition-all duration-500`} 
-                      style={{ width: isPremium ? '100%' : `${(listingsUsed / 10) * 100}%` }} 
+                      style={{ width: isPremium ? '75%' : `${(listingsUsed / 10) * 100}%` }} 
                     />
                   </div>
                   <p className={`text-[10px] ${isPremium ? 'text-green-100' : 'text-gray-400'}`}>
-                    {isPremium ? 'Sizda e\'lonlar uchun yetarli joy bor.' : `Sizda ${10 - listingsUsed} ta bepul joy qoldi.`}
+                    {isPremium ? 'Siz sotib olgan paketdan foydalanmoqdasiz.' : `Sizda ${10 - listingsUsed} ta bepul joy qoldi.`}
                   </p>
                 </div>
 
