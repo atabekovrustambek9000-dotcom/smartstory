@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Search, Plus, Heart, Bell, Store, ShoppingBag, Radio } from "lucide-react";
-import { products, categories } from "@/lib/data";
+import { products as staticProducts, categories } from "@/lib/data";
+import { useProductStore } from "@/lib/product-store";
 import BottomNav from "@/components/bottom-nav";
 import Stories from "@/components/stories";
 import { useCart } from "@/lib/cart-store";
@@ -20,6 +21,10 @@ export default function Home() {
   const { toast } = useToast();
   const { t } = useLanguage();
   const { name } = useUserStore();
+  const { products: storedProducts } = useProductStore();
+  
+  // Merge static and stored products
+  const products = [...storedProducts, ...staticProducts];
   
   const initials = name ? name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : "ME";
 

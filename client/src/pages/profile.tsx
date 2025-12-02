@@ -310,17 +310,19 @@ export default function Profile() {
                 </div>
               </Link>
 
-              <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center">
-                    <Package size={16} />
+              <Link href={`/seller/${shopName}`}>
+                <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center">
+                      <Package size={16} />
+                    </div>
+                    <span className="font-medium">My Products</span>
                   </div>
-                  <span className="font-medium">My Products</span>
+                  <span className="text-xs font-bold bg-secondary px-2 py-1 rounded-md">
+                    {listingsUsed} / {listingsLimit}
+                  </span>
                 </div>
-                <span className="text-xs font-bold bg-secondary px-2 py-1 rounded-md">
-                  {listingsUsed} / {listingsLimit}
-                </span>
-              </div>
+              </Link>
             </div>
           </div>
         )}

@@ -1,16 +1,20 @@
 import { useRoute, Link } from "wouter";
 import { ArrowLeft, MapPin, Phone, MessageCircle, Star, Store, ShoppingBag } from "lucide-react";
 import { useProductStore } from "@/lib/product-store";
+import { products as staticProducts } from "@/lib/data";
 import { motion } from "framer-motion";
 import BottomNav from "@/components/bottom-nav";
 
 export default function SellerProfile() {
   const [, params] = useRoute("/seller/:name");
   const sellerName = params ? decodeURIComponent(params.name) : "";
-  const { products } = useProductStore();
+  const { products: storedProducts } = useProductStore();
+  
+  // Merge products
+  const allProducts = [...storedProducts, ...staticProducts];
   
   // Get all products for this seller
-  const sellerProducts = products.filter(p => p.sellerName === sellerName);
+  const sellerProducts = allProducts.filter(p => p.sellerName === sellerName);
   
   // Get seller info from the first product found (mock data limitation)
   const sellerInfo = sellerProducts[0] || {
