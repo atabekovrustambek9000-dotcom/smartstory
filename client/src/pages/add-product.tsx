@@ -106,9 +106,13 @@ export default function AddProduct() {
     if (notifyUsers) {
         setTimeout(() => {
             toast({
-                title: "Story Joylandi ✅",
-                description: "Mahsulot kontaktlaringizga story sifatida yuborildi",
+                title: "Story Tayyorlandi 📸",
+                description: "Story joylash oynasi ochilmoqda... Tasdiqlab yuboring.",
+                duration: 4000,
             });
+            
+            // In a real app, this would trigger:
+            // window.Telegram.WebApp.shareToStory(mediaUrl, { text: productName, widget_link: { text: "Do'konni ochish", url: shopUrl } });
         }, 500);
     }
     
