@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAdminStore } from "@/lib/admin-store";
 import { useShopStore } from "@/lib/shop-store";
+import { useUserStore } from "@/lib/user-store";
 
 export default function Premium() {
   const [selectedPackage, setSelectedPackage] = useState(10);
@@ -16,6 +17,7 @@ export default function Premium() {
   const { toast } = useToast();
   const { addRequest, adminCard, listingPrice, adminTelegramId } = useAdminStore();
   const { shopName } = useShopStore();
+  const { name: userName } = useUserStore();
 
   // Auto-fill shop name
   useEffect(() => {
@@ -91,12 +93,12 @@ export default function Premium() {
 
     // Add request to admin store
     const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    const fullName = tgUser ? `${tgUser.first_name} ${tgUser.last_name || ''}`.trim() : 'Foydalanuvchi';
+    const fullName = userName || (tgUser ? `${tgUser.first_name} ${tgUser.last_name || ''}`.trim() : 'Foydalanuvchi');
     const userId = tgUser?.id ? String(tgUser.id) : '7823';
 
     addRequest({
       userId: userId,
-      userName: fullName, // Real Telegram user name
+      userName: fullName, // Real Telegram user name or App User Name
       senderName: senderName, // Shop Name
       listingsCount: selectedPackage,
       amount: `$${calculatePrice()}`,

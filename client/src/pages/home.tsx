@@ -9,6 +9,7 @@ import { useCart } from "@/lib/cart-store";
 import { useWishlist } from "@/lib/wishlist-store";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-store";
+import { useUserStore } from "@/lib/user-store";
 import logoImg from "@assets/stock_images/shopping_bag_logo_ic_3d3f01c4.jpg";
 
 export default function Home() {
@@ -18,11 +19,9 @@ export default function Home() {
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { toast } = useToast();
   const { t } = useLanguage();
+  const { name } = useUserStore();
   
-  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-  const firstName = tgUser?.first_name || "Foydalanuvchi";
-  const lastName = tgUser?.last_name || "";
-  const initials = (firstName[0] || "F") + (lastName?.[0] || "");
+  const initials = name ? name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : "ME";
 
   // Filtering Logic
   const filteredProducts = products.filter(p => {

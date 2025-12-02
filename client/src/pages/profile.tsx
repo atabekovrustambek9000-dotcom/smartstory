@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-store";
 import { useAdminStore } from "@/lib/admin-store";
 import { useShopStore } from "@/lib/shop-store";
+import { useUserStore } from "@/lib/user-store";
 
 export default function Profile() {
   const [isSeller, setIsSeller] = useState(false); // Local toggle for view mode
@@ -14,6 +15,7 @@ export default function Profile() {
   
   const { toast } = useToast();
   const { language, setLanguage, t } = useLanguage();
+  const { name, phone: userPhone, logout } = useUserStore();
   
   // Stores
   const pendingCount = useAdminStore(state => state.pendingCount());
@@ -57,12 +59,8 @@ export default function Profile() {
     }
   };
 
-  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-  const firstName = tgUser?.first_name || "Foydalanuvchi";
-  const lastName = tgUser?.last_name || "";
-  const username = tgUser?.username ? `@${tgUser.username}` : "";
-  const displayName = `${firstName} ${lastName}`.trim();
-  const initials = (firstName[0] || "F") + (lastName?.[0] || "");
+  const displayName = name || "Foydalanuvchi";
+  const initials = displayName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 
   return (
     <div className="min-h-screen bg-transparent pb-20 transition-colors duration-300">
@@ -73,7 +71,7 @@ export default function Profile() {
             <div className="absolute bottom-0 right-0 w-8 h-8 bg-green-500 border-4 border-background rounded-full"></div>
           </div>
           <h2 className="text-xl font-bold">{displayName}</h2>
-          {username && <p className="text-muted-foreground text-sm">{username}</p>}
+          <p className="text-muted-foreground text-sm">{userPhone}</p>
         </div>
       </div>
 
@@ -338,7 +336,7 @@ export default function Profile() {
             <ChevronRight size={16} className="text-muted-foreground" />
           </div>
           
-          <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors text-destructive">
+          <div className="flex items-center justify-between p-3 hover:bg-secondary/50 rounded-xl cursor-pointer transition-colors text-destructive" onClick={logout}>
             <div className="flex items-center gap-3">
               <LogOut size={18} />
               <span className="font-medium">{t('log_out')}</span>

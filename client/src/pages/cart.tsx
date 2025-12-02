@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { useAdminStore } from "@/lib/admin-store";
+import { useUserStore } from "@/lib/user-store";
 import { products } from "@/lib/data";
 
 export default function Cart() {
@@ -17,12 +18,12 @@ export default function Cart() {
   
   // Get bot username from Admin Store
   const botUsername = useAdminStore(state => state.botConfig.username);
+  const { name, phone } = useUserStore();
 
   // Mock User Info
-  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
   const [formData, setFormData] = useState({
-    name: tgUser ? `${tgUser.first_name} ${tgUser.last_name || ''}`.trim() : "Foydalanuvchi",
-    phone: "+998",
+    name: name || "Foydalanuvchi",
+    phone: phone || "+998",
     address: ""
   });
 
